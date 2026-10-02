@@ -7,6 +7,8 @@ Ko'p ijarachili CRM/ERP: talabalar, guruhlar, davomat, oylik hisob-kitob, to'lov
 - Bosqichlar: [`docs/ROADMAP.md`](docs/ROADMAP.md)
 - Claude Code qoidalari: [`CLAUDE.md`](CLAUDE.md)
 
+Biznes qoidalar oddiy tilda (markaz egasi uchun): [`docs/QOIDALAR.md`](docs/QOIDALAR.md).
+
 ## Stek
 
 Next.js 15 (App Router) · TypeScript strict · Supabase (Postgres, Auth, RLS) · Tailwind CSS v4 + shadcn/ui · next-intl (uz, ru) · date-fns-tz (Asia/Tashkent) · Vitest · Playwright
