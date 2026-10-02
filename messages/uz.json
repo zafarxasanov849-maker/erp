@@ -130,7 +130,9 @@
     "lessonMinutes": "15 dan 600 daqiqagacha",
     "capacity": "1 dan 1000 gacha",
     "weekdays": "Kamida bitta kunni tanlang",
-    "dateRange": "Tugash sanasi boshlanishidan oldin bo'lmasin"
+    "dateRange": "Tugash sanasi boshlanishidan oldin bo'lmasin",
+    "duplicateGroup": "Bitta guruh ikki marta tanlangan",
+    "reasonRequired": "Sababni tanlang"
   },
   "errors": {
     "forbidden": "Sizda bu amal uchun ruxsat yo'q",
@@ -175,7 +177,21 @@
       "room_branch_mismatch": "Filial boshqa markazga tegishli",
       "holiday_branch_mismatch": "Filial boshqa markazga tegishli",
       "lesson_group_mismatch": "Dars boshqa markaz guruhiga tegishli",
-      "lesson_holiday_mismatch": "Bayram boshqa markazga tegishli"
+      "lesson_holiday_mismatch": "Bayram boshqa markazga tegishli",
+      "student_branch_mismatch": "Filial boshqa markazga tegishli",
+      "enrollment_student_mismatch": "Talaba boshqa markazga tegishli",
+      "enrollment_group_mismatch": "Guruh boshqa markazga tegishli",
+      "freeze_enrollment_mismatch": "A'zolik boshqa markazga tegishli",
+      "reason_mismatch": "Sabab boshqa markazga yoki boshqa turga tegishli",
+      "group_finished": "Guruh tugagan — unga talaba qo'shib bo'lmaydi",
+      "student_archived": "Talaba arxivda. Avval arxivdan chiqaring.",
+      "already_enrolled": "Talaba bu guruhda allaqachon bor",
+      "invalid_status": "Bu amal a'zolikning hozirgi holatida mumkin emas",
+      "date_before_join": "Sana guruhga qo'shilgan sanadan oldin bo'lmasin",
+      "reason_required": "Sababni tanlang",
+      "freeze_overlap": "Bu oraliq boshqa muzlatish bilan kesishadi",
+      "freeze_finished": "Muzlatish allaqachon tugagan",
+      "student_has_open_enrollments": "Talaba hali guruhlarda. Avval barcha guruhlardan chiqaring."
     },
     "inUse": "Bu yozuv boshqa joyda ishlatilmoqda, o'chirib bo'lmaydi",
     "roomInUse": "Bu xonada guruhlar bor. Avval guruhlarni boshqa xonaga o'tkazing."
@@ -216,7 +232,8 @@
       "staff": "Xodimlar",
       "courses": "Kurslar",
       "rooms": "Xonalar",
-      "holidays": "Bayramlar"
+      "holidays": "Bayramlar",
+      "tags": "Teglar"
     },
     "organization": {
       "name": "Markaz nomi",
@@ -330,6 +347,19 @@
       "deleteConfirm": "{date} bayramini o'chirasizmi? Shu kundagi darslar qayta tiklanadi.",
       "emptyTitle": "Bayramlar yo'q",
       "emptyDescription": "Dam olish kunlarini oldindan qo'shing — o'sha kundagi darslar o'zi bekor bo'ladi."
+    },
+    "tags": {
+      "description": "Teg — talabalarni guruhlash uchun belgi (masalan: VIP, Aka-uka, Chegirmali). Ro'yxatda teg bo'yicha filtrlash mumkin.",
+      "add": "Teg qo'shish",
+      "edit": "Tegni tahrirlash",
+      "name": "Nomi",
+      "namePlaceholder": "Masalan: VIP",
+      "color": "Rangi",
+      "students": "Talabalar",
+      "deleteConfirm": "\"{name}\" tegini o'chirasizmi? Talabalardan ham olib tashlanadi.",
+      "deleted": "Teg o'chirildi",
+      "emptyTitle": "Hali teg yo'q",
+      "emptyDescription": "\"Teg qo'shish\" tugmasi bilan birinchi tegni yarating va talabalarga biriktiring."
     }
   },
   "permissions": {
@@ -537,6 +567,256 @@
       "day": "Hafta kuni",
       "emptyTitle": "{day} kuni dars yo'q",
       "emptyDescription": "Bu filialda shu kuni faol guruh darsi yo'q. Boshqa kunni tanlang."
+    },
+    "members": {
+      "name": "Talaba",
+      "phone": "Telefon",
+      "status": "Holati",
+      "since": "Sana",
+      "emptyTitle": "Guruhda talaba yo'q",
+      "emptyDescription": "\"Talaba qo'shish\" tugmasi bilan yangi talabani shu guruhga yozing yoki talaba profilidan guruhga qo'shing."
+    }
+  },
+  "students": {
+    "title": "Talabalar",
+    "add": "Talaba",
+    "addLong": "Talaba qo'shish",
+    "statuses": {
+      "active": "Faol",
+      "trial": "Sinovda",
+      "frozen": "Muzlatilgan",
+      "left": "Chiqqan",
+      "new": "Guruhsiz",
+      "archived": "Arxivlangan"
+    },
+    "enrollmentStatuses": {
+      "trial": "Sinovda",
+      "active": "Faol",
+      "frozen": "Muzlatilgan",
+      "left": "Chiqqan"
+    },
+    "gender": {
+      "male": "Erkak",
+      "female": "Ayol"
+    },
+    "fields": {
+      "fullName": "To'liq ism",
+      "fullNamePlaceholder": "Familiya Ism",
+      "phone": "Telefon",
+      "gender": "Jinsi",
+      "genderNone": "Ko'rsatilmagan",
+      "joinedAt": "Qo'shilgan sana",
+      "branch": "Filial",
+      "tags": "Teglar",
+      "birthDate": "Tug'ilgan sana",
+      "parent": "Ota-ona",
+      "parentName": "Ota-ona ismi",
+      "parentPhone": "Ota-ona telefoni",
+      "telegram": "Telegram",
+      "telegramPlaceholder": "@username",
+      "address": "Manzil",
+      "school": "Maktab",
+      "passportSeries": "Pasport seriyasi"
+    },
+    "sheet": {
+      "title": "Yangi talaba",
+      "description": "Majburiy: ism va telefon. Qolganini keyin profilda to'ldirish mumkin.",
+      "addField": "Maydon qo'shish",
+      "removeField": "Maydonni olib tashlash",
+      "noTags": "Teglar yo'q. Sozlamalar → Teglar bo'limida qo'shing.",
+      "groupsTitle": "Guruhga qo'shish",
+      "groupsHint": "Bir nechta guruh tanlash mumkin. Guruhsiz ham saqlasa bo'ladi.",
+      "searchGroup": "Guruh, kurs yoki ustoz bo'yicha qidirish",
+      "noGroups": "Faol guruhlar yo'q. Avval Guruhlar bo'limida guruh oching.",
+      "noGroupsFound": "Mos guruh topilmadi",
+      "startDate": "Boshlanish sanasi",
+      "status": "Holati",
+      "duplicatePhone": "Bu raqam bilan {name} bor",
+      "open": "ochish",
+      "saveAnyway": "Baribir saqlash mumkin.",
+      "created": "Talaba qo'shildi",
+      "openProfile": "Profilni ochish",
+      "loadError": "Ma'lumotlarni yuklab bo'lmadi"
+    },
+    "list": {
+      "name": "Ism",
+      "phone": "Telefon",
+      "groups": "Guruhlar",
+      "status": "Holati",
+      "tags": "Teglar",
+      "branch": "Filial",
+      "joinedAt": "Qo'shilgan",
+      "parentPhone": "Ota-ona telefoni",
+      "balance": "Balans",
+      "columns": "Ustunlar",
+      "export": "Excel",
+      "total": "Jami: {count}",
+      "selected": "Tanlandi: {count}",
+      "clearSelection": "Bekor qilish",
+      "addTag": "Teg qo'shish",
+      "tagAdded": "Teg qo'shildi",
+      "sendSms": "SMS yuborish",
+      "smsSoon": "SMS 9-bosqichda qo'shiladi",
+      "selectAll": "Hammasini tanlash",
+      "selectRow": "Tanlash",
+      "prev": "Oldingi",
+      "next": "Keyingi",
+      "page": "{page} / {pages}",
+      "emptyTitle": "Hali talaba yo'q",
+      "emptyDescription": "\"Talaba qo'shish\" tugmasi bilan birinchi talabani qo'shing — uni darhol guruhga yozish mumkin.",
+      "emptyFilteredTitle": "Filtrga mos talaba topilmadi",
+      "emptyFilteredDescription": "Filtrlarni o'zgartiring yoki tozalang.",
+      "exportFile": "talabalar"
+    },
+    "filters": {
+      "search": "Ism yoki telefon",
+      "status": "Holati",
+      "allStatuses": "Barchasi (arxivsiz)",
+      "group": "Guruh",
+      "allGroups": "Barcha guruhlar",
+      "course": "Kurs",
+      "allCourses": "Barcha kurslar",
+      "teacher": "Ustoz",
+      "allTeachers": "Barcha ustozlar",
+      "tag": "Teg",
+      "allTags": "Barcha teglar",
+      "branch": "Filial",
+      "allBranches": "Barcha filiallar",
+      "joinedFrom": "Sanadan",
+      "joinedTo": "Sanagacha",
+      "reset": "Tozalash",
+      "more": "Filtrlar"
+    },
+    "profile": {
+      "backToList": "Talabalar ro'yxati",
+      "edit": "Tahrirlash",
+      "editTitle": "Talaba ma'lumotlari",
+      "archive": "Arxivlash",
+      "unarchive": "Arxivdan chiqarish",
+      "archiveConfirm": "{name} arxivlansinmi? Arxivdagi talaba ro'yxatda ko'rinmaydi, ma'lumotlari saqlanadi.",
+      "archived": "Talaba arxivlandi",
+      "unarchived": "Talaba arxivdan chiqarildi",
+      "archivedBanner": "Talaba arxivda",
+      "joined": "{date} dan",
+      "info": "Ma'lumotlar",
+      "photo": "Rasm",
+      "uploadPhoto": "Rasm yuklash",
+      "removePhoto": "Rasmni olib tashlash",
+      "noValue": "—",
+      "tabs": {
+        "groups": "Guruhlar",
+        "payments": "To'lovlar",
+        "attendance": "Davomat",
+        "notes": "Izohlar",
+        "history": "O'zgarishlar tarixi"
+      },
+      "paymentsSoon": "To'lovlar va balans 5-bosqichda qo'shiladi.",
+      "attendanceSoon": "Davomat 4-bosqichda qo'shiladi."
+    },
+    "enrollments": {
+      "add": "Guruhga qo'shish",
+      "group": "Guruh",
+      "status": "Holati",
+      "since": "Boshlangan",
+      "trialSince": "Sinov: {date} dan",
+      "activeSince": "Faol: {date} dan",
+      "leftOn": "Chiqqan: {date}",
+      "frozenRange": "Muzlatilgan: {from} — {to}",
+      "plannedFreeze": "Muzlatish rejada: {from} — {to}",
+      "actions": "Amallar",
+      "activate": "Faollashtirish",
+      "transfer": "Boshqa guruhga o'tkazish",
+      "freeze": "Muzlatish",
+      "endFreeze": "Muzlatishni tugatish",
+      "endFreezeConfirm": "Muzlatish bugundan tugatilsinmi? Boshlanmagan bo'lsa, bekor qilinadi.",
+      "leave": "Guruhdan chiqarish",
+      "date": "Sana",
+      "activateDate": "Faollashish sanasi",
+      "transferDate": "Yangi guruhda boshlanish sanasi",
+      "transferHint": "Eski guruhdan bir kun oldin chiqqan bo'ladi. Sinovdagi talaba sinovda qoladi.",
+      "newGroup": "Yangi guruh",
+      "from": "Boshlanishi",
+      "to": "Tugashi",
+      "reason": "Sabab",
+      "reasonOptional": "Sabab (ixtiyoriy)",
+      "noReason": "Sababsiz",
+      "noReasons": "Sabablar yo'q. Ular markaz ochilganda yaratiladi.",
+      "leaveHint": "Talaba darhol \"Chiqqan\" holatiga o'tadi.",
+      "freezeHint": "Kelajakdagi muzlatish boshlanish sanasigacha \"Faol\" holatini saqlaydi.",
+      "done": "Saqlandi",
+      "emptyTitle": "Talaba hali guruhda emas",
+      "emptyDescription": "\"Guruhga qo'shish\" tugmasi bilan talabani guruhga yozing.",
+      "showLeft": "Chiqqan guruhlar ({count})",
+      "freezes": "Muzlatishlar",
+      "freezeReasonLabel": "Sabab: {reason}"
+    },
+    "notes": {
+      "placeholder": "Izoh yozing…",
+      "add": "Qo'shish",
+      "deleteConfirm": "Izoh o'chirilsinmi?",
+      "emptyTitle": "Izohlar yo'q",
+      "emptyDescription": "Talaba haqidagi muhim gaplarni shu yerga yozing — barcha xodimlar ko'radi."
+    },
+    "history": {
+      "emptyTitle": "O'zgarishlar yo'q",
+      "emptyDescription": "Talaba ma'lumotlari, guruhlari va muzlatishlari o'zgarganda shu yerda ko'rinadi.",
+      "system": "Tizim",
+      "actions": {
+        "students": {
+          "insert": "Talaba qo'shildi",
+          "update": "Ma'lumotlari o'zgardi",
+          "delete": "Talaba o'chirildi"
+        },
+        "enrollments": {
+          "insert": "Guruhga qo'shildi",
+          "update": "A'zolik o'zgardi",
+          "delete": "A'zolik o'chirildi"
+        },
+        "freezes": {
+          "insert": "Muzlatildi",
+          "update": "Muzlatish o'zgardi",
+          "delete": "Muzlatish bekor qilindi"
+        },
+        "student_tags": {
+          "insert": "Teg qo'shildi",
+          "delete": "Teg olib tashlandi"
+        },
+        "student_notes": {
+          "insert": "Izoh qo'shildi",
+          "update": "Izoh o'zgardi",
+          "delete": "Izoh o'chirildi"
+        },
+        "other": "O'zgarish"
+      },
+      "fields": {
+        "full_name": "Ism",
+        "phone": "Telefon",
+        "gender": "Jinsi",
+        "birth_date": "Tug'ilgan sana",
+        "parent_name": "Ota-ona ismi",
+        "parent_phone": "Ota-ona telefoni",
+        "telegram_username": "Telegram",
+        "address": "Manzil",
+        "school": "Maktab",
+        "passport_series": "Pasport seriyasi",
+        "joined_at": "Qo'shilgan sana",
+        "branch_id": "Filial",
+        "archived_at": "Arxiv",
+        "photo_url": "Rasm",
+        "status": "Holati",
+        "trial_started_at": "Sinov boshlangan",
+        "activated_at": "Faollashgan",
+        "left_at": "Chiqqan sana",
+        "leave_reason_id": "Chiqish sababi",
+        "group_id": "Guruh",
+        "date_from": "Muzlatish boshlanishi",
+        "date_to": "Muzlatish tugashi",
+        "reason_id": "Sabab",
+        "tag_id": "Teg",
+        "body": "Izoh",
+        "discount_type": "Chegirma turi",
+        "discount_value": "Chegirma"
+      }
     }
   }
 }

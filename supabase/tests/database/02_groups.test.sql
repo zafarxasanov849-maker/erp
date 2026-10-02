@@ -168,8 +168,9 @@ select is((select count(*)::int from lessons) + (select count(*)::int from holid
           0, 'B markazi A darslari va bayramlarini ko''rmaydi');
 select pg_temp.logout();
 
-delete from holidays where date = '2026-10-14';
-select is((select cancel_holiday_id from lessons where date = '2026-10-14'), null,
+delete from holidays where date = '2026-10-14' and organization_id = current_setting('test.org_a')::uuid;
+select is((select cancel_holiday_id from lessons
+            where date = '2026-10-14' and organization_id = current_setting('test.org_a')::uuid), null,
           'bayram o''chirilsa bog''lanish uziladi (on delete set null)');
 
 select ok(exists (select 1 from audit_log where action = 'groups.insert' and organization_id = current_setting('test.org_a')::uuid),

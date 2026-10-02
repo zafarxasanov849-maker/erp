@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { Toaster } from "@/components/ui/sonner";
 
@@ -26,7 +27,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html lang={locale}>
       <body className="antialiased">
         <NextIntlClientProvider>
-          {children}
+          <NuqsAdapter>{children}</NuqsAdapter>
           <Toaster position="top-center" richColors />
         </NextIntlClientProvider>
       </body>

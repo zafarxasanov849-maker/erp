@@ -12,3 +12,20 @@ export async function onLessonsCancelled(lessonIds: readonly string[]): Promise<
 export async function onLessonsRestored(lessonIds: readonly string[]): Promise<void> {
   void lessonIds; // TODO(5-bosqich): qaytarilgan summani teskari yozuv bilan bekor qilish
 }
+
+/** PRD §5.3: oy o'rtasida faollashganda qolgan darslar uchun darhol yechish. */
+export async function onEnrollmentActivated(enrollmentId: string, date: string): Promise<void> {
+  void enrollmentId;
+  void date; // TODO(5-bosqich): activationCharge
+}
+
+/** PRD §5.5: muzlatilgan oraliq uchun allaqachon yechilgan bo'lsa qaytarish. */
+export async function onEnrollmentFrozen(freezeId: string): Promise<void> {
+  void freezeId; // TODO(5-bosqich): freezeAdjustment
+}
+
+/** PRD §5.6: chiqqan sanadan keyingi darslar ulushini qaytarish (sozlamaga qarab). */
+export async function onEnrollmentLeft(enrollmentId: string, date: string): Promise<void> {
+  void enrollmentId;
+  void date; // TODO(5-bosqich): leaveAdjustment
+}

@@ -2,7 +2,7 @@ import { forbidden } from "next/navigation";
 
 import { AppShell } from "@/features/shell/components/app-shell";
 import { ALL_BRANCHES, NAV_ITEMS } from "@/features/shell/nav";
-import { canAny, getOrgContext } from "@/lib/auth";
+import { can, canAny, getOrgContext } from "@/lib/auth";
 
 export default async function BranchLayout({
   children,
@@ -27,6 +27,7 @@ export default async function BranchLayout({
       branchId={branchId}
       branches={branches}
       allowed={allowed}
+      canCreateStudent={can(ctx, "students.create")}
       org={{ name: membership.orgName, logoUrl: membership.orgLogo, color: membership.orgColor }}
       user={{
         fullName: profile.fullName,

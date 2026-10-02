@@ -213,3 +213,26 @@ export async function getWeeklySchedule(orgId: string, branchId: string, weekday
     workEnd: normalizeTime(o.work_end ?? "22:00"),
   };
 }
+
+/** Guruh talabalari (ochiq a'zoliklar, keyin chiqqanlar) */
+export async function listGroupMembers(groupId: string) {
+  const supabase = await createClient();
+  const rows = unwrap(
+    await supabase
+      .from("enrollments")
+      .select(
+        "id, status, joined_at, activated_at, left_at, student:students ( id, full_name, phone, archived_at )",
+      )
+      .eq("group_id", groupId)
+      .order("created_at"),
+  );
+  const order = { active: 0, trial: 1, frozen: 2, left: 3 } as const;
+  return rows
+    .flatMap((r) => (r.student ? [{ ...r, student: r.student }] : []))
+    .sort(
+      (a, b) =>
+        order[a.status] - order[b.status] || a.student.full_name.localeCompare(b.student.full_name),
+    );
+}
+
+export type GroupMember = Awaited<ReturnType<typeof listGroupMembers>>[number];

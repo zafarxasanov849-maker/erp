@@ -8,9 +8,11 @@ import { EmptyState } from "@/components/empty-state";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { GroupMembers } from "@/features/groups/components/group-members";
 import { LessonsList } from "@/features/groups/components/lessons-list";
 import { formatTimeRange, formatWeekdays } from "@/features/groups/format";
-import { getGroup, listGroupLessons } from "@/features/groups/queries";
+import { getGroup, listGroupLessons, listGroupMembers } from "@/features/groups/queries";
+import { AddStudentLink } from "@/features/students/components/add-student-link";
 import { can, requirePagePermission } from "@/lib/auth";
 import { addDays, formatDate, todayInTashkent } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
@@ -41,11 +43,11 @@ export default async function GroupPage({
   const t = await getTranslations("groups");
   const tw = await getTranslations("weekdays");
   const today = todayInTashkent();
-  const lessons = await listGroupLessons(
-    group.id,
-    addDays(today, -30),
-    addDays(today, LESSON_HORIZON_DAYS),
-  );
+  const canSeeStudents = can(ctx, "students.view");
+  const [lessons, members] = await Promise.all([
+    listGroupLessons(group.id, addDays(today, -30), addDays(today, LESSON_HORIZON_DAYS)),
+    canSeeStudents ? listGroupMembers(group.id) : Promise.resolve([]),
+  ]);
 
   const info: [string, string][] = [
     [t("detail.course"), group.course?.name ?? "—"],
@@ -102,13 +104,27 @@ export default async function GroupPage({
       <Tabs defaultValue="lessons">
         <TabsList>
           <TabsTrigger value="lessons">{t("tabs.lessons")}</TabsTrigger>
-          <TabsTrigger value="students" disabled>
+          <TabsTrigger value="students" disabled={!canSeeStudents}>
             {t("tabs.students")}
+            {canSeeStudents && (
+              <span className="text-muted-foreground tabular-nums">
+                {members.filter((m) => m.status !== "left").length}
+              </span>
+            )}
           </TabsTrigger>
           <TabsTrigger value="attendance" disabled>
             {t("tabs.attendance")}
           </TabsTrigger>
         </TabsList>
+        <TabsContent value="students" className="pt-2">
+          <GroupMembers
+            members={members}
+            branchPath={`/${branchId}`}
+            action={
+              group.is_active ? <AddStudentLink groupId={group.id} variant="outline" /> : undefined
+            }
+          />
+        </TabsContent>
         <TabsContent value="lessons" className="pt-2">
           {lessons.length === 0 ? (
             <EmptyState

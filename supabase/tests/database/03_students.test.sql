@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(30);
+select plan(31);
 
 create function pg_temp.login(p_uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims',
@@ -158,6 +158,9 @@ select throws_ok(
          (select branch_a from ids)),
   '42501', 'forbidden', 'B markazi A filialiga talaba qo''sha olmaydi');
 select pg_temp.logout();
+
+select is((select public from storage.buckets where id = 'student-photos'), false,
+          'talaba rasmlari yopiq bucket''da');
 
 select * from finish();
 rollback;

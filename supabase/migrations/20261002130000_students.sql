@@ -493,3 +493,24 @@ end $$;
 -- Izohlar: muallif o'z izohini o'chira oladi (boshqa hech kim).
 create policy student_notes_delete on student_notes for delete
   using (created_by = current_staff_id(organization_id));
+
+-- =====================================================================
+-- Storage: talaba rasmlari — YOPIQ bucket (shaxsiy ma'lumot), imzolangan havola bilan o'qiladi.
+-- Yo'l: student-photos/<organization_id>/<student_id>/<fayl>
+-- =====================================================================
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('student-photos', 'student-photos', false, 2097152, array['image/png', 'image/jpeg', 'image/webp'])
+on conflict (id) do nothing;
+
+create policy student_photos_select on storage.objects for select to authenticated
+  using (bucket_id = 'student-photos'
+         and can_see_student(try_uuid((storage.foldername(name))[1]), try_uuid((storage.foldername(name))[2])));
+create policy student_photos_insert on storage.objects for insert to authenticated
+  with check (bucket_id = 'student-photos'
+              and can_edit_student(try_uuid((storage.foldername(name))[1]), try_uuid((storage.foldername(name))[2])));
+create policy student_photos_update on storage.objects for update to authenticated
+  using (bucket_id = 'student-photos'
+         and can_edit_student(try_uuid((storage.foldername(name))[1]), try_uuid((storage.foldername(name))[2])));
+create policy student_photos_delete on storage.objects for delete to authenticated
+  using (bucket_id = 'student-photos'
+         and can_edit_student(try_uuid((storage.foldername(name))[1]), try_uuid((storage.foldername(name))[2])));

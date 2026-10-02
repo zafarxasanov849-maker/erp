@@ -75,6 +75,20 @@ const DB_GUARD_ERRORS = new Set([
   "holiday_branch_mismatch",
   "lesson_group_mismatch",
   "lesson_holiday_mismatch",
+  "student_branch_mismatch",
+  "enrollment_student_mismatch",
+  "enrollment_group_mismatch",
+  "freeze_enrollment_mismatch",
+  "reason_mismatch",
+  "group_finished",
+  "student_archived",
+  "already_enrolled",
+  "invalid_status",
+  "date_before_join",
+  "reason_required",
+  "freeze_overlap",
+  "freeze_finished",
+  "student_has_open_enrollments",
 ]);
 
 /** Supabase/PostgREST xatosini ActionError ga aylantiradi. */
