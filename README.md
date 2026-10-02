@@ -102,7 +102,8 @@ e2e/                    Playwright testlari
 2. testlar o'tsa — `supabase db push` bilan production loyihaga faqat yangi migratsiyalar qo'llanadi.
 
 Pull request'larda faqat 1-qadam ishlaydi. Kerakli secrets (GitHub → Settings → Secrets and variables → Actions):
-`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`.
+`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`. Ular kiritilmaguncha 2-qadam o'tkazib yuboriladi va
+migratsiyalar Supabase SQL Editor'da qo'lda qo'llanadi.
 
 Qo'llangan migratsiya fayli keyin o'zgartirilmaydi — tuzatish uchun yangi migratsiya qo'shing.
 Vercel deploy va migratsiya parallel ishlaydi, shuning uchun migratsiyalar eski kod bilan ham ishlay oladigan

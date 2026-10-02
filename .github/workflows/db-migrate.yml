@@ -65,15 +65,22 @@ jobs:
       - uses: supabase/setup-cli@v1
         with:
           version: ${{ env.SUPABASE_CLI_VERSION }}
+      # Secrets hali kiritilmagan bo'lsa — migratsiyalar qo'lda (SQL Editor) qo'llanadi, job xatosiz o'tadi
       - name: Secrets tekshiruvi
+        id: secrets
         run: |
           if [ -z "$SUPABASE_ACCESS_TOKEN" ] || [ -z "$SUPABASE_DB_PASSWORD" ]; then
-            echo "::error::SUPABASE_ACCESS_TOKEN va SUPABASE_DB_PASSWORD secrets o'rnatilmagan (Settings → Secrets and variables → Actions)"
-            exit 1
+            echo "::notice::Secrets yo'q — avtomatik qo'llash o'tkazib yuborildi. Migratsiyani SQL Editor'da qo'lda qo'llang."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Loyihaga ulanish
+        if: steps.secrets.outputs.ready == 'true'
         run: supabase link --project-ref "$SUPABASE_PROJECT_ID" --password "$SUPABASE_DB_PASSWORD"
       - name: Qo'llanadigan migratsiyalar
+        if: steps.secrets.outputs.ready == 'true'
         run: supabase db push --dry-run --password "$SUPABASE_DB_PASSWORD"
       - name: Qo'llash
+        if: steps.secrets.outputs.ready == 'true'
         run: supabase db push --password "$SUPABASE_DB_PASSWORD"
