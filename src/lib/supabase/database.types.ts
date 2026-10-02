@@ -388,6 +388,13 @@ export type Database = {
             referencedRelation: "students";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "enrollments_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students_overview";
+            referencedColumns: ["id"];
+          },
         ];
       };
       expense_categories: {
@@ -875,6 +882,13 @@ export type Database = {
             referencedRelation: "students";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "leads_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students_overview";
+            referencedColumns: ["id"];
+          },
         ];
       };
       lessons: {
@@ -998,6 +1012,13 @@ export type Database = {
             columns: ["student_id"];
             isOneToOne: false;
             referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "message_log_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students_overview";
             referencedColumns: ["id"];
           },
         ];
@@ -1577,6 +1598,13 @@ export type Database = {
             referencedRelation: "students";
             referencedColumns: ["id"];
           },
+          {
+            foreignKeyName: "student_notes_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students_overview";
+            referencedColumns: ["id"];
+          },
         ];
       };
       student_tags: {
@@ -1605,6 +1633,13 @@ export type Database = {
             columns: ["student_id"];
             isOneToOne: false;
             referencedRelation: "students";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "student_tags_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students_overview";
             referencedColumns: ["id"];
           },
           {
@@ -1881,6 +1916,13 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
+            foreignKeyName: "transactions_student_id_fkey";
+            columns: ["student_id"];
+            isOneToOne: false;
+            referencedRelation: "students_overview";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "transactions_voids_id_fkey";
             columns: ["voids_id"];
             isOneToOne: false;
@@ -1908,19 +1950,57 @@ export type Database = {
           },
         ];
       };
+      students_overview: {
+        Row: {
+          archived_at: string | null;
+          branch_id: string | null;
+          course_ids: string[] | null;
+          created_at: string | null;
+          full_name: string | null;
+          group_ids: string[] | null;
+          id: string | null;
+          joined_at: string | null;
+          organization_id: string | null;
+          parent_phone: string | null;
+          phone: string | null;
+          status: string | null;
+          tag_ids: string[] | null;
+          teacher_ids: string[] | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "students_branch_id_fkey";
+            columns: ["branch_id"];
+            isOneToOne: false;
+            referencedRelation: "branches";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "students_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Functions: {
+      activate_enrollment: { Args: { p_date: string; p_enrollment: string }; Returns: undefined };
       apply_holiday: { Args: { p_holiday: string }; Returns: string[] };
       apply_lesson_plan: {
         Args: { p_group: string; p_insert: Json; p_remove: string[]; p_update: Json };
         Returns: undefined;
       };
+      assert_enrollable_group: { Args: { p_group: string; p_org: string }; Returns: undefined };
       assert_group_editor: { Args: { p_group: string }; Returns: string };
+      assert_student_editor: { Args: { p_perm?: string; p_student: string }; Returns: string };
       can_edit_student: { Args: { org: string; p_student: string }; Returns: boolean };
       can_see_branch: { Args: { br: string; org: string }; Returns: boolean };
       can_see_group: { Args: { org: string; p_group: string }; Returns: boolean };
       can_see_lead: { Args: { org: string; p_lead: string }; Returns: boolean };
       can_see_student: { Args: { org: string; p_student: string }; Returns: boolean };
+      create_student: { Args: { p: Json }; Returns: Json };
       current_staff: {
         Args: { org: string };
         Returns: {
@@ -1941,6 +2021,11 @@ export type Database = {
         };
       };
       current_staff_id: { Args: { org: string }; Returns: string };
+      end_freeze: { Args: { p_freeze: string }; Returns: undefined };
+      enroll_student: {
+        Args: { p_date: string; p_group: string; p_status: string; p_student: string };
+        Returns: string;
+      };
       enrollment_student: { Args: { p_enrollment: string }; Returns: string };
       find_profile_by_phone: {
         Args: { p_org: string; p_phone: string };
@@ -1949,10 +2034,19 @@ export type Database = {
           id: string;
         }[];
       };
+      freeze_enrollment: {
+        Args: { p_enrollment: string; p_from: string; p_reason: string; p_to: string };
+        Returns: string;
+      };
       has_permission: { Args: { org: string; perm: string }; Returns: boolean };
       is_colleague: { Args: { p_user: string }; Returns: boolean };
       is_member: { Args: { org: string }; Returns: boolean };
+      leave_enrollment: {
+        Args: { p_date: string; p_enrollment: string; p_reason: string };
+        Returns: undefined;
+      };
       my_permissions: { Args: { org: string }; Returns: string[] };
+      refresh_enrollment_statuses: { Args: { p_org?: string }; Returns: number };
       register_organization: {
         Args: { p_branch_name: string; p_org_name: string; p_owner_name: string; p_roles: Json };
         Returns: string;
@@ -1970,7 +2064,28 @@ export type Database = {
         };
         Returns: string;
       };
+      set_student_archived: {
+        Args: { p_archived: boolean; p_student: string };
+        Returns: undefined;
+      };
       staff_org: { Args: { p_staff: string }; Returns: string };
+      student_history: {
+        Args: { p_student: string };
+        Returns: {
+          action: string;
+          actor_name: string;
+          created_at: string;
+          diff: Json;
+          entity: string;
+          entity_id: string;
+          id: number;
+        }[];
+      };
+      today_tashkent: { Args: Record<PropertyKey, never>; Returns: string };
+      transfer_enrollment: {
+        Args: { p_date: string; p_enrollment: string; p_new_group: string; p_reason: string };
+        Returns: string;
+      };
       try_uuid: { Args: { p: string }; Returns: string };
     };
     Enums: {

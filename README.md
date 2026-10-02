@@ -91,7 +91,7 @@ e2e/                    Playwright testlari
 
 - Guruh saqlanganda darslar bugundan 60 kun oldinga yaratiladi (`src/lib/schedule.ts` — toza funksiyalar, testlar bilan).
 - Jadval o'zgarsa faqat kelajakdagi, davomati yo'q darslar qayta yaratiladi; bayram kunidagi darslar "bekor qilingan" bo'ladi.
-- Har kecha 00:00 (Toshkent) Vercel Cron `GET /api/cron/lessons` ni chaqiradi (`vercel.json`) va jadvalni 60 kunga to'ldiradi. Vercel'da `CRON_SECRET` o'rnatilgan bo'lishi kerak.
+- Har kecha 00:00 (Toshkent) Vercel Cron `GET /api/cron/nightly` ni chaqiradi (`vercel.json`) va jadvalni 60 kunga to'ldiradi. Vercel'da `CRON_SECRET` o'rnatilgan bo'lishi kerak.
 
 ## Muhit o'zgaruvchilari
 
