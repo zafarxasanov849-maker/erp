@@ -879,6 +879,7 @@ export type Database = {
       };
       lessons: {
         Row: {
+          cancel_holiday_id: string | null;
           cancel_reason: string | null;
           date: string;
           end_time: string;
@@ -891,6 +892,7 @@ export type Database = {
           topic: string | null;
         };
         Insert: {
+          cancel_holiday_id?: string | null;
           cancel_reason?: string | null;
           date: string;
           end_time: string;
@@ -903,6 +905,7 @@ export type Database = {
           topic?: string | null;
         };
         Update: {
+          cancel_holiday_id?: string | null;
           cancel_reason?: string | null;
           date?: string;
           end_time?: string;
@@ -915,6 +918,13 @@ export type Database = {
           topic?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "lessons_cancel_holiday_id_fkey";
+            columns: ["cancel_holiday_id"];
+            isOneToOne: false;
+            referencedRelation: "holidays";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "lessons_group_id_fkey";
             columns: ["group_id"];

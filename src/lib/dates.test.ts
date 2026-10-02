@@ -1,10 +1,16 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  addDays,
+  eachDay,
   formatDate,
   formatDateTime,
   formatTime,
   isIsoDate,
+  isoWeekday,
+  maxDate,
+  minDate,
+  monthBounds,
   monthKey,
   parseUiDate,
   todayInTashkent,
@@ -90,5 +96,42 @@ describe("isIsoDate", () => {
   it("kabisa yili", () => {
     expect(isIsoDate("2024-02-29")).toBe(true);
     expect(isIsoDate("2025-02-29")).toBe(false);
+  });
+});
+
+describe("ISO sana arifmetikasi", () => {
+  it("addDays: oy va yil chegarasi, kabisa", () => {
+    expect(addDays("2026-10-31", 1)).toBe("2026-11-01");
+    expect(addDays("2026-12-31", 1)).toBe("2027-01-01");
+    expect(addDays("2024-02-28", 1)).toBe("2024-02-29");
+    expect(addDays("2026-03-01", -1)).toBe("2026-02-28");
+    expect(addDays("2026-10-02", 60)).toBe("2026-12-01");
+  });
+
+  it("isoWeekday: 1 = Du … 7 = Ya", () => {
+    expect(isoWeekday("2026-10-01")).toBe(4); // payshanba
+    expect(isoWeekday("2026-10-05")).toBe(1); // dushanba
+    expect(isoWeekday("2026-10-04")).toBe(7); // yakshanba
+  });
+
+  it("eachDay", () => {
+    expect(eachDay("2026-10-30", "2026-11-02")).toEqual([
+      "2026-10-30",
+      "2026-10-31",
+      "2026-11-01",
+      "2026-11-02",
+    ]);
+    expect(eachDay("2026-10-02", "2026-10-01")).toEqual([]);
+  });
+
+  it("monthBounds", () => {
+    expect(monthBounds("2026-10")).toEqual(["2026-10-01", "2026-10-31"]);
+    expect(monthBounds("2026-02")).toEqual(["2026-02-01", "2026-02-28"]);
+    expect(monthBounds("2024-02")).toEqual(["2024-02-01", "2024-02-29"]);
+  });
+
+  it("min/max", () => {
+    expect(maxDate("2026-10-01", "2026-09-30")).toBe("2026-10-01");
+    expect(minDate("2026-10-01", "2026-09-30")).toBe("2026-09-30");
   });
 });

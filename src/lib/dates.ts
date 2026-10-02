@@ -83,3 +83,51 @@ function toInstant(value: Date | string): Date {
   if (!isValid(d)) throw new RangeError(`Invalid date: ${String(value)}`);
   return d;
 }
+
+// ---------- ISO sana arifmetikasi (vaqt zonasisiz, "YYYY-MM-DD") ----------
+
+function isoToUtc(value: IsoDate): Date {
+  if (!isIsoDate(value)) throw new RangeError(`Invalid ISO date: ${value}`);
+  return new Date(`${value}T00:00:00Z`);
+}
+
+function utcToIso(d: Date): IsoDate {
+  return d.toISOString().slice(0, 10);
+}
+
+export function addDays(value: IsoDate, days: number): IsoDate {
+  const d = isoToUtc(value);
+  d.setUTCDate(d.getUTCDate() + days);
+  return utcToIso(d);
+}
+
+/** ISO hafta kuni: 1 = Dushanba … 7 = Yakshanba. */
+export function isoWeekday(value: IsoDate): number {
+  const day = isoToUtc(value).getUTCDay(); // 0 = Yakshanba
+  return day === 0 ? 7 : day;
+}
+
+/** `from` dan `to` gacha (ikkalasi ham kiradi) har bir kun. */
+export function eachDay(from: IsoDate, to: IsoDate): IsoDate[] {
+  const out: IsoDate[] = [];
+  for (let d = from; d <= to; d = addDays(d, 1)) out.push(d);
+  return out;
+}
+
+export function maxDate(a: IsoDate, b: IsoDate): IsoDate {
+  return a > b ? a : b;
+}
+
+export function minDate(a: IsoDate, b: IsoDate): IsoDate {
+  return a < b ? a : b;
+}
+
+/** Oyning birinchi va oxirgi kuni: monthBounds("2026-02") → ["2026-02-01", "2026-02-28"]. */
+export function monthBounds(month: string): [IsoDate, IsoDate] {
+  const first = `${month}-01`;
+  if (!isIsoDate(first)) throw new RangeError(`Invalid month: ${month}`);
+  const d = isoToUtc(first);
+  d.setUTCMonth(d.getUTCMonth() + 1);
+  d.setUTCDate(0);
+  return [first, utcToIso(d)];
+}
