@@ -6,6 +6,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 import { FormError } from "@/components/form-error";
+import { TimeInput } from "@/components/time-input";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -87,7 +88,7 @@ export function OrganizationForm({ defaults }: { defaults: OrganizationValues })
               <FormItem>
                 <FormLabel>{t("workStart")}</FormLabel>
                 <FormControl>
-                  <Input type="time" step={60} {...field} />
+                  <TimeInput {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -100,7 +101,7 @@ export function OrganizationForm({ defaults }: { defaults: OrganizationValues })
               <FormItem>
                 <FormLabel>{t("workEnd")}</FormLabel>
                 <FormControl>
-                  <Input type="time" step={60} {...field} />
+                  <TimeInput {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
