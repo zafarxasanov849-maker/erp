@@ -1,0 +1,44 @@
+{
+  "app": {
+    "name": "EduCRM",
+    "description": "O'quv markazlari uchun CRM"
+  },
+  "common": {
+    "close": "Yopish",
+    "openMenu": "Menyuni ochish",
+    "loading": "Yuklanmoqda…"
+  },
+  "nav": {
+    "dashboard": "Bosh sahifa",
+    "sales": "Sotuv",
+    "students": "Talabalar",
+    "groups": "Guruhlar",
+    "teachers": "Ustozlar",
+    "finance": "Moliya",
+    "reports": "Hisobotlar",
+    "settings": "Sozlamalar"
+  },
+  "branch": {
+    "label": "Filial",
+    "all": "Barcha filiallar",
+    "switch": "Filialni tanlash"
+  },
+  "user": {
+    "menu": "Foydalanuvchi menyusi",
+    "language": "Til",
+    "signOut": "Chiqish"
+  },
+  "locale": {
+    "uz": "O'zbekcha",
+    "ru": "Русский"
+  },
+  "placeholder": {
+    "title": "Bu bo'lim hali tayyor emas",
+    "description": "\"{section}\" bo'limi keyingi bosqichlarda qo'shiladi."
+  },
+  "notFound": {
+    "title": "Sahifa topilmadi",
+    "description": "Bunday sahifa yo'q yoki o'chirilgan.",
+    "home": "Bosh sahifaga qaytish"
+  }
+}

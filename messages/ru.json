@@ -1,0 +1,44 @@
+{
+  "app": {
+    "name": "EduCRM",
+    "description": "CRM для учебных центров"
+  },
+  "common": {
+    "close": "Закрыть",
+    "openMenu": "Открыть меню",
+    "loading": "Загрузка…"
+  },
+  "nav": {
+    "dashboard": "Главная",
+    "sales": "Продажи",
+    "students": "Студенты",
+    "groups": "Группы",
+    "teachers": "Преподаватели",
+    "finance": "Финансы",
+    "reports": "Отчёты",
+    "settings": "Настройки"
+  },
+  "branch": {
+    "label": "Филиал",
+    "all": "Все филиалы",
+    "switch": "Выбрать филиал"
+  },
+  "user": {
+    "menu": "Меню пользователя",
+    "language": "Язык",
+    "signOut": "Выйти"
+  },
+  "locale": {
+    "uz": "O'zbekcha",
+    "ru": "Русский"
+  },
+  "placeholder": {
+    "title": "Этот раздел ещё не готов",
+    "description": "Раздел «{section}» появится на следующих этапах."
+  },
+  "notFound": {
+    "title": "Страница не найдена",
+    "description": "Такой страницы нет или она была удалена.",
+    "home": "На главную"
+  }
+}
