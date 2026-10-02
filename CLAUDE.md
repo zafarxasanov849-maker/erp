@@ -53,7 +53,7 @@ supabase/
 5. **Hisob-kitob mantig'i** (`lib/billing/`) toza funksiyalar: kirish — guruh jadvali, bayramlar, sanalar, narx; chiqish — summa va darslar soni. Har qoida uchun Vitest testi bo'lishi shart. `docs/PRD.md` §5 dagi qoidalarni aynan bajaring.
 6. **Idempotentlik**: avtomatik yechishlar `idempotency_key` bilan (`charge:{enrollment_id}:{YYYY-MM}`). Cron ikki marta ishlasa ham ikki marta yechilmasin.
 7. **Sana formati** UI'da doim `KK.OO.YYYY` (02.10.2026), vaqt `HH:mm`. Bazada `date` va `timestamptz`.
-8. **Telefon** `+998XXXXXXXXX` formatida saqlanadi; operator kodlari tekshiriladi (`lib/phone.ts`). Bir markazda bir xil telefonli talaba qo'shilsa, ogohlantirish chiqadi.
+8. **Telefon** `+998XXXXXXXXX` formatida saqlanadi (`lib/phone.ts`). Operator kodi tekshirilmaydi — 9 raqamli har qanday kod qabul qilinadi (yangi operatorlar uchun); ma'lum kodlar faqat operator nomini ko'rsatish uchun. Bir markazda bir xil telefonli talaba qo'shilsa, ogohlantirish chiqadi.
 9. **Har o'zgarish audit_log'ga** yoziladi (pul, davomat tahriri, rol o'zgarishi, o'chirish).
 10. **Bo'sh holatlar**: har jadval va grafikda ma'lumot yo'q bo'lsa, nima uchun bo'shligini va nima qilish kerakligini yozing. Yuklanishda `0` emas, skeleton ko'rsating.
 11. **Tarif cheklovi** va **ruxsat yo'qligi** turli xabar bilan ko'rsatiladi: "Bu funksiya Pro tarifida" va "Sizda bu bo'limga ruxsat yo'q".

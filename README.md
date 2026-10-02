@@ -63,7 +63,7 @@ src/
   lib/
     money.ts            formatMoney → "1 250 000 so'm"
     dates.ts            KK.OO.YYYY, HH:mm, Asia/Tashkent
-    phone.ts            +998XXXXXXXXX normalizatsiya, operator kodlari
+    phone.ts            +998XXXXXXXXX normalizatsiya (har qanday 9 raqamli kod)
     supabase/           server, client, middleware, admin (service role — faqat api/)
 supabase/
   migrations/           SQL migratsiyalar
