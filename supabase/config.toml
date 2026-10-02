@@ -257,11 +257,12 @@ otp_expiry = 3600
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.
-enable_signup = false
+# Telefon + parol bilan ro'yxatdan o'tish (PRD §3.1).
+enable_signup = true
 # If enabled, users need to confirm their phone number before signing in.
-enable_confirmations = false
-# Template for sending OTP to users
-template = "Your code is {{ .Code }}"
+enable_confirmations = true
+# Template for sending OTP to users (SMS matnini /api/auth/sms-hook o'zi tuzadi)
+template = "Tasdiqlash kodi: {{ .Code }}"
 # Controls the minimum amount of time that must pass before sending another sms otp.
 max_frequency = "5s"
 
@@ -281,18 +282,27 @@ max_frequency = "5s"
 # enabled = true
 # uri = "pg-functions://postgres/auth/before-user-created-hook"
 
+# SMS'ni Supabase emas, ilovamiz yuboradi (src/app/api/auth/sms-hook → lib/sms.ts → Eskiz).
+# Sir faqat lokal ishlab chiqish uchun; production'da Supabase Dashboard → Auth → Hooks.
+[auth.hook.send_sms]
+enabled = true
+uri = "http://host.docker.internal:3000/api/auth/sms-hook"
+secrets = "v1,whsec_p6cbEej3tOgJckZe+rf+OwGU/A5LqrK816rC/Fe4f3I="
+
 # This hook runs before a token is issued and allows you to add additional claims based on the authentication method used.
 # [auth.hook.custom_access_token]
 # enabled = true
 # uri = "pg-functions://<database>/<schema>/<hook_name>"
 
 # Configure one of the supported SMS providers: `twilio`, `twilio_verify`, `messagebird`, `textlocal`, `vonage`.
+# Supabase CLI telefon kirishini faqat biror SMS provayder yoqilgan bo'lsa ishga tushiradi.
+# Haqiqatda Twilio ishlatilmaydi: [auth.hook.send_sms] yoqilgani uchun SMS'ni ilovamiz yuboradi.
+# Shuning uchun bu yerda soxta qiymatlar turibdi.
 [auth.sms.twilio]
-enabled = false
-account_sid = ""
-message_service_sid = ""
-# DO NOT commit your Twilio auth token to git. Use environment variable substitution instead:
-auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
+enabled = true
+account_sid = "not-used"
+message_service_sid = "not-used"
+auth_token = "not-used"
 
 # Multi-factor-authentication is available to Supabase Pro plan.
 [auth.mfa]

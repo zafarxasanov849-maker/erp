@@ -1162,6 +1162,7 @@ export type Database = {
           full_name: string;
           id: string;
           is_super_admin: boolean;
+          must_change_password: boolean;
           phone: string | null;
           telegram_user_id: number | null;
         };
@@ -1170,6 +1171,7 @@ export type Database = {
           full_name: string;
           id: string;
           is_super_admin?: boolean;
+          must_change_password?: boolean;
           phone?: string | null;
           telegram_user_id?: number | null;
         };
@@ -1178,6 +1180,7 @@ export type Database = {
           full_name?: string;
           id?: string;
           is_super_admin?: boolean;
+          must_change_password?: boolean;
           phone?: string | null;
           telegram_user_id?: number | null;
         };
@@ -1223,6 +1226,7 @@ export type Database = {
           name: string;
           organization_id: string;
           permissions: string[];
+          system_key: string | null;
         };
         Insert: {
           description?: string | null;
@@ -1231,6 +1235,7 @@ export type Database = {
           name: string;
           organization_id: string;
           permissions?: string[];
+          system_key?: string | null;
         };
         Update: {
           description?: string | null;
@@ -1239,6 +1244,7 @@ export type Database = {
           name?: string;
           organization_id?: string;
           permissions?: string[];
+          system_key?: string | null;
         };
         Relationships: [
           {
@@ -1460,6 +1466,13 @@ export type Database = {
             isOneToOne: false;
             referencedRelation: "roles";
             referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "staff_role_same_org";
+            columns: ["role_id", "organization_id"];
+            isOneToOne: false;
+            referencedRelation: "roles";
+            referencedColumns: ["id", "organization_id"];
           },
           {
             foreignKeyName: "staff_user_id_fkey";
@@ -1887,7 +1900,11 @@ export type Database = {
       };
     };
     Functions: {
+      can_edit_student: { Args: { org: string; p_student: string }; Returns: boolean };
       can_see_branch: { Args: { br: string; org: string }; Returns: boolean };
+      can_see_group: { Args: { org: string; p_group: string }; Returns: boolean };
+      can_see_lead: { Args: { org: string; p_lead: string }; Returns: boolean };
+      can_see_student: { Args: { org: string; p_student: string }; Returns: boolean };
       current_staff: {
         Args: { org: string };
         Returns: {
@@ -1907,8 +1924,37 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      current_staff_id: { Args: { org: string }; Returns: string };
+      enrollment_student: { Args: { p_enrollment: string }; Returns: string };
+      find_profile_by_phone: {
+        Args: { p_org: string; p_phone: string };
+        Returns: {
+          full_name: string;
+          id: string;
+        }[];
+      };
       has_permission: { Args: { org: string; perm: string }; Returns: boolean };
+      is_colleague: { Args: { p_user: string }; Returns: boolean };
       is_member: { Args: { org: string }; Returns: boolean };
+      my_permissions: { Args: { org: string }; Returns: string[] };
+      register_organization: {
+        Args: { p_branch_name: string; p_org_name: string; p_owner_name: string; p_roles: Json };
+        Returns: string;
+      };
+      save_staff: {
+        Args: {
+          p_all_branches: boolean;
+          p_branch_ids: string[];
+          p_is_teacher: boolean;
+          p_org: string;
+          p_role_id: string;
+          p_staff_id: string;
+          p_user_id: string;
+        };
+        Returns: string;
+      };
+      staff_org: { Args: { p_staff: string }; Returns: string };
+      try_uuid: { Args: { p: string }; Returns: string };
     };
     Enums: {
       attendance_status: "present" | "late" | "absent" | "excused";
