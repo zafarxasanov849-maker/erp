@@ -17,7 +17,12 @@ export function sanitizeSearch(q: string): string {
 
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
-const SORT_COLUMNS = { name: "full_name", joined: "joined_at", created: "created_at" } as const;
+const SORT_COLUMNS = {
+  name: "full_name",
+  joined: "joined_at",
+  created: "created_at",
+  balance: "balance",
+} as const;
 
 function buildQuery(
   supabase: Supabase,
@@ -27,14 +32,19 @@ function buildQuery(
 ) {
   let q = supabase
     .from("students_overview")
-    .select("id, branch_id, full_name, phone, parent_phone, joined_at, status, tag_ids", {
-      count: "exact",
-    })
+    .select(
+      "id, branch_id, full_name, phone, parent_phone, joined_at, status, tag_ids, balance, old_debt",
+      {
+        count: "exact",
+      },
+    )
     .eq("organization_id", orgId);
 
   const branch = branchId ?? p.branch;
   if (branch) q = q.eq("branch_id", branch);
-  q = p.status ? q.eq("status", p.status) : q.neq("status", "archived");
+  if (p.status === "debtor") q = q.eq("status", "active").lt("balance", 0);
+  else if (p.status === "trial_expired") q = q.eq("trial_expired", true).neq("status", "archived");
+  else q = p.status ? q.eq("status", p.status) : q.neq("status", "archived");
   if (p.group) q = q.contains("group_ids", [p.group]);
   if (p.course) q = q.contains("course_ids", [p.course]);
   if (p.teacher) q = q.contains("teacher_ids", [p.teacher]);
@@ -77,6 +87,9 @@ export interface StudentListRow {
   parentPhone: string | null;
   joinedAt: string;
   status: StudentStatus;
+  /** RLS: payments.view bo'lmasa 0 */
+  balance: number;
+  oldDebt: number;
   tags: { id: string; name: string; color: string | null }[];
   groups: StudentGroupRef[];
 }
@@ -94,6 +107,8 @@ async function enrich(
     joined_at: string | null;
     status: string | null;
     tag_ids: string[] | null;
+    balance: number | null;
+    old_debt: number | null;
   }[],
 ): Promise<StudentListRow[]> {
   const ids = rows.map((r) => r.id!);
@@ -144,6 +159,8 @@ async function enrich(
     parentPhone: r.parent_phone,
     joinedAt: r.joined_at!,
     status: r.status as StudentStatus,
+    balance: r.balance ?? 0,
+    oldDebt: r.old_debt ?? 0,
     tags: (r.tag_ids ?? []).flatMap((id) => tags.get(id) ?? []),
     groups: groups.get(r.id!) ?? [],
   }));

@@ -73,6 +73,8 @@ export default async function StudentsPage({
           tags={options.tags}
           canExport={can(ctx, "students.export")}
           canUpdate={can(ctx, "students.update")}
+          canSeeMoney={can(ctx, "payments.view")}
+          canPay={can(ctx, "payments.create")}
         />
       )}
     </div>

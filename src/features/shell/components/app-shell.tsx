@@ -48,7 +48,7 @@ export function AppShell({
       <div className="flex min-h-dvh" style={style}>
         <aside
           data-testid="sidebar"
-          className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-4 border-r bg-sidebar p-3 text-sidebar-foreground md:flex"
+          className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-4 border-r bg-sidebar p-3 text-sidebar-foreground md:flex print:hidden"
         >
           <div className="flex h-10 items-center">
             <Brand name={org.name} logoUrl={org.logoUrl} />
@@ -57,7 +57,7 @@ export function AppShell({
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:px-6">
+          <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:px-6 print:hidden">
             <MobileNav branchId={branchId} allowed={allowed} orgName={org.name} />
             <BranchSwitcher
               branchId={branchId}
@@ -69,7 +69,7 @@ export function AppShell({
               <UserMenu user={user} />
             </div>
           </header>
-          <main className="flex-1 p-4 md:p-6">{children}</main>
+          <main className="flex-1 p-4 md:p-6 print:p-0">{children}</main>
         </div>
       </div>
     </StudentSheetProvider>

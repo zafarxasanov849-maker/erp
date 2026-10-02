@@ -9,6 +9,9 @@ import { TagBadge } from "@/components/tag-badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StudentAttendance } from "@/features/attendance/components/student-attendance";
 import { getStudentAttendance } from "@/features/attendance/queries";
+import { PaymentButton } from "@/features/billing/components/payment-dialog";
+import { MoneyAmount, StudentLedger } from "@/features/billing/components/student-ledger";
+import { getStudentLedger, summarizeLedger } from "@/features/billing/queries";
 import { EnrollmentsPanel } from "@/features/students/components/enrollments-panel";
 import { HistoryList } from "@/features/students/components/history-list";
 import { NotesPanel } from "@/features/students/components/notes-panel";
@@ -50,14 +53,17 @@ export default async function StudentPage({
   if (!student) notFound();
 
   const canSeeAttendance = canAny(ctx, ["attendance.view", "attendance.manage"]);
-  const [enrollments, notes, formData, attendance] = await Promise.all([
+  const canSeePayments = can(ctx, "payments.view");
+  const [enrollments, notes, formData, attendance, ledger] = await Promise.all([
     listStudentEnrollments(student.id),
     listStudentNotes(student.id),
     getStudentFormData(),
     canSeeAttendance
       ? getStudentAttendance(student.id, addDays(todayInTashkent(), -92))
       : Promise.resolve([]),
+    canSeePayments ? getStudentLedger(student.id) : Promise.resolve([]),
   ]);
+  const money = summarizeLedger(ledger, todayInTashkent().slice(0, 7));
   const history = await getStudentHistory(orgId, student.id, enrollments);
 
   const t = await getTranslations("students");
@@ -113,6 +119,11 @@ export default async function StudentPage({
               </a>
               <span>{student.branch?.name}</span>
               <span>{t("profile.joined", { date: formatDate(student.joined_at) })}</span>
+              {canSeePayments && (
+                <span data-testid="header-balance">
+                  <MoneyAmount value={money.balance} className="font-medium" />
+                </span>
+              )}
             </div>
             {student.tags.length > 0 && (
               <div className="flex flex-wrap gap-1 pt-1">
@@ -130,6 +141,9 @@ export default async function StudentPage({
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          {can(ctx, "payments.create") && (
+            <PaymentButton studentId={student.id} label={t("profile.pay")} />
+          )}
           {canUpdate && !archived && (
             <StudentEditButton
               branchId={branchId}
@@ -195,15 +209,23 @@ export default async function StudentPage({
             freezeReasons={data.freezeReasons}
             todayIso={today}
             canUpdate={canUpdate}
+            canDiscount={can(ctx, "discounts.manage")}
             archived={archived}
           />
         </TabsContent>
         <TabsContent value="payments" className="pt-2">
-          <EmptyState
-            icon={Wallet}
-            title={t("profile.tabs.payments")}
-            description={t("profile.paymentsSoon")}
-          />
+          {canSeePayments ? (
+            <StudentLedger
+              rows={ledger}
+              balance={money.balance}
+              oldDebt={money.oldDebt}
+              debtSince={money.debtSince}
+              canVoid={can(ctx, "payments.void")}
+              branchPath={branchPath}
+            />
+          ) : (
+            <EmptyState icon={Wallet} title={t("profile.tabs.payments")} />
+          )}
         </TabsContent>
         <TabsContent value="attendance" className="pt-2">
           {canSeeAttendance ? (

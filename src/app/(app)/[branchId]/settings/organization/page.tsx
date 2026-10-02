@@ -32,6 +32,9 @@ export default async function OrganizationSettingsPage() {
           workEnd: (org.work_end ?? "22:00").slice(0, 5),
           teacherEditDays: attendance.teacherEditDays,
           absenceThreshold: attendance.absenceThreshold,
+          rounding: attendance.rounding,
+          refundOnLeave: attendance.refundOnLeave,
+          trialLessons: attendance.trialLessons,
         }}
       />
     </div>

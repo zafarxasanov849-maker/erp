@@ -45,6 +45,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { PaymentButton } from "@/features/billing/components/payment-dialog";
+import { MoneyAmount } from "@/features/billing/components/student-ledger";
 import { formatWeekdays } from "@/features/groups/format";
 import { useTranslateKey } from "@/i18n/use-translate-key";
 import { formatDate } from "@/lib/dates";
@@ -68,9 +70,11 @@ const HIDEABLE = [
   "tags",
   "branch",
   "joinedAt",
+  "balance",
+  "oldDebt",
   "parentPhone",
 ] as const;
-const DEFAULT_HIDDEN: ColumnVisibilityState = { parentPhone: false };
+const DEFAULT_HIDDEN: ColumnVisibilityState = { parentPhone: false, oldDebt: false };
 const STORAGE_KEY = "students.columns";
 
 export function StudentsTable({
@@ -83,6 +87,8 @@ export function StudentsTable({
   tags,
   canExport,
   canUpdate,
+  canSeeMoney,
+  canPay,
 }: {
   rows: StudentListRow[];
   total: number;
@@ -94,6 +100,10 @@ export function StudentsTable({
   tags: { id: string; name: string; color: string | null }[];
   canExport: boolean;
   canUpdate: boolean;
+  /** payments.view — Balans ustunlari */
+  canSeeMoney: boolean;
+  /** payments.create — qatorda "To'lov" tugmasi */
+  canPay: boolean;
 }) {
   const t = useTranslations("students");
   const tw = useTranslations("weekdays");
@@ -245,6 +255,29 @@ export function StudentsTable({
           header: () => sortHeader("joined", t("list.joinedAt")),
           cell: ({ getValue }) => <span className="tabular-nums">{formatDate(getValue())}</span>,
         }),
+        helper.accessor("balance", {
+          id: "balance",
+          header: () => sortHeader("balance", t("list.balance")),
+          cell: ({ getValue }) => <MoneyAmount value={getValue()} />,
+        }),
+        helper.accessor("oldDebt", {
+          id: "oldDebt",
+          header: () => t("list.oldDebt"),
+          cell: ({ getValue }) => <MoneyAmount value={getValue()} />,
+        }),
+        helper.display({
+          id: "pay",
+          enableHiding: false,
+          header: () => <span className="sr-only">{t("list.pay")}</span>,
+          cell: ({ row }) => (
+            <PaymentButton
+              studentId={row.original.id}
+              label={t("list.pay")}
+              variant="ghost"
+              iconOnly
+            />
+          ),
+        }),
         helper.accessor("parentPhone", {
           id: "parentPhone",
           header: () => t("list.parentPhone"),
@@ -273,6 +306,8 @@ export function StudentsTable({
       columnVisibility: {
         ...columnVisibility,
         ...(branchNames ? {} : { branch: false }),
+        ...(canSeeMoney ? {} : { balance: false, oldDebt: false }),
+        ...(canPay ? {} : { pay: false }),
         ...(canUpdate ? {} : { select: false }),
       },
     },
@@ -318,7 +353,10 @@ export function StudentsTable({
     });
   }
 
-  const hideable = HIDEABLE.filter((id) => id !== "branch" || branchNames);
+  const hideable = HIDEABLE.filter(
+    (id) =>
+      (id !== "branch" || branchNames) && ((id !== "balance" && id !== "oldDebt") || canSeeMoney),
+  );
 
   return (
     <div className="grid grid-cols-1 gap-3">

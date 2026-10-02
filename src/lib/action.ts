@@ -94,6 +94,15 @@ const DB_GUARD_ERRORS = new Set([
   "edit_window_closed",
   "enrollment_not_in_lesson",
   "enrollment_frozen",
+  "tx_student_mismatch",
+  "tx_branch_mismatch",
+  "tx_enrollment_mismatch",
+  "tx_method_mismatch",
+  "tx_void_mismatch",
+  "discount_enrollment_mismatch",
+  "discount_overlap",
+  "payment_date_invalid",
+  "already_voided",
 ]);
 
 /** Supabase/PostgREST xatosini ActionError ga aylantiradi. */

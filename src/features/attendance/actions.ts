@@ -4,9 +4,9 @@ import { revalidatePath } from "next/cache";
 
 import { type ActionResult, ForbiddenError, parseInput, runAction, unwrap } from "@/lib/action";
 import { canAny, getOrgContext } from "@/lib/auth";
-import { onAttendanceMarked } from "@/lib/billing/events";
 import { createClient } from "@/lib/supabase/server";
 
+import { onAttendanceMarked } from "./notify";
 import { type LessonNotesValues, type MarksInput, lessonNotesSchema, marksSchema } from "./schema";
 
 /** Ustoz (attendance.view) yoki admin (attendance.manage); qolgani — set_attendance() ichida */

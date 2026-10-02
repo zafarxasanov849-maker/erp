@@ -22,7 +22,11 @@ const parseAsIso = createParser({
   serialize: (v: string) => v,
 });
 
-export const STUDENT_SORTS = ["name", "joined", "created"] as const;
+export const STUDENT_SORTS = ["name", "joined", "created", "balance"] as const;
+
+/** Holat filtri: holatlar + "Qarzdorlar" (faol, balans < 0) va "Sinov muddati o'tdi" (§5.4) */
+export const STUDENT_STATUS_FILTERS = [...STUDENT_STATUSES, "debtor", "trial_expired"] as const;
+export type StudentStatusFilter = (typeof STUDENT_STATUS_FILTERS)[number];
 export type StudentSort = (typeof STUDENT_SORTS)[number];
 
 export const STUDENTS_PAGE_SIZE = 50;
@@ -30,7 +34,7 @@ export const STUDENTS_PAGE_SIZE = 50;
 /** Talabalar ro'yxati filtrlari — URL'da (nuqs), server va klientda bir xil. */
 export const studentSearchParams = {
   q: parseAsString.withDefault(""),
-  status: parseAsStringLiteral(STUDENT_STATUSES),
+  status: parseAsStringLiteral(STUDENT_STATUS_FILTERS),
   group: parseAsUuid,
   course: parseAsUuid,
   teacher: parseAsUuid,

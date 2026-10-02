@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 
 import { ActionError, type ActionResult, parseInput, runAction, unwrap } from "@/lib/action";
 import { requirePermission } from "@/lib/auth";
-import { onEnrollmentActivated, onEnrollmentFrozen, onEnrollmentLeft } from "@/lib/billing/events";
+import { onEnrollmentsChanged } from "@/features/billing/events";
 import { LOGO_MAX_BYTES, LOGO_TYPES } from "@/features/organization/schema";
 import { createClient } from "@/lib/supabase/server";
 import { toE164, toIsoDate } from "@/lib/validation";
@@ -83,9 +83,9 @@ export async function createStudent(
       }),
     ) as { student_id: string; enrollments: { id: string; status: string; date: string }[] };
 
-    for (const e of result.enrollments) {
-      if (e.status === "active") await onEnrollmentActivated(e.id, e.date);
-    }
+    const activated = result.enrollments.filter((e) => e.status === "active").map((e) => e.id);
+    if (activated.length)
+      await onEnrollmentsChanged(activated, "activation", ctx.membership.staffId);
     revalidatePath("/", "layout");
     return { studentId: result.student_id };
   });
@@ -160,7 +160,7 @@ export async function addTagToStudents(
 
 export async function enrollStudent(input: EnrollValues): Promise<ActionResult> {
   return runAction(async () => {
-    await requirePermission("students.update");
+    const ctx = await requirePermission("students.update");
     const v = parseInput(enrollSchema, input);
     const date = toIsoDate(v.date);
     const supabase = await createClient();
@@ -172,7 +172,8 @@ export async function enrollStudent(input: EnrollValues): Promise<ActionResult> 
         p_date: date,
       }),
     );
-    if (v.status === "active") await onEnrollmentActivated(id, date);
+    if (v.status === "active")
+      await onEnrollmentsChanged([id], "activation", ctx.membership.staffId);
     revalidatePath("/", "layout");
     return null;
   });
@@ -180,14 +181,14 @@ export async function enrollStudent(input: EnrollValues): Promise<ActionResult> 
 
 export async function activateEnrollment(input: ActivateValues): Promise<ActionResult> {
   return runAction(async () => {
-    await requirePermission("students.update");
+    const ctx = await requirePermission("students.update");
     const v = parseInput(activateSchema, input);
     const date = toIsoDate(v.date);
     const supabase = await createClient();
     unwrap(
       await supabase.rpc("activate_enrollment", { p_enrollment: v.enrollmentId, p_date: date }),
     );
-    await onEnrollmentActivated(v.enrollmentId, date);
+    await onEnrollmentsChanged([v.enrollmentId], "activation", ctx.membership.staffId);
     revalidatePath("/", "layout");
     return null;
   });
@@ -195,7 +196,7 @@ export async function activateEnrollment(input: ActivateValues): Promise<ActionR
 
 export async function leaveEnrollment(input: LeaveValues): Promise<ActionResult> {
   return runAction(async () => {
-    await requirePermission("students.update");
+    const ctx = await requirePermission("students.update");
     const v = parseInput(leaveSchema, input);
     const date = toIsoDate(v.date);
     const supabase = await createClient();
@@ -206,7 +207,7 @@ export async function leaveEnrollment(input: LeaveValues): Promise<ActionResult>
         p_reason: v.reasonId,
       }),
     );
-    await onEnrollmentLeft(v.enrollmentId, date);
+    await onEnrollmentsChanged([v.enrollmentId], "leave", ctx.membership.staffId);
     revalidatePath("/", "layout");
     return null;
   });
@@ -214,7 +215,7 @@ export async function leaveEnrollment(input: LeaveValues): Promise<ActionResult>
 
 export async function transferEnrollment(input: TransferValues): Promise<ActionResult> {
   return runAction(async () => {
-    await requirePermission("students.update");
+    const ctx = await requirePermission("students.update");
     const v = parseInput(transferSchema, input);
     const date = toIsoDate(v.date);
     const supabase = await createClient();
@@ -226,8 +227,8 @@ export async function transferEnrollment(input: TransferValues): Promise<ActionR
         p_reason: (v.reasonId || null) as string,
       }),
     );
-    await onEnrollmentLeft(v.enrollmentId, date);
-    await onEnrollmentActivated(newId, date);
+    await onEnrollmentsChanged([v.enrollmentId], "leave", ctx.membership.staffId);
+    await onEnrollmentsChanged([newId], "activation", ctx.membership.staffId);
     revalidatePath("/", "layout");
     return null;
   });
@@ -235,10 +236,10 @@ export async function transferEnrollment(input: TransferValues): Promise<ActionR
 
 export async function freezeEnrollment(input: FreezeValues): Promise<ActionResult> {
   return runAction(async () => {
-    await requirePermission("students.update");
+    const ctx = await requirePermission("students.update");
     const v = parseInput(freezeSchema, input);
     const supabase = await createClient();
-    const id = unwrap(
+    unwrap(
       await supabase.rpc("freeze_enrollment", {
         p_enrollment: v.enrollmentId,
         p_from: toIsoDate(v.from),
@@ -246,7 +247,7 @@ export async function freezeEnrollment(input: FreezeValues): Promise<ActionResul
         p_reason: (v.reasonId || null) as string,
       }),
     );
-    await onEnrollmentFrozen(id);
+    await onEnrollmentsChanged([v.enrollmentId], "freeze", ctx.membership.staffId);
     revalidatePath("/", "layout");
     return null;
   });
@@ -254,9 +255,15 @@ export async function freezeEnrollment(input: FreezeValues): Promise<ActionResul
 
 export async function endFreeze(freezeId: string): Promise<ActionResult> {
   return runAction(async () => {
-    await requirePermission("students.update");
+    const ctx = await requirePermission("students.update");
     const supabase = await createClient();
+    // Boshlanmagan muzlatish o'chiriladi — a'zolikni oldindan olib qo'yamiz
+    const freeze = unwrap(
+      await supabase.from("freezes").select("enrollment_id").eq("id", freezeId).maybeSingle(),
+    );
     unwrap(await supabase.rpc("end_freeze", { p_freeze: freezeId }));
+    if (freeze)
+      await onEnrollmentsChanged([freeze.enrollment_id], "freeze", ctx.membership.staffId);
     revalidatePath("/", "layout");
     return null;
   });

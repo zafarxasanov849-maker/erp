@@ -35,6 +35,9 @@ export async function updateOrganization(input: OrganizationValues): Promise<Act
             ...((current.settings ?? {}) as Record<string, unknown>),
             teacher_edit_days: values.teacherEditDays,
             absence_threshold: values.absenceThreshold,
+            rounding: values.rounding,
+            refund_on_leave: values.refundOnLeave,
+            trial_lessons: values.trialLessons,
           },
         })
         .eq("id", ctx.membership.orgId)

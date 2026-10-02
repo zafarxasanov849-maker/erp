@@ -18,6 +18,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { useServerAction } from "@/hooks/use-server-action";
 
 import { updateOrganization } from "../actions";
@@ -150,6 +158,65 @@ export function OrganizationForm({ defaults }: { defaults: OrganizationValues })
                 />
               </FormControl>
               <FormDescription>{t("absenceThresholdHint")}</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <h2 className="pt-2 text-sm font-semibold">{t("financeTitle")}</h2>
+        <FormField
+          control={form.control}
+          name="rounding"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("rounding")}</FormLabel>
+              <Select value={String(field.value)} onValueChange={(v) => field.onChange(Number(v))}>
+                <FormControl>
+                  <SelectTrigger className="w-48">
+                    <SelectValue />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {([1, 100, 1000] as const).map((r) => (
+                    <SelectItem key={r} value={String(r)}>
+                      {t(`rounding${r}`)}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormDescription>{t("roundingHint")}</FormDescription>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="refundOnLeave"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center gap-3">
+              <FormControl>
+                <Switch checked={field.value} onCheckedChange={field.onChange} />
+              </FormControl>
+              <FormLabel className="font-normal">{t("refundOnLeave")}</FormLabel>
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="trialLessons"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("trialLessons")}</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={20}
+                  className="w-28"
+                  value={Number.isNaN(field.value) ? "" : field.value}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormDescription>{t("trialLessonsHint")}</FormDescription>
               <FormMessage />
             </FormItem>
           )}

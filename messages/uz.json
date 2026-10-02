@@ -135,7 +135,10 @@
     "duplicateGroup": "Bitta guruh ikki marta tanlangan",
     "reasonRequired": "Sababni tanlang",
     "editDays": "0 dan 30 gacha",
-    "absenceThreshold": "1 dan 20 gacha"
+    "absenceThreshold": "1 dan 20 gacha",
+    "discount": "Foiz 0.01 dan 100 gacha (2 xonali kasr), summa — butun so'm",
+    "trialLessons": "0 dan 20 gacha",
+    "reasonText": "Sababni yozing"
   },
   "errors": {
     "forbidden": "Sizda bu amal uchun ruxsat yo'q",
@@ -199,7 +202,16 @@
       "lesson_in_future": "Dars hali bo'lmagan — davomatni dars kuni belgilang",
       "edit_window_closed": "Tahrirlash muddati tugagan. Administratorga murojaat qiling.",
       "enrollment_not_in_lesson": "Talaba o'sha kuni guruhda bo'lmagan",
-      "enrollment_frozen": "Talaba o'sha kuni muzlatilgan"
+      "enrollment_frozen": "Talaba o'sha kuni muzlatilgan",
+      "tx_student_mismatch": "Talaba boshqa markazga tegishli",
+      "tx_branch_mismatch": "Filial boshqa markazga tegishli",
+      "tx_enrollment_mismatch": "Guruh bu talabaga tegishli emas",
+      "tx_method_mismatch": "To'lov turi topilmadi yoki nofaol",
+      "tx_void_mismatch": "Bekor qilinadigan to'lov topilmadi",
+      "discount_enrollment_mismatch": "A'zolik boshqa markazga tegishli",
+      "discount_overlap": "Bu oraliqda boshqa chegirma bor",
+      "payment_date_invalid": "To'lov sanasi kelajakda yoki bir yildan eski bo'lmasin",
+      "already_voided": "To'lov allaqachon bekor qilingan"
     },
     "inUse": "Bu yozuv boshqa joyda ishlatilmoqda, o'chirib bo'lmaydi",
     "roomInUse": "Bu xonada guruhlar bor. Avval guruhlarni boshqa xonaga o'tkazing."
@@ -255,7 +267,16 @@
       "teacherEditDays": "Ustoz tahrirlash muddati (kun)",
       "teacherEditDaysHint": "Ustoz dars kunidan keyin necha kun ichida davomatni belgilay yoki o'zgartira oladi. Administrator cheklovsiz.",
       "absenceThreshold": "Kelmayotganlar chegarasi (dars)",
-      "absenceThresholdHint": "Ketma-ket shuncha dars kelmagan talaba \"Kelmayotganlar\" ro'yxatiga tushadi."
+      "absenceThresholdHint": "Ketma-ket shuncha dars kelmagan talaba \"Kelmayotganlar\" ro'yxatiga tushadi.",
+      "financeTitle": "Moliya",
+      "rounding": "Yaxlitlash",
+      "rounding1": "1 so'mgacha",
+      "rounding100": "100 so'mgacha",
+      "rounding1000": "1 000 so'mgacha",
+      "roundingHint": "Har bir hisobdan yechish alohida yaxlitlanadi.",
+      "refundOnLeave": "Guruhdan chiqqanda qolgan darslar puli qaytarilsin",
+      "trialLessons": "Sinov darslari soni",
+      "trialLessonsHint": "Shuncha dars o'tib faollashtirilmagan talaba \"Sinov muddati o'tdi\" filtrida ko'rinadi."
     },
     "branches": {
       "description": "Markazingiz filiallari. Nofaol filial tanlagichda ko'rinmaydi, ma'lumotlari saqlanadi.",
@@ -600,7 +621,9 @@
       "frozen": "Muzlatilgan",
       "left": "Chiqqan",
       "new": "Guruhsiz",
-      "archived": "Arxivlangan"
+      "archived": "Arxivlangan",
+      "debtor": "Qarzdorlar",
+      "trial_expired": "Sinov muddati o'tdi"
     },
     "enrollmentStatuses": {
       "trial": "Sinovda",
@@ -679,7 +702,9 @@
       "emptyDescription": "\"Talaba qo'shish\" tugmasi bilan birinchi talabani qo'shing — uni darhol guruhga yozish mumkin.",
       "emptyFilteredTitle": "Filtrga mos talaba topilmadi",
       "emptyFilteredDescription": "Filtrlarni o'zgartiring yoki tozalang.",
-      "exportFile": "talabalar"
+      "exportFile": "talabalar",
+      "oldDebt": "Eski qarz",
+      "pay": "To'lov"
     },
     "filters": {
       "search": "Ism yoki telefon",
@@ -723,7 +748,7 @@
         "notes": "Izohlar",
         "history": "O'zgarishlar tarixi"
       },
-      "paymentsSoon": "To'lovlar va balans 5-bosqichda qo'shiladi."
+      "pay": "To'lov qabul qilish"
     },
     "enrollments": {
       "add": "Guruhga qo'shish",
@@ -908,5 +933,129 @@
       "period": "Oxirgi 3 oy",
       "rate": "Qatnashish: {percent}%"
     }
+  },
+  "billing": {
+    "kinds": {
+      "payment": "To'lov",
+      "charge": "Hisobdan yechish",
+      "adjustment": "Tuzatish",
+      "refund": "Qaytarish",
+      "void": "To'lov bekor qilindi"
+    },
+    "reasons": {
+      "monthly": "Oylik to'lov",
+      "activation": "Faollashtirish",
+      "freeze": "Muzlatish",
+      "leave": "Guruhdan chiqish",
+      "holiday": "Bayram",
+      "discount": "Chegirma",
+      "recalc": "Qayta hisob"
+    },
+    "payment": {
+      "title": "To'lov qabul qilish",
+      "amount": "Summa",
+      "method": "To'lov turi",
+      "paidOn": "To'lov sanasi",
+      "group": "Qaysi guruh uchun",
+      "groupAuto": "Ko'rsatilmagan — eng eski qarzga",
+      "note": "Izoh",
+      "balance": "Hozirgi balans",
+      "saved": "To'lov qabul qilindi · chek №{no}",
+      "receipt": "Chek",
+      "loadError": "Ma'lumotlarni yuklab bo'lmadi"
+    },
+    "void": {
+      "title": "To'lovni bekor qilish",
+      "hint": "To'lov o'chirilmaydi — teskari yozuv qilinadi va balans qayta hisoblanadi.",
+      "reason": "Sabab",
+      "reasonPlaceholder": "Masalan: summa xato kiritildi",
+      "submit": "To'lovni bekor qilish",
+      "done": "To'lov bekor qilindi",
+      "voided": "Bekor qilingan"
+    },
+    "ledger": {
+      "balance": "Balans",
+      "oldDebt": "Eski qarz",
+      "debtSince": "{date} dan beri qarzdor",
+      "date": "Sana",
+      "description": "Tavsif",
+      "amount": "Summa",
+      "lessons": "{count}/{full} dars",
+      "lessonsRefund": "{count} dars qaytarildi",
+      "lessonsCharge": "{count} dars yechildi",
+      "withDiscount": "chegirma bilan",
+      "receiptNo": "Chek №{no}",
+      "emptyTitle": "Tranzaksiyalar yo'q",
+      "emptyDescription": "Talaba guruhda \"Faol\" bo'lgach hisobdan yechiladi; to'lovlar shu yerda ko'rinadi.",
+      "lessonsRecalc": "{count} dars qayta hisoblandi"
+    },
+    "discount": {
+      "add": "Chegirma",
+      "title": "Chegirma qo'shish",
+      "type": "Turi",
+      "percent": "Foiz",
+      "amount": "Summa",
+      "value": "Qiymati",
+      "from": "Boshlanishi",
+      "to": "Tugashi (ixtiyoriy)",
+      "reason": "Izoh",
+      "hint": "Allaqachon hisobdan yechilgan darslar uchun farq balansga qaytariladi.",
+      "label": "Chegirma {value}",
+      "range": "{from} — {to}",
+      "since": "{from} dan",
+      "remove": "Chegirmani olib tashlash",
+      "removeConfirm": "Chegirma olib tashlansinmi? Yechilgan darslar uchun farq qayta yechiladi.",
+      "saved": "Chegirma saqlandi"
+    },
+    "receipt": {
+      "title": "To'lov cheki",
+      "no": "Chek №{no}",
+      "date": "Sana",
+      "student": "Talaba",
+      "group": "Guruh",
+      "generalBalance": "Umumiy balans",
+      "method": "To'lov turi",
+      "cashier": "Qabul qildi",
+      "total": "Jami",
+      "voided": "BEKOR QILINGAN",
+      "print": "Chop etish",
+      "thanks": "To'lovingiz uchun rahmat!"
+    },
+    "debtors": {
+      "title": "Qarzdorlar",
+      "hint": "Faol talabalar, umumiy balansi manfiy.",
+      "student": "Talaba",
+      "parentPhone": "Ota-ona telefoni",
+      "groups": "Guruhlar",
+      "debt": "Qarz",
+      "oldDebt": "Eski qarz",
+      "since": "Qarzdorlik muddati",
+      "days": "{count} kun",
+      "lastPayment": "Oxirgi to'lov",
+      "never": "To'lov yo'q",
+      "total": "Jami qarz: {amount} · {count} talaba",
+      "remind": "Eslatma yuborish",
+      "remindSoon": "SMS 9-bosqichda qo'shiladi",
+      "emptyTitle": "Qarzdor yo'q",
+      "emptyDescription": "Barcha faol talabalarning balansi musbat yoki nolga teng."
+    },
+    "finance": {
+      "title": "Moliya",
+      "soon": "Tushumlar, xarajatlar, kassa va ish haqi 7-bosqichda qo'shiladi."
+    }
+  },
+  "months": {
+    "1": "Yanvar",
+    "2": "Fevral",
+    "3": "Mart",
+    "4": "Aprel",
+    "5": "May",
+    "6": "Iyun",
+    "7": "Iyul",
+    "8": "Avgust",
+    "9": "Sentabr",
+    "10": "Oktabr",
+    "11": "Noyabr",
+    "12": "Dekabr"
   }
 }

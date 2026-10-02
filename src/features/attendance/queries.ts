@@ -178,9 +178,13 @@ export type StudentAttendanceRow = Awaited<ReturnType<typeof getStudentAttendanc
 export interface AttendanceSettings {
   teacherEditDays: number;
   absenceThreshold: number;
+  /** Moliya (PRD §5.4, §5.6, §5.9) */
+  rounding: 1 | 100 | 1000;
+  refundOnLeave: boolean;
+  trialLessons: number;
 }
 
-/** organizations.settings dan davomat sozlamalari (default: 2 kun, 3 dars) */
+/** organizations.settings: davomat (2 kun, 3 dars) va moliya (1 so'm, qaytarilsin, 2 sinov darsi) */
 export async function getAttendanceSettings(orgId: string): Promise<AttendanceSettings> {
   const supabase = await createClient();
   const org = unwrap(
@@ -191,5 +195,8 @@ export async function getAttendanceSettings(orgId: string): Promise<AttendanceSe
   return {
     teacherEditDays: int(s.teacher_edit_days, 2),
     absenceThreshold: int(s.absence_threshold, 3),
+    rounding: s.rounding === 100 || s.rounding === 1000 ? s.rounding : 1,
+    refundOnLeave: s.refund_on_leave !== false,
+    trialLessons: int(s.trial_lessons, 2),
   };
 }

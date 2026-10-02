@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 
 import { type ActionResult, parseInput, runAction, unwrap } from "@/lib/action";
+import { onLessonsChanged } from "@/features/billing/events";
 import { requirePermission } from "@/lib/auth";
-import { onLessonsCancelled, onLessonsRestored } from "@/lib/billing/events";
 import { createClient } from "@/lib/supabase/server";
 import { toIsoDate } from "@/lib/validation";
 
@@ -33,7 +33,7 @@ export async function addHoliday(
     );
     // O'sha kundagi darslar bekor qilinadi (bazada, bitta tranzaksiyada)
     const cancelled = unwrap(await supabase.rpc("apply_holiday", { p_holiday: holiday.id }));
-    await onLessonsCancelled(cancelled);
+    await onLessonsChanged(cancelled, ctx.membership.staffId);
 
     revalidatePath("/", "layout");
     return { cancelled: cancelled.length };
@@ -42,10 +42,10 @@ export async function addHoliday(
 
 export async function removeHoliday(id: string): Promise<ActionResult<{ restored: number }>> {
   return runAction(async () => {
-    await requirePermission("settings.catalogs");
+    const ctx = await requirePermission("settings.catalogs");
     const supabase = await createClient();
     const restored = unwrap(await supabase.rpc("remove_holiday", { p_holiday: id }));
-    await onLessonsRestored(restored);
+    await onLessonsChanged(restored, ctx.membership.staffId);
     revalidatePath("/", "layout");
     return { restored: restored.length };
   });

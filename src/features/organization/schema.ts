@@ -18,6 +18,13 @@ export const organizationSchema = z
       .int({ error: "validation.absenceThreshold" })
       .min(1, { error: "validation.absenceThreshold" })
       .max(20, { error: "validation.absenceThreshold" }),
+    rounding: z.union([z.literal(1), z.literal(100), z.literal(1000)]),
+    refundOnLeave: z.boolean(),
+    trialLessons: z
+      .number({ error: "validation.trialLessons" })
+      .int({ error: "validation.trialLessons" })
+      .min(0, { error: "validation.trialLessons" })
+      .max(20, { error: "validation.trialLessons" }),
   })
   .refine((v) => v.workEnd > v.workStart, {
     error: "validation.timeRange",

@@ -1,12 +1,15 @@
 import { NextResponse, type NextRequest } from "next/server";
 
+import { runNightlyBilling } from "@/features/billing/engine.server";
 import { syncGroupLessons } from "@/features/groups/lessons-sync";
 import { todayInTashkent } from "@/lib/dates";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Vercel Cron har kecha 00:00 (Toshkent) chaqiradi (vercel.json):
 // 1) muzlatish boshlangan/tugagan a'zoliklar holatini yangilaydi;
-// 2) faol guruhlar darslarini 60 kunga to'ldiradi.
+// 2) faol guruhlar darslarini 60 kunga to'ldiradi;
+// 3) hisob-kitob: oyning 1-kunida oylik yechish (PRD §5.2), boshqa kunlari — joriy oyni tekshirish
+//    (idempotent: idempotency_key, ikki marta ishlasa ham ikki marta yechilmaydi).
 // Vercel CRON_SECRET'ni Authorization sarlavhasida yuboradi.
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -36,8 +39,17 @@ export async function GET(request: NextRequest) {
       failed.push(g.id);
     }
   }
+  let billing: Awaited<ReturnType<typeof runNightlyBilling>> | { error: string };
+  try {
+    billing = await runNightlyBilling(today);
+  } catch (e) {
+    console.error("[cron:nightly] billing", e);
+    billing = { error: e instanceof Error ? e.message : String(e) };
+  }
+
   return NextResponse.json({
     today,
+    billing,
     enrollmentStatusesChanged: statuses.data ?? null,
     groups: groups.length,
     lessonsInserted: inserted,

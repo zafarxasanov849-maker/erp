@@ -1043,6 +1043,32 @@ export type Database = {
           },
         ];
       };
+      org_counters: {
+        Row: {
+          name: string;
+          organization_id: string;
+          value: number;
+        };
+        Insert: {
+          name: string;
+          organization_id: string;
+          value?: number;
+        };
+        Update: {
+          name?: string;
+          organization_id?: string;
+          value?: number;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "org_counters_organization_id_fkey";
+            columns: ["organization_id"];
+            isOneToOne: false;
+            referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       organizations: {
         Row: {
           created_at: string;
@@ -1830,6 +1856,7 @@ export type Database = {
       transactions: {
         Row: {
           amount: number;
+          billing: Json | null;
           branch_id: string;
           created_at: string;
           created_by: string | null;
@@ -1841,14 +1868,18 @@ export type Database = {
           lessons_count: number | null;
           method_id: string | null;
           note: string | null;
+          occurred_on: string;
           organization_id: string;
+          payment_ref: string | null;
           period_end: string | null;
           period_start: string | null;
+          receipt_no: number | null;
           student_id: string;
           voids_id: string | null;
         };
         Insert: {
           amount: number;
+          billing?: Json | null;
           branch_id: string;
           created_at?: string;
           created_by?: string | null;
@@ -1860,14 +1891,18 @@ export type Database = {
           lessons_count?: number | null;
           method_id?: string | null;
           note?: string | null;
+          occurred_on?: string;
           organization_id: string;
+          payment_ref?: string | null;
           period_end?: string | null;
           period_start?: string | null;
+          receipt_no?: number | null;
           student_id: string;
           voids_id?: string | null;
         };
         Update: {
           amount?: number;
+          billing?: Json | null;
           branch_id?: string;
           created_at?: string;
           created_by?: string | null;
@@ -1879,9 +1914,12 @@ export type Database = {
           lessons_count?: number | null;
           method_id?: string | null;
           note?: string | null;
+          occurred_on?: string;
           organization_id?: string;
+          payment_ref?: string | null;
           period_end?: string | null;
           period_start?: string | null;
+          receipt_no?: number | null;
           student_id?: string;
           voids_id?: string | null;
         };
@@ -1989,6 +2027,7 @@ export type Database = {
       students_overview: {
         Row: {
           archived_at: string | null;
+          balance: number | null;
           branch_id: string | null;
           course_ids: string[] | null;
           created_at: string | null;
@@ -1996,12 +2035,14 @@ export type Database = {
           group_ids: string[] | null;
           id: string | null;
           joined_at: string | null;
+          old_debt: number | null;
           organization_id: string | null;
           parent_phone: string | null;
           phone: string | null;
           status: string | null;
           tag_ids: string[] | null;
           teacher_ids: string[] | null;
+          trial_expired: boolean | null;
         };
         Relationships: [
           {
@@ -2099,6 +2140,7 @@ export type Database = {
         Returns: string;
       };
       enrollment_student: { Args: { p_enrollment: string }; Returns: string };
+      enrollment_trial_expired: { Args: { p_enrollment: string }; Returns: boolean };
       find_profile_by_phone: {
         Args: { p_org: string; p_phone: string };
         Returns: {
@@ -2119,9 +2161,21 @@ export type Database = {
         Returns: undefined;
       };
       my_permissions: { Args: { org: string }; Returns: string[] };
+      next_counter: { Args: { p_name: string; p_org: string }; Returns: number };
       org_setting_int: {
         Args: { p_default: number; p_key: string; p_org: string };
         Returns: number;
+      };
+      receive_payment: {
+        Args: {
+          p_key: string;
+          p_method: string;
+          p_note: string;
+          p_paid_on: string;
+          p_parts: Json;
+          p_student: string;
+        };
+        Returns: Json;
       };
       refresh_enrollment_statuses: { Args: { p_org?: string }; Returns: number };
       register_organization: {
@@ -2169,6 +2223,7 @@ export type Database = {
         Returns: string;
       };
       try_uuid: { Args: { p: string }; Returns: string };
+      void_payment: { Args: { p_payment_ref: string; p_reason: string }; Returns: number };
     };
     Enums: {
       attendance_status: "present" | "late" | "absent" | "excused";

@@ -37,6 +37,6 @@ export default defineConfig({
     url: `${baseURL}/login`,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
-    env: { DEV_SMS_INBOX: "1" },
+    env: { DEV_SMS_INBOX: "1", CRON_SECRET: process.env.CRON_SECRET ?? "e2e-cron-secret" },
   },
 });

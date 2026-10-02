@@ -17,8 +17,7 @@ import {
 } from "@/components/ui/select";
 import { formatDate, parseUiDate } from "@/lib/dates";
 
-import { STUDENT_STATUSES } from "../schema";
-import { hasStudentFilters, studentSearchParams } from "../search-params";
+import { STUDENT_STATUS_FILTERS, hasStudentFilters, studentSearchParams } from "../search-params";
 
 const ANY = "__any__";
 
@@ -98,7 +97,7 @@ export function StudentsFilters({
         {select(
           "status",
           t("filters.status"),
-          STUDENT_STATUSES.map((s) => ({ value: s, label: t(`statuses.${s}`) })),
+          STUDENT_STATUS_FILTERS.map((s) => ({ value: s, label: t(`statuses.${s}`) })),
           t("filters.allStatuses"),
         )}
         {select("group", t("filters.group"), groups, t("filters.allGroups"))}

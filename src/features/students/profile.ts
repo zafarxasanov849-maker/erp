@@ -68,6 +68,16 @@ export interface EnrollmentRow {
     endTime: string;
   };
   freezes: FreezeRow[];
+  discounts: DiscountRow[];
+}
+
+export interface DiscountRow {
+  id: string;
+  percent: number | null;
+  amount: number | null;
+  from: string;
+  to: string | null;
+  reason: string | null;
 }
 
 export async function listStudentEnrollments(studentId: string): Promise<EnrollmentRow[]> {
@@ -80,7 +90,8 @@ export async function listStudentEnrollments(studentId: string): Promise<Enrollm
          leave_reason:reasons ( name ),
          group:groups ( id, name, is_active, weekdays, start_time, end_time,
            course:courses ( name ), teacher:staff ( profile:profiles ( full_name ) ) ),
-         freezes ( id, date_from, date_to, reason:reasons ( name ) )`,
+         freezes ( id, date_from, date_to, reason:reasons ( name ) ),
+         discounts ( id, percent, amount, valid_from, valid_to, reason )`,
       )
       .eq("student_id", studentId)
       .order("created_at", { ascending: false }),
@@ -111,6 +122,16 @@ export async function listStudentEnrollments(studentId: string): Promise<Enrollm
                 from: f.date_from,
                 to: f.date_to,
                 reasonName: f.reason?.name ?? null,
+              }))
+              .sort((a, b) => b.from.localeCompare(a.from)),
+            discounts: e.discounts
+              .map((d) => ({
+                id: d.id,
+                percent: d.percent === null ? null : Number(d.percent),
+                amount: d.amount,
+                from: d.valid_from,
+                to: d.valid_to,
+                reason: d.reason,
               }))
               .sort((a, b) => b.from.localeCompare(a.from)),
           },

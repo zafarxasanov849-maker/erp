@@ -83,28 +83,33 @@ Holatlar:
   - "Keldi" yoki "Kechikdi" hisobni nolga tushiradi;
   - "Sababli" va belgilanmagan darslar hisobga olinmaydi (na oshiradi, na buzadi);
   - faqat faol va sinovdagi talabalar ko'rinadi.
-- Davomat pulga ta'sir qilmaydi (hisob-kitob darslar jadvalidan, PRD §5).
+- Davomat pulga ta'sir qilmaydi (hisob-kitob darslar jadvalidan, PRD §5): talaba kelmasa ham dars puli olinadi.
 
-## Hisob-kitob va to'lovlar (📝 5-bosqich — taklif, tasdiqlanmagan)
+## Hisob-kitob va to'lovlar (✅ 5-bosqich)
 
-PRD §5 dagi qoidalar o'zgarishsiz amal qiladi:
-- **Oylik yechish** har oy 1-kuni: `narx × davrdagi_darslar / oydagi_darslar`.
-- **Oy o'rtasida faollashsa** — qolgan darslar ulushi darhol yechiladi (680 000 × 5/13 = 261 538).
-- **Sinovdagi** darslar uchun pul olinmaydi.
-- **Muzlatilgan, bayram** kunlari uchun pul olinmaydi yoki qaytariladi.
-- **Chiqqandan keyingi** darslar ulushi qaytariladi (sozlamaga qarab).
-- **Yaxlitlash** har yechishda alohida.
-- **Eski qarz** — joriy oy yechishlarisiz qolgan qarz.
+**Asosiy formula** (PRD §5.2): `summa = narx × davrdagi_darslar / oydagi_darslar`, har yozuv alohida yaxlitlanadi (Sozlamalar → Markaz → Moliya: 1, 100 yoki 1 000 so'mgacha).
 
-PRD'da aniq yozilmagan joylar bo'yicha takliflar:
+- **Oydagi darslar** — guruh kunlari bo'yicha oyning **hamma** kunlari, bayram va bekor qilingan darslarsiz. Guruh oy o'rtasida ochilsa ham shunday (A): birinchi oy faqat ochilgandan keyingi darslar ulushi to'lanadi.
+- **Oylik yechish** — har oyning 1-kuni 00:00 da (Toshkent) "Faol" va "Muzlatilgan" a'zoliklar uchun (B). Oldindan ma'lum muzlatish kunlari yechilmaydi.
+- **Oy o'rtasida faollashtirish** — faollashgan kundan oy oxirigacha bo'lgan darslar darhol yechiladi. Misol: 680 000 × 5/13 = 261 538 so'm. O'tgan sana bilan faollashtirilsa — o'tgan oylar ham hisoblanadi.
+- **Sinovda** — pul olinmaydi. Sinov darslari soni sozlamada (default 2); shuncha dars o'tib faollashtirilmagan talaba ro'yxatdagi **"Sinov muddati o'tdi"** filtrida ko'rinadi.
+- **Muzlatish** — muzlatilgan kunlar uchun pul olinmaydi; oy allaqachon yechilgan bo'lsa, o'sha darslar ulushi qaytariladi. Muzlatish oldinroq tugatilsa yoki bekor qilinsa, ortiqcha qaytarilgan pul qayta yechiladi (D).
+- **Guruhdan chiqish** — chiqqan kundan keyingi darslar ulushi qaytariladi (chiqish kunidagi dars qaytarilmaydi). Sozlamada o'chirib qo'yish mumkin.
+- **Bayram** — oy yechilgan bo'lsa, har bekor dars uchun talaba to'lagan (chegirmali) narx ulushi qaytariladi (F). Bayram o'chirilsa — qayta yechiladi.
+- **Chegirma** (foiz yoki summa, sana oralig'i bilan) — faqat chegirma amal qilgan kunlardagi darslar arzon (C). Allaqachon yechilgan darslar uchun farq qaytariladi. Bir guruhda chegirmalar kesishmaydi.
+- **Bir hodisa ikki marta hisoblanmaydi**: har yozuvning kaliti bor (`charge:{a'zolik}:{oy}`), tungi tekshiruv qayta ishlasa ham pul ikki marta yechilmaydi. Tungi cron har kecha joriy oyni tekshiradi — biror hodisa o'tkazib yuborilgan bo'lsa ham to'g'rilaydi.
 
-| | Savol | Taklif |
-|---|---|---|
-| A | Guruh oy o'rtasida ochilsa | Talaba birinchi oy faqat qatnashgan darslari ulushini to'laydi |
-| B | Muzlatilgan talaba | Muzlatilmagan kunlari uchun to'laydi, muzlatilgan kunlari uchun yo'q |
-| C | Chegirma oy o'rtasida boshlansa | Faqat chegirma boshlangan kundan keyingi darslar arzon |
-| D | Muzlatish oldinroq tugatilsa | Ortiqcha qaytarilgan pul qayta yechiladi (bayram o'chirilsa ham) |
-| E | Guruh ko'rsatilmagan to'lov | Avval eng eski qarzga, keyin keyingisiga; ortig'i balansda |
-| F | Bayram qaytarishi | Talaba to'lagan (chegirmali) narxdan |
-| G | Pul yechishni kim yozadi | Serverdagi bitta maxsus fayl (CLAUDE.md'ga bitta istisno) |
-| H | Talabaga naqd pul qaytarish | Shu bosqichda, sabab va to'lov turi bilan |
+**To'lovlar:**
+- To'lov turi (Naqd, Karta → Uzcard/Humo, Terminal, Bank), sana (kelajak emas, 1 yildan eski emas), izoh, ixtiyoriy guruh.
+- **Guruh ko'rsatilmasa** — pul avval eng eski qarzga, keyin keyingisiga; ortig'i umumiy balansda qoladi (E). Chekda bitta to'lov bo'lib ko'rinadi.
+- Har to'lovga **chek raqami** (markaz bo'yicha 1, 2, 3, ...) va 58 mm printer uchun chek.
+- **To'lov o'chirilmaydi** — "Bekor qilish" teskari yozuv yaratadi, sabab majburiy, faqat `payments.void` ruxsati bilan (Egasi, Rahbar, Menejer; Admin'da yo'q). Chekda "BEKOR QILINGAN" chiqadi.
+- Ikki marta bosilsa ham bitta to'lov yoziladi.
+
+**Balans va qarz:**
+- **Balans** = barcha to'lovlar − barcha yechishlar (+ qaytarishlar). Manfiy — qarz (qizil, "−").
+- **Eski qarz** = joriy oy hisobisiz qolgan qarz.
+- **Qarzdor** — faol talaba, umumiy balansi manfiy. Moliya → Qarzdorlar: qarz, eski qarz, necha kundan beri, oxirgi to'lov, ota-ona telefoni.
+- Hisob-kitobning qo'lda tekshiruvi: [`docs/hisob-kitob-stsenariy.xlsx`](hisob-kitob-stsenariy.xlsx) — 3 oylik misol formulalar bilan, tizim natijasi bilan tiyin-tiyinigacha mos.
+
+**Keyinroq:** talabaga naqd pul qaytarib berish (H) — keyingi bosqichlardan birida.

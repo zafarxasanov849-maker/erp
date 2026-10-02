@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 
 import { ALL_BRANCHES } from "@/features/shell/nav";
 import { ActionError, type ActionResult, runAction } from "@/lib/action";
-import { requirePermission } from "@/lib/auth";
+import { can, requirePermission } from "@/lib/auth";
 import { formatDate, todayInTashkent } from "@/lib/dates";
 import { formatPhone } from "@/lib/phone";
 
@@ -49,6 +49,12 @@ export async function exportStudents(
       { header: t("list.status"), key: "status", width: 14 },
       { header: t("list.tags"), key: "tags", width: 24 },
       { header: t("list.joinedAt"), key: "joinedAt", width: 14 },
+      ...(can(ctx, "payments.view")
+        ? [
+            { header: t("list.balance"), key: "balance", width: 14, style: { numFmt: "# ##0" } },
+            { header: t("list.oldDebt"), key: "oldDebt", width: 14, style: { numFmt: "# ##0" } },
+          ]
+        : []),
     ];
     ws.getRow(1).font = { bold: true };
     ws.views = [{ state: "frozen", ySplit: 1 }];
@@ -64,6 +70,8 @@ export async function exportStudents(
         status: t(`statuses.${r.status}`),
         tags: r.tags.map((x) => x.name).join(", "),
         joinedAt: formatDate(r.joinedAt),
+        balance: r.balance,
+        oldDebt: r.oldDebt,
       });
     }
 

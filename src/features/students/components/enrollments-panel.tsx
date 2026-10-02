@@ -5,6 +5,7 @@ import {
   ArrowRightLeft,
   CirclePlay,
   LogOut,
+  Percent,
   MoreHorizontal,
   Snowflake,
   Sun,
@@ -50,6 +51,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DiscountChips,
+  DiscountDialogContent,
+} from "@/features/billing/components/discount-dialog";
 import { formatWeekdays } from "@/features/groups/format";
 import { useServerAction } from "@/hooks/use-server-action";
 import { useTranslateKey } from "@/i18n/use-translate-key";
@@ -88,7 +93,7 @@ type Reason = { id: string; name: string };
 
 type DialogState =
   | { kind: "enroll" }
-  | { kind: "activate" | "transfer" | "freeze" | "leave"; enrollment: EnrollmentRow }
+  | { kind: "activate" | "transfer" | "freeze" | "leave" | "discount"; enrollment: EnrollmentRow }
   | null;
 
 export function EnrollmentsPanel({
@@ -100,6 +105,7 @@ export function EnrollmentsPanel({
   freezeReasons,
   todayIso,
   canUpdate,
+  canDiscount,
   archived,
 }: {
   studentId: string;
@@ -110,9 +116,12 @@ export function EnrollmentsPanel({
   freezeReasons: Reason[];
   todayIso: string;
   canUpdate: boolean;
+  /** discounts.manage */
+  canDiscount: boolean;
   archived: boolean;
 }) {
   const t = useTranslations("students.enrollments");
+  const tb = useTranslations("billing.discount");
   const today = formatDate(todayIso);
   const [dialog, setDialog] = useState<DialogState>(null);
   const [showLeft, setShowLeft] = useState(false);
@@ -147,6 +156,7 @@ export function EnrollmentsPanel({
             branchPath={branchPath}
             todayIso={todayIso}
             editable={editable}
+            canDiscount={canDiscount && !archived}
             onAction={(kind) => setDialog({ kind, enrollment: e })}
           />
         ))
@@ -170,6 +180,7 @@ export function EnrollmentsPanel({
                 branchPath={branchPath}
                 todayIso={todayIso}
                 editable={false}
+                canDiscount={false}
                 onAction={() => {}}
               />
             ))}
@@ -211,6 +222,14 @@ export function EnrollmentsPanel({
             onDone={() => setDialog(null)}
           />
         )}
+        {dialog?.kind === "discount" && (
+          <DiscountDialogContent
+            enrollmentId={dialog.enrollment.id}
+            title={`${tb("title")}: ${dialog.enrollment.group.name}`}
+            today={today}
+            onDone={() => setDialog(null)}
+          />
+        )}
         {dialog?.kind === "leave" && (
           <LeaveDialog
             enrollment={dialog.enrollment}
@@ -229,15 +248,18 @@ function EnrollmentCard({
   branchPath,
   todayIso,
   editable,
+  canDiscount,
   onAction,
 }: {
   enrollment: EnrollmentRow;
   todayIso: string;
   branchPath: string;
   editable: boolean;
-  onAction: (kind: "activate" | "transfer" | "freeze" | "leave") => void;
+  canDiscount: boolean;
+  onAction: (kind: "activate" | "transfer" | "freeze" | "leave" | "discount") => void;
 }) {
   const t = useTranslations("students.enrollments");
+  const tb = useTranslations("billing.discount");
   const tw = useTranslations("weekdays");
   const tk = useTranslateKey();
   const end = useServerAction();
@@ -316,6 +338,12 @@ function EnrollmentCard({
                   {t("endFreeze")}
                 </DropdownMenuItem>
               )}
+              {canDiscount && (
+                <DropdownMenuItem onSelect={() => onAction("discount")}>
+                  <Percent />
+                  {tb("add")}
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem variant="destructive" onSelect={() => onAction("leave")}>
                 <LogOut />
                 {t("leave")}
@@ -337,6 +365,7 @@ function EnrollmentCard({
           </span>
         )}
       </div>
+      <DiscountChips discounts={e.discounts} removable={canDiscount && e.status !== "left"} />
       {end.error && <p className="text-sm text-destructive">{tk(end.error)}</p>}
     </div>
   );
