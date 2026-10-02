@@ -1,26 +1,6 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
-  graphql_public: {
-    Tables: {
-      [_ in never]: never;
-    };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      graphql: {
-        Args: { extensions?: Json; operationName?: string; query?: string; variables?: Json };
-        Returns: Json;
-      };
-    };
-    Enums: {
-      [_ in never]: never;
-    };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
   public: {
     Tables: {
       attendance: {
@@ -2083,6 +2063,7 @@ export type Database = {
         Args: { p_group: string; p_insert: Json; p_remove: string[]; p_update: Json };
         Returns: undefined;
       };
+      assert_any_permission: { Args: { p_org: string; p_perms: string[] }; Returns: undefined };
       assert_enrollable_group: { Args: { p_group: string; p_org: string }; Returns: undefined };
       assert_group_editor: { Args: { p_group: string }; Returns: string };
       assert_student_editor: { Args: { p_perm?: string; p_student: string }; Returns: string };
@@ -2160,6 +2141,38 @@ export type Database = {
         Args: { p_date: string; p_enrollment: string; p_reason: string };
         Returns: undefined;
       };
+      metric_branches: { Args: { p_branch: string; p_org: string }; Returns: string[] };
+      metric_debtors: {
+        Args: { p_branch: string; p_date: string; p_org: string };
+        Returns: {
+          balance: number;
+          student_id: string;
+        }[];
+      };
+      metric_left_students: {
+        Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
+        Returns: {
+          left_on: string;
+          reason: string;
+          student_id: string;
+        }[];
+      };
+      metric_revenue: {
+        Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
+        Returns: {
+          payers: number;
+          payments: number;
+          revenue: number;
+        }[];
+      };
+      metric_students_at: {
+        Args: { p_branch: string; p_date: string; p_org: string };
+        Returns: {
+          active: number;
+          frozen: number;
+          trial: number;
+        }[];
+      };
       my_permissions: { Args: { org: string }; Returns: string[] };
       next_counter: { Args: { p_name: string; p_org: string }; Returns: number };
       org_setting_int: {
@@ -2183,6 +2196,24 @@ export type Database = {
         Returns: string;
       };
       remove_holiday: { Args: { p_holiday: string }; Returns: string[] };
+      report_attendance: {
+        Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
+        Returns: Json;
+      };
+      report_finance: {
+        Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
+        Returns: {
+          branch_id: string;
+          month: string;
+          payers: number;
+          payments: number;
+          revenue: number;
+        }[];
+      };
+      report_student_flow: {
+        Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
+        Returns: Json;
+      };
       save_staff: {
         Args: {
           p_all_branches: boolean;
@@ -2215,6 +2246,23 @@ export type Database = {
           entity: string;
           entity_id: string;
           id: number;
+        }[];
+      };
+      student_states_at: {
+        Args: { p_date: string; p_org: string };
+        Returns: {
+          branch_id: string;
+          state: string;
+          student_id: string;
+        }[];
+      };
+      teacher_summary: {
+        Args: { p_date: string; p_org: string };
+        Returns: {
+          groups: number;
+          lessons: number;
+          students: number;
+          unmarked: number;
         }[];
       };
       today_tashkent: { Args: Record<PropertyKey, never>; Returns: string };
@@ -2346,9 +2394,6 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
-  graphql_public: {
-    Enums: {},
-  },
   public: {
     Enums: {
       attendance_status: ["present", "late", "absent", "excused"],

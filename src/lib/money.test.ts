@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { MINUS_SIGN, formatMoney, parseMoney, toMoney } from "./money";
+import { MINUS_SIGN, formatMoney, formatMoneyCompact, parseMoney, toMoney } from "./money";
 
 describe("formatMoney", () => {
   it("guruhlarni bo'shliq bilan ajratadi va so'm qo'shadi", () => {
@@ -40,6 +40,21 @@ describe("formatMoney", () => {
     expect(() => formatMoney(10.5)).toThrow(RangeError);
     expect(() => formatMoney(Number.NaN)).toThrow(RangeError);
     expect(() => toMoney(2 ** 60)).toThrow(RangeError);
+  });
+});
+
+describe("formatMoneyCompact", () => {
+  it("mln, ming, mlrd", () => {
+    expect(formatMoneyCompact(12_500_000)).toBe("12,5 mln");
+    expect(formatMoneyCompact(12_000_000)).toBe("12 mln");
+    expect(formatMoneyCompact(850_000)).toBe("850 ming");
+    expect(formatMoneyCompact(1_240_000_000)).toBe("1,2 mlrd");
+    expect(formatMoneyCompact(999)).toBe("999");
+    expect(formatMoneyCompact(0)).toBe("0");
+  });
+  it("manfiy va rus tili", () => {
+    expect(formatMoneyCompact(-3_400_000)).toBe("−3,4 mln");
+    expect(formatMoneyCompact(3_400_000, "ru")).toBe("3,4 млн");
   });
 });
 

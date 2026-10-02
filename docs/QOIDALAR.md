@@ -113,3 +113,45 @@ Holatlar:
 - Hisob-kitobning qo'lda tekshiruvi: [`docs/hisob-kitob-stsenariy.xlsx`](hisob-kitob-stsenariy.xlsx) — 3 oylik misol formulalar bilan, tizim natijasi bilan tiyin-tiyinigacha mos.
 
 **Keyinroq:** talabaga naqd pul qaytarib berish (H) — keyingi bosqichlardan birida.
+
+## Bosh sahifa va hisobotlar (✅ 6-bosqich)
+
+Hamma raqamlar **bitta joyda** hisoblanadi (bazadagi `metric_*` funksiyalar). Bosh sahifa, hisobotlar, Qarzdorlar va Tushumlar sahifalari bir xil ta'rifdan foydalanadi, shuning uchun raqamlar doim mos keladi.
+
+**Bosh sahifa — rolga qarab (A):**
+
+| Kim | Nimani ko'radi |
+|---|---|
+| Egasi, Rahbar, Menejer | Tushum, qarzdorlik, faol talabalar, sof foyda (7-bosqichdan), ketganlar; 6 oylik tushum grafigi; filiallarni solishtirish |
+| Admin | Bugungi darslar (belgilanmaganlar), bugungi to'lovlar, qarzdorlar, sinovdagilar; bugungi jadval va kelmayotganlar |
+| Ustoz | O'z guruhlari, talabalari, bugungi darslari va belgilanmaganlar |
+| Sotuvchi | Sotuv varonkasi — 8-bosqichda |
+
+- O'zingiz yaratgan rol: "Moliya hisobotlari" ruxsati bo'lsa — Rahbar ko'rinishi; to'lov qabul qilish yoki davomat boshqaruvi — Admin; ustoz — Ustoz; lidlar — Sotuvchi.
+- Menejer va filialga biriktirilgan xodim faqat o'z filiallarini ko'radi. Yuqoridagi filial tanlagich hamma raqamlarni o'sha filialga o'zgartiradi.
+
+**Ta'riflar:**
+- **Faol talaba** — o'sha kuni kamida bitta guruhda "Faol" (muzlatilmagan, sinovda emas). Bir talaba bir necha guruhda bo'lsa ham bir marta sanaladi.
+- **Guruhdan chiqqan kun** — o'sha kun oxirida ketgan hisoblanadi: chiqqan kunidagi dars uning davomatida bor, lekin o'sha kunning "Faol talabalar" sonida yo'q (ro'yxatdagi "Chiqqan" holati bilan bir xil).
+- **Tushum** — to'lov sanasi bo'yicha, **bekor qilingan to'lovlarsiz**, to'lov qabul qilingan paytdagi talaba filialiga (E).
+- **Qarzdor** — faol talaba, o'sha kungacha balansi manfiy. Qarzdorlik — ularning jami qarzi.
+- **Ketgan** — davr ichida oxirgi guruhidan chiqqan va davr oxirida hech qaysi guruhda qolmagan talaba (C). Boshqa guruhga o'tkazish ketish emas.
+- **Qaytgan** — hamma guruhlardan chiqib, **kamida 14 kundan keyin** qayta yozilgan talaba (D).
+- **Faollashgan** — sinovdan "Faol"ga o'tgan; boshqa guruhga o'tkazish hisobga olinmaydi.
+- **O'zgarish foizi** (B):
+  - tushum va ketganlar — shu oy boshidan bugungacha **o'tgan oyning xuddi shu kunlari** bilan solishtiriladi (masalan, 1–15 oktabr ↔ 1–15 sentabr);
+  - faol talabalar va qarzdorlik — bugun **o'tgan oyning xuddi shu kuni** bilan;
+  - o'tgan davrda 0 bo'lsa — foiz ko'rsatilmaydi ("solishtirish uchun ma'lumot yo'q");
+  - yashil — yaxshi tomonga (tushum oshdi, qarz kamaydi), qizil — yomon tomonga.
+
+**Hisobotlar** (Hisobotlar bo'limi; davr: shu oy, o'tgan oy, oxirgi 3 oy, shu yil yoki qo'lda — ko'pi bilan 24 oy; har biri Excel'ga yuklanadi):
+- **Moliya** — tushum oy × filial, to'lagan talabalar, o'rtacha to'lov. Xarajat va sof foyda — 7-bosqichda.
+- **Davomat**:
+  - **belgilangan %** = belgilangan o'rinlar / hamma o'rinlar (o'rin — o'tgan dars × o'sha kuni guruhda bo'lgan, muzlatilmagan talaba);
+  - **qatnashish %** = (Keldi + Kechikdi) / belgilangan;
+  - bugungi dars faqat **tugaganidan keyin** hisobga kiradi (kun davomida foizni tushirmasligi uchun);
+  - guruhlar va ustozlar kesimida, eng ko'p qoldirgan talabalar.
+- **Talabalar oqimi** — oy bo'yicha yangi, faollashgan, muzlatilgan, ketgan (sabablari bilan), qaytgan.
+- **Sotuv** — 8-bosqichda.
+
+**Moliya → Tushumlar:** davrdagi to'lovlar (chek bo'yicha), to'lov turi va qabul qilgan xodim bo'yicha filtr, turlar bo'yicha jami. Bekor qilingan to'lov ro'yxatda ko'rinadi (ustidan chizilgan), lekin jamiga qo'shilmaydi.

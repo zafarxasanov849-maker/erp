@@ -1042,6 +1042,25 @@
     "finance": {
       "title": "Moliya",
       "soon": "Tushumlar, xarajatlar, kassa va ish haqi 7-bosqichda qo'shiladi."
+    },
+    "payments": {
+      "title": "Tushumlar",
+      "method": "To'lov turi",
+      "allMethods": "Barcha turlar",
+      "staff": "Qabul qildi",
+      "allStaff": "Barcha xodimlar",
+      "total": "Jami tushum",
+      "count": "{count, plural, other {# ta to'lov}}",
+      "voidedCount": "{count, plural, other {# ta bekor qilingan}}",
+      "truncated": "Ro'yxat juda katta — faqat oxirgi 3 000 ta yozuv ko'rsatildi. Davrni qisqartiring.",
+      "emptyTitle": "Bu davrda to'lov yo'q",
+      "emptyDescription": "Davr yoki filtrlarni o'zgartiring. To'lov talaba profilidagi \"To'lov qabul qilish\" tugmasi orqali kiritiladi.",
+      "date": "Sana",
+      "receipt": "Chek",
+      "student": "Talaba",
+      "amount": "Summa",
+      "branch": "Filial",
+      "voided": "Bekor qilingan"
     }
   },
   "months": {
@@ -1057,5 +1076,197 @@
     "10": "Oktabr",
     "11": "Noyabr",
     "12": "Dekabr"
+  },
+  "monthsShort": {
+    "1": "Yan",
+    "2": "Fev",
+    "3": "Mar",
+    "4": "Apr",
+    "5": "May",
+    "6": "Iyn",
+    "7": "Iyl",
+    "8": "Avg",
+    "9": "Sen",
+    "10": "Okt",
+    "11": "Noy",
+    "12": "Dek"
+  },
+  "dashboard": {
+    "greeting": "Salom, {name}!",
+    "subtitle": {
+      "leader": "Bugun {date}. Markaz ko'rsatkichlari — oy boshidan bugungacha.",
+      "admin": "Bugun {date}. Bugungi darslar, to'lovlar va qarzdorlar.",
+      "teacher": "Bugun {date}. Guruhlaringiz va bugungi darslaringiz.",
+      "sales": "Bugun {date}.",
+      "basic": "Bugun {date}."
+    },
+    "change": {
+      "flow": "o'tgan oyning shu kunlariga nisbatan",
+      "stock": "o'tgan oyning shu kuniga nisbatan",
+      "noBase": "o'tgan oyda solishtirish uchun ma'lumot yo'q"
+    },
+    "cards": {
+      "revenue": "Tushum (shu oy)",
+      "revenueHint": "{payers, plural, =0 {Hali to'lov yo'q} other {# talaba to'lagan}}",
+      "debt": "Qarzdorlik",
+      "debtHint": "{count, plural, =0 {Qarzdor yo'q} other {# qarzdor talaba}}",
+      "active": "Faol talabalar",
+      "activeHint": "Sinovda {trial}, muzlatilgan {frozen}",
+      "profit": "Sof foyda",
+      "profitSoon": "Xarajatlar va ish haqi 7-bosqichda qo'shiladi",
+      "left": "Ketganlar (shu oy)",
+      "leftHint": "Hamma guruhlaridan chiqqanlar (o'tkazishlarsiz)",
+      "lessonsToday": "Bugungi darslar",
+      "noLessons": "Bugun dars yo'q",
+      "unmarked": "{count, plural, other {# tasi belgilanmagan}}",
+      "allMarked": "Hammasi belgilangan",
+      "paidToday": "Bugungi to'lovlar",
+      "payersToday": "{count, plural, =0 {Bugun hali to'lov yo'q} other {# talaba to'ladi}}",
+      "debtors": "Qarzdorlar",
+      "debtorsHint": "Jami qarz {amount}",
+      "trial": "Sinovdagilar",
+      "trialHint": "Faollashtirish yoki chiqarishni unutmang",
+      "myGroups": "Guruhlarim",
+      "myStudents": "Talabalarim",
+      "unmarkedLessons": "Belgilanmagan darslar",
+      "unmarkedHint": "Davomatni belgilang"
+    },
+    "charts": {
+      "revenue": "Tushum, oxirgi 6 oy",
+      "revenueHint": "Bekor qilingan to'lovlarsiz. Joriy oy — bugungacha.",
+      "branches": "Filiallar bo'yicha tushum (shu oy)",
+      "branchesHint": "To'lov qabul qilingan filial bo'yicha.",
+      "emptyTitle": "Hali to'lov yo'q",
+      "emptyDescription": "Talabadan to'lov qabul qilinganda grafik shu yerda paydo bo'ladi.",
+      "branchesEmptyTitle": "Bu oy hali to'lov yo'q",
+      "revenueSeries": "Tushum"
+    },
+    "lists": {
+      "schedule": "Bugungi jadval",
+      "mySchedule": "Bugungi darslarim",
+      "openToday": "Davomatga o'tish",
+      "noLessonsTitle": "Bugun dars yo'q",
+      "noLessonsDescription": "Guruh jadvalida bugun dars bo'lmasa yoki bayram bo'lsa, ro'yxat bo'sh bo'ladi.",
+      "noMyLessonsDescription": "Bugun guruhlaringizda dars yo'q. Jadval guruh sozlamasidan olinadi.",
+      "absentees": "Kelmayotganlar",
+      "noAbsentees": "Ketma-ket kelmayotgan talaba yo'q.",
+      "all": "Hammasi ({count})",
+      "streak": "{count, plural, other {# dars}}"
+    },
+    "sales": {
+      "title": "Sotuv varonkasi 8-bosqichda qo'shiladi",
+      "description": "Lidlar, bosqichlar va konversiya shu yerda ko'rinadi."
+    },
+    "basic": {
+      "title": "Xush kelibsiz!",
+      "description": "Rolingiz uchun bosh sahifa ko'rsatkichlari yo'q. Kerakli bo'limni chap menyudan tanlang."
+    }
+  },
+  "reports": {
+    "title": "Hisobotlar",
+    "tabs": {
+      "finance": "Moliya",
+      "attendance": "Davomat",
+      "students": "Talabalar oqimi",
+      "sales": "Sotuv"
+    },
+    "period": "Davr",
+    "presets": {
+      "month": "Shu oy",
+      "last_month": "O'tgan oy",
+      "quarter": "Oxirgi 3 oy",
+      "year": "Shu yil",
+      "custom": "Boshqa davr…"
+    },
+    "from": "Dan",
+    "to": "Gacha",
+    "apply": "Ko'rsatish",
+    "periodInvalid": "Sanalarni KK.OO.YYYY ko'rinishida kiriting; boshlanishi tugashidan keyin bo'lmasin.",
+    "export": "Excel'ga yuklash",
+    "allBranches": "Barcha filiallar",
+    "files": {
+      "finance": "moliya",
+      "attendance": "davomat",
+      "students": "talabalar-oqimi",
+      "sales": "sotuv"
+    },
+    "excel": {
+      "info": "Ma'lumot",
+      "report": "Hisobot",
+      "org": "Markaz",
+      "branch": "Filial",
+      "generated": "Tayyorlangan sana"
+    },
+    "finance": {
+      "revenue": "Tushum",
+      "revenueHint": "Bekor qilingan to'lovlarsiz, to'lov sanasi bo'yicha",
+      "payers": "To'lagan talabalar",
+      "paymentsCount": "{count, plural, other {# ta to'lov}}",
+      "average": "O'rtacha to'lov",
+      "expenses": "Xarajatlar",
+      "profit": "Sof foyda",
+      "stage7": "7-bosqichda qo'shiladi",
+      "chart": "Tushum oy bo'yicha",
+      "table": "Oy va filial bo'yicha",
+      "mobileHint": "Filiallar bo'yicha ko'rish uchun kompyuterda oching yoki yuqoridan filialni tanlang.",
+      "month": "Oy",
+      "total": "Jami",
+      "payments": "To'lovlar",
+      "emptyTitle": "Bu davrda to'lov yo'q",
+      "emptyDescription": "Davrni o'zgartiring yoki talaba profilida \"To'lov qabul qilish\" orqali to'lov kiriting."
+    },
+    "attendance": {
+      "markedPct": "Belgilangan",
+      "attendedPct": "Qatnashish",
+      "markedHint": "{marked} / {cells} o'rin belgilangan",
+      "attendedHint": "(Keldi + Kechikdi) / belgilangan",
+      "excusedHint": "Sababli: {count}",
+      "lateMarked": "Kechikib belgilangan",
+      "lateMarkedHint": "Dars kunidan keyin qo'yilgan belgilar",
+      "byGroup": "Guruhlar bo'yicha",
+      "byTeacher": "Ustozlar bo'yicha",
+      "byTeacherHint": "Ustozning o'z guruhlarini o'z vaqtida belgilashi.",
+      "group": "Guruh",
+      "teacher": "Ustoz",
+      "noTeacher": "Ustozsiz",
+      "student": "Talaba",
+      "cells": "O'rinlar",
+      "markedLessons": "Belgilangan darslar",
+      "total": "Jami",
+      "topAbsent": "Eng ko'p qoldirganlar",
+      "noAbsent": "Bu davrda \"Kelmadi\" belgisi yo'q.",
+      "absentOf": "{absent} / {marked} dars",
+      "emptyTitle": "Bu davrda o'tgan dars yo'q",
+      "emptyDescription": "Davomat hisoboti o'tgan (bekor qilinmagan) darslar bo'yicha tuziladi. Davrni o'zgartiring."
+    },
+    "students": {
+      "new": "Yangi",
+      "newHint": "Shu davrda qo'shilgan talabalar",
+      "activated": "Faollashgan",
+      "activatedHint": "Boshqa guruhga o'tkazishlarsiz",
+      "frozen": "Muzlatilgan",
+      "left": "Ketgan",
+      "leftHint": "Hamma guruhlaridan chiqqanlar",
+      "returned": "Qaytgan",
+      "returnedHint": "Ketib, kamida 14 kundan keyin qayta yozilganlar",
+      "activeAtEnd": "Faol ({date})",
+      "atEndHint": "Sinovda {trial}, muzlatilgan {frozen}",
+      "chart": "Yangi va ketganlar",
+      "byMonth": "Oy bo'yicha",
+      "month": "Oy",
+      "total": "Jami",
+      "reasons": "Ketish sabablari",
+      "leftList": "Ketgan talabalar",
+      "student": "Talaba",
+      "leftOn": "Chiqqan sana",
+      "reason": "Sabab",
+      "noReason": "Sabab ko'rsatilmagan",
+      "noLeft": "Bu davrda ketgan talaba yo'q.",
+      "noLeftDescription": "Bu davrda hech kim hamma guruhlaridan chiqmagan."
+    },
+    "sales": {
+      "soonTitle": "Sotuv hisoboti 8-bosqichda qo'shiladi",
+      "soonDescription": "Lidlar, manbalar va konversiya varonka ishga tushgach shu yerda ko'rinadi."
+    }
   }
 }

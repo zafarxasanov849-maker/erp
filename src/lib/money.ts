@@ -59,3 +59,29 @@ export function parseMoney(input: string): Money | null {
   const n = Number(cleaned);
   return Number.isSafeInteger(n) ? n : null;
 }
+
+const COMPACT_UNITS: Record<MoneyLocale, [number, string][]> = {
+  uz: [
+    [1e9, "mlrd"],
+    [1e6, "mln"],
+    [1e3, "ming"],
+  ],
+  ru: [
+    [1e9, "млрд"],
+    [1e6, "млн"],
+    [1e3, "тыс."],
+  ],
+};
+
+/** Grafik o'qlari uchun qisqa ko'rinish: 12 500 000 → "12,5 mln"; 850 000 → "850 ming". */
+export function formatMoneyCompact(value: number, locale: MoneyLocale = "uz"): string {
+  const abs = Math.abs(value);
+  const sign = value < 0 ? MINUS_SIGN : "";
+  for (const [size, unit] of COMPACT_UNITS[locale]) {
+    if (abs >= size) {
+      const n = Math.round((abs / size) * 10) / 10;
+      return `${sign}${String(n).replace(".", ",")} ${unit}`;
+    }
+  }
+  return sign + groupThousands(abs);
+}

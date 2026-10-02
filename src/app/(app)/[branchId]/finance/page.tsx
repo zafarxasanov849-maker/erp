@@ -22,11 +22,11 @@ import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("nav");
-  return { title: t("finance") };
+  const t = await getTranslations("billing.debtors");
+  return { title: t("title") };
 }
 
-/** Moliya: hozircha Qarzdorlar (PRD §3.6). Tushumlar, xarajatlar, kassa — 7-bosqich. */
+/** Moliya → Qarzdorlar (PRD §3.6). Ta'rif — metric_debtors (bosh sahifa bilan bir xil). */
 export default async function FinancePage({ params }: { params: Promise<{ branchId: string }> }) {
   const { branchId } = await params;
   const ctx = await requirePagePermission("payments.view");
@@ -41,11 +41,6 @@ export default async function FinancePage({ params }: { params: Promise<{ branch
 
   return (
     <div className="space-y-6">
-      <div className="space-y-1">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("finance.title")}</h1>
-        <p className="text-sm text-muted-foreground">{t("finance.soon")}</p>
-      </div>
-
       <section className="space-y-3" aria-labelledby="debtors-title">
         <div className="flex flex-wrap items-end justify-between gap-2">
           <div>

@@ -56,6 +56,7 @@ import { cn } from "@/lib/utils";
 
 import { addTagToStudents } from "../actions";
 import { exportStudents } from "../export";
+import { XLSX_TYPE, downloadBase64 } from "@/lib/download";
 import type { StudentListRow } from "../queries";
 import { type StudentSort, studentSearchParams } from "../search-params";
 import { EnrollmentStatusBadge, StudentStatusBadge } from "./status-badge";
@@ -339,17 +340,7 @@ export function StudentsTable({
         toast.error(tk(r.error));
         return;
       }
-      const bytes = Uint8Array.from(atob(r.data.base64), (c) => c.charCodeAt(0));
-      const url = URL.createObjectURL(
-        new Blob([bytes], {
-          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        }),
-      );
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = r.data.fileName;
-      a.click();
-      URL.revokeObjectURL(url);
+      downloadBase64(r.data.fileName, r.data.base64, XLSX_TYPE);
     });
   }
 

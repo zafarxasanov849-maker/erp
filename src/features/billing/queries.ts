@@ -3,6 +3,7 @@ import "server-only";
 import { type LedgerTransaction, balance, debtSince, oldDebt } from "@/lib/billing/balance";
 import type { BillingReason, LedgerLesson, MonthBasis } from "@/lib/billing/calc";
 import { unwrap } from "@/lib/action";
+import { rpcBranch } from "@/lib/metrics/rpc";
 import type { IsoDate } from "@/lib/dates";
 import { createClient } from "@/lib/supabase/server";
 
@@ -157,24 +158,36 @@ export type Receipt = NonNullable<Awaited<ReturnType<typeof getReceipt>>>;
 /** Qarzdorlar (PRD §6): faol talaba, umumiy balansi < 0. branchId null — barcha filiallar */
 export async function getDebtors(orgId: string, branchId: string | null, today: IsoDate) {
   const supabase = await createClient();
-  let q = supabase
-    .from("students_overview")
-    .select("id, full_name, phone, parent_phone, balance, old_debt, group_ids")
-    .eq("organization_id", orgId)
-    .eq("status", "active")
-    .lt("balance", 0)
-    .order("balance", { ascending: true })
-    .limit(1000);
-  if (branchId) q = q.eq("branch_id", branchId);
-  const students = unwrap(await q);
+  // Kim qarzdor — bitta ta'rif (metric_debtors): bosh sahifa kartochkasi ham shundan o'qiydi.
+  const debts = unwrap(
+    await supabase.rpc("metric_debtors", {
+      p_org: orgId,
+      p_branch: rpcBranch(branchId),
+      p_date: today,
+    }),
+  );
+  if (debts.length === 0) return [];
+  const debtIds = debts.map((d) => d.student_id);
+  const students = (
+    await Promise.all(
+      chunk(debtIds, 200).map(async (part) =>
+        unwrap(
+          await supabase
+            .from("students_overview")
+            .select("id, full_name, phone, parent_phone, balance, old_debt, group_ids")
+            .in("id", part),
+        ),
+      ),
+    )
+  )
+    .flat()
+    .sort((a, b) => (a.balance ?? 0) - (b.balance ?? 0));
   const ids = students.map((s) => s.id!);
   if (ids.length === 0) return [];
 
   const [txRows, groups] = await Promise.all([
     Promise.all(
-      Array.from({ length: Math.ceil(ids.length / 200) }, (_, i) =>
-        ids.slice(i * 200, i * 200 + 200),
-      ).map(async (part) =>
+      chunk(ids, 200).map(async (part) =>
         unwrap(
           await supabase
             .from("transactions")
@@ -221,4 +234,99 @@ export async function getDebtors(orgId: string, branchId: string | null, today: 
   });
 }
 
+function chunk<T>(items: readonly T[], size: number): T[][] {
+  return Array.from({ length: Math.ceil(items.length / size) }, (_, i) =>
+    items.slice(i * size, i * size + size),
+  );
+}
+
 export type Debtor = Awaited<ReturnType<typeof getDebtors>>[number];
+
+/** Tushumlar ro'yxati uchun eng ko'p qator (katta davrlarda — davrni qisqartirish kerak). */
+export const PAYMENTS_LIST_LIMIT = 3000;
+
+/**
+ * Moliya → Tushumlar: davrdagi to'lovlar (chek bo'yicha birlashtirilgan).
+ * Jami bekor qilinganlarsiz — metric_revenue bilan bir xil ta'rif (to'lov sanasi, qabul qilingan filial).
+ */
+export async function listPayments(
+  orgId: string,
+  branchId: string | null,
+  from: IsoDate,
+  to: IsoDate,
+) {
+  const supabase = await createClient();
+  let q = supabase
+    .from("transactions")
+    .select(
+      "id, amount, occurred_on, created_at, payment_ref, receipt_no, method_id, created_by, branch_id, student:students ( id, full_name ), author:staff ( profile:profiles ( full_name ) )",
+    )
+    .eq("organization_id", orgId)
+    .eq("kind", "payment")
+    .gte("occurred_on", from)
+    .lte("occurred_on", to)
+    .order("occurred_on", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(PAYMENTS_LIST_LIMIT);
+  if (branchId) q = q.eq("branch_id", branchId);
+  const rows = unwrap(await q);
+  const voided = new Set<string>();
+  for (const part of chunk(
+    rows.map((r) => r.id),
+    200,
+  )) {
+    const voids = unwrap(
+      await supabase
+        .from("transactions")
+        .select("voids_id")
+        .eq("kind", "void")
+        .in("voids_id", part),
+    );
+    for (const v of voids) if (v.voids_id) voided.add(v.voids_id);
+  }
+  const methods = await methodNames(rows.map((r) => r.method_id));
+
+  // Bitta chek (payment_ref) — bitta qator; qismlari (guruhlar bo'yicha) qo'shiladi
+  const byRef = new Map<
+    string,
+    {
+      ref: string;
+      receiptNo: number | null;
+      paidOn: IsoDate;
+      createdAt: string;
+      amount: number;
+      student: { id: string; fullName: string } | null;
+      methodId: string | null;
+      methodName: string;
+      staffId: string | null;
+      staffName: string | null;
+      branchId: string;
+      voided: boolean;
+    }
+  >();
+  for (const r of rows) {
+    const key = r.payment_ref ?? r.id;
+    const existing = byRef.get(key);
+    if (existing) {
+      existing.amount += r.amount;
+      continue;
+    }
+    byRef.set(key, {
+      ref: key,
+      receiptNo: r.receipt_no,
+      paidOn: r.occurred_on,
+      createdAt: r.created_at,
+      amount: r.amount,
+      student: r.student ? { id: r.student.id, fullName: r.student.full_name } : null,
+      methodId: r.method_id,
+      methodName: r.method_id ? (methods.get(r.method_id) ?? "") : "",
+      staffId: r.created_by,
+      staffName: r.author?.profile?.full_name ?? null,
+      branchId: r.branch_id,
+      voided: voided.has(r.id),
+    });
+  }
+  return { payments: [...byRef.values()], truncated: rows.length >= PAYMENTS_LIST_LIMIT };
+}
+
+export type PaymentListItem = Awaited<ReturnType<typeof listPayments>>["payments"][number];

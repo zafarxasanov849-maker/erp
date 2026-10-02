@@ -1,5 +1,7 @@
 import "server-only";
 
+import { cache } from "react";
+
 import type { AttendanceStatus } from "@/lib/attendance";
 import { unwrap } from "@/lib/action";
 import type { IsoDate } from "@/lib/dates";
@@ -127,7 +129,11 @@ export async function getLesson(lessonId: string) {
 }
 
 /** Kun darslari: branchId null — barcha filiallar */
-export async function getDayLessons(orgId: string, date: IsoDate, branchId: string | null) {
+export const getDayLessons = cache(async function getDayLessons(
+  orgId: string,
+  date: IsoDate,
+  branchId: string | null,
+) {
   const supabase = await createClient();
   return unwrap(
     await supabase.rpc("day_lessons", {
@@ -136,7 +142,7 @@ export async function getDayLessons(orgId: string, date: IsoDate, branchId: stri
       ...(branchId ? { p_branch: branchId } : {}),
     }),
   );
-}
+});
 
 export type DayLesson = Awaited<ReturnType<typeof getDayLessons>>[number];
 

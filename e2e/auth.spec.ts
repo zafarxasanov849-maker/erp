@@ -10,7 +10,7 @@ test("kirmagan foydalanuvchi /login ga yo'naltiriladi", async ({ page }) => {
 
 test("markaz ochish → chiqish → qayta kirish", async ({ page }) => {
   const account = await registerOrg(page);
-  await expect(page.getByRole("heading", { level: 1, name: "Bosh sahifa" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Salom, Aziz!" })).toBeVisible();
 
   await logout(page);
 
