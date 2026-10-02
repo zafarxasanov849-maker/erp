@@ -6,16 +6,24 @@ import { useTranslations } from "next-intl";
 
 import { cn } from "@/lib/utils";
 
-import { NAV_ITEMS } from "../nav";
+import { NAV_ITEMS, type NavKey } from "../nav";
 
-export function NavLinks({ branchId, onNavigate }: { branchId: string; onNavigate?: () => void }) {
+export function NavLinks({
+  branchId,
+  allowed,
+  onNavigate,
+}: {
+  branchId: string;
+  allowed: readonly NavKey[];
+  onNavigate?: () => void;
+}) {
   const t = useTranslations("nav");
   // [branchId] layout'idan keyingi segment: "dashboard", "students", ...
   const active = useSelectedLayoutSegment();
 
   return (
     <nav className="flex flex-col gap-1">
-      {NAV_ITEMS.map(({ key, segment, icon: Icon }) => {
+      {NAV_ITEMS.filter((i) => allowed.includes(i.key)).map(({ key, segment, icon: Icon }) => {
         const isActive = active === segment;
         return (
           <Link

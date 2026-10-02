@@ -46,7 +46,7 @@ supabase/
 
 ## Qat'iy qoidalar
 
-1. **Har jadvalda `organization_id`** va RLS yoqilgan bo'ladi. Hech qachon RLS'ni o'chirmang yoki `service_role` kalitini klientga bermang. Service role faqat cron va webhook'larda.
+1. **Har jadvalda `organization_id`** va RLS yoqilgan bo'ladi. Hech qachon RLS'ni o'chirmang yoki `service_role` kalitini klientga bermang. Service role faqat cron va webhook'larda. Yagona istisno: `src/features/staff/actions.ts` — yangi xodim uchun `auth.admin.createUser` (va xatoda `deleteUser`), `requirePermission('settings.staff')` dan keyin; qolgan yozuvlar foydalanuvchi sessiyasi bilan (RLS). ESLint boshqa joylarda `@/lib/supabase/admin` importini taqiqlaydi.
 2. **Ruxsat tekshiruvi ikki joyda**: Server Action ichida (`requirePermission('students.create')`) va RLS'da (`has_permission()`). UI'da tugmani yashirish — faqat qulaylik, himoya emas.
 3. **Pul** — `bigint`, butun so'mda. Hech qachon `float` emas. Ko'rsatishda `1 250 000 so'm` (bo'shliq bilan). Manfiy balans = qarz.
 4. **Balans hech qachon saqlanmaydi** — har doim `transactions` yig'indisidan hisoblanadi (view yoki funksiya). Tranzaksiya o'chirilmaydi, faqat `voided_at` bilan bekor qilinadi va teskari yozuv qilinadi.

@@ -31,7 +31,15 @@ pnpm db:types           # src/lib/supabase/database.types.ts ni yangilash
 pnpm dev                # http://localhost:3000
 ```
 
-Supabase'siz ham `pnpm dev` ishlaydi (faqat development rejimida): qobiq va sahifalar ochiladi, auth esa 1-bosqichda ulanadi. Production'da (`pnpm start`) Supabase env bo'lmasa server xato beradi.
+`.env.local` dagi `SEND_SMS_HOOK_SECRET` — `supabase/config.toml` dagi `[auth.hook.send_sms] secrets` qiymati bilan bir xil bo'lsin.
+
+### Auth va SMS
+
+- Kirish: telefon + parol (Supabase Auth, telefon provayderi). Ro'yxatdan o'tish va parolni tiklash SMS-kod bilan.
+- SMS'ni Supabase emas, ilova yuboradi: Supabase Auth **Send SMS hook** → `POST /api/auth/sms-hook` (Standard Webhooks imzosi tekshiriladi) → `src/lib/sms.ts`.
+- Lokal ishlab chiqishda SMS yuborilmaydi: kod `pnpm dev` konsoliga chiqadi (`[sms:dev] +998...: ... kodi 123456`) va `GET /api/dev/sms?phone=%2B998...` orqali ko'rinadi. Eskiz.uz 9-bosqichda ulanadi; ungacha production'da SMS yuborib bo'lmaydi.
+- Lokal Supabase hook'ni `http://host.docker.internal:3000` ga yuboradi — dev server **3000** portida bo'lishi kerak.
+- `supabase/config.toml` dagi `[auth.sms.twilio]` — soxta qiymatlar: CLI telefon kirishini faqat provayder yoqilgan bo'lsa ishga tushiradi, haqiqatda hook ishlatiladi.
 
 ## Buyruqlar
 
@@ -44,11 +52,12 @@ Supabase'siz ham `pnpm dev` ishlaydi (faqat development rejimida): qobiq va sahi
 | `pnpm typecheck`                    | TypeScript                                           |
 | `pnpm test`                         | Vitest (biznes-mantiq)                               |
 | `pnpm e2e`                          | Playwright (desktop + 375 px mobil)                  |
+| `supabase test db`                  | pgTAP: RLS va markazlar izolyatsiyasi                |
 | `pnpm db:types`                     | Supabase'dan TypeScript turlarini generatsiya qilish |
 
 Har bosqich oxirida: `pnpm lint && pnpm typecheck && pnpm test`.
 
-Playwright brauzeri: `pnpm exec playwright install chromium`. Boshqa versiyadagi Chromium'dan foydalanish uchun: `PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome pnpm e2e`.
+E2E testlar haqiqiy lokal Supabase bilan ishlaydi (`supabase start` kerak): har test yangi markaz ochadi, SMS kodlarini dev inbox'dan o'qiydi. Playwright brauzeri: `pnpm exec playwright install chromium`. Boshqa versiyadagi Chromium'dan foydalanish uchun: `PLAYWRIGHT_CHROMIUM_PATH=/path/to/chrome pnpm e2e`.
 
 ## Tuzilma
 
@@ -57,19 +66,31 @@ messages/               uz.json, ru.json — barcha UI matnlari
 src/
   app/(app)/[branchId]/ ichki sahifalar; [branchId] = filial uuid yoki "all"
   components/ui/        shadcn komponentlari
-  components/           umumiy komponentlar (EmptyState, ...)
-  features/<modul>/     modul kodi (shell — sidebar, header, filial tanlagich)
+  app/(auth)/           login, register, verify, reset
+  app/(account)/        onboarding (markaz ochish), select-org, change-password
+  app/api/auth/sms-hook Supabase Auth → SMS
+  components/           umumiy komponentlar (EmptyState, PhoneInput, NoAccess, PlanLimit, ...)
+  features/<modul>/     actions.ts, queries.ts, schema.ts (zod), components/
+                        auth, shell, settings, organization, branches, roles, staff
   i18n/                 next-intl sozlamalari (til cookie'da, URL'da emas)
   lib/
+    auth.ts             getOrgContext(), requirePermission(), requirePagePermission()
+    permissions.ts      ruxsatlar ro'yxati va tizim rollari (yagona manba)
+    action.ts           Server Action natijasi, xatolar, unwrap()
     money.ts            formatMoney → "1 250 000 so'm"
     dates.ts            KK.OO.YYYY, HH:mm, Asia/Tashkent
     phone.ts            +998XXXXXXXXX normalizatsiya (har qanday 9 raqamli kod)
     supabase/           server, client, middleware, admin (service role — faqat api/)
 supabase/
-  migrations/           SQL migratsiyalar
+  migrations/           SQL migratsiyalar (RLS siyosatlari, register_organization, audit triggerlari)
+  tests/database/       pgTAP testlari
 e2e/                    Playwright testlari
 ```
 
 ## Muhit o'zgaruvchilari
 
-`.env.example` ga qarang. `SUPABASE_SERVICE_ROLE_KEY` faqat serverda (cron va webhook'lar) ishlatiladi va hech qachon brauzerga chiqmaydi. ESLint `@/lib/supabase/admin` ni `src/app/api/` dan tashqarida import qilishni taqiqlaydi.
+`.env.example` ga qarang. `SUPABASE_SERVICE_ROLE_KEY` faqat serverda ishlatiladi va hech qachon brauzerga chiqmaydi: cron/webhook'lar (`src/app/api/`) va yangi xodim yaratish (`src/features/staff/actions.ts`, faqat `auth.admin.createUser`). ESLint boshqa joylarda `@/lib/supabase/admin` importini taqiqlaydi.
+
+## Ruxsatlar
+
+Ruxsat ikki joyda tekshiriladi: Server Action/sahifada (`requirePermission`, `requirePagePermission`) va bazada (RLS `has_permission()`, himoya triggerlari). Rol — `modul.amal` ruxsatlar to'plami; ro'yxat `src/lib/permissions.ts` da. Hech kim o'zida yo'q ruxsatni boshqaga bera olmaydi; egasi roli va egasi yozuvi faqat egasi tomonidan o'zgaradi. Rollar, xodimlar va filiallar o'zgarishi `audit_log` ga trigger orqali yoziladi.

@@ -1,8 +1,8 @@
-import { notFound } from "next/navigation";
+import { forbidden } from "next/navigation";
 
 import { AppShell } from "@/features/shell/components/app-shell";
-import { MOCK_BRANCHES, MOCK_USER } from "@/features/shell/mock";
-import { ALL_BRANCHES } from "@/features/shell/nav";
+import { ALL_BRANCHES, NAV_ITEMS } from "@/features/shell/nav";
+import { canAny, getOrgContext } from "@/lib/auth";
 
 export default async function BranchLayout({
   children,
@@ -12,15 +12,29 @@ export default async function BranchLayout({
   params: Promise<{ branchId: string }>;
 }) {
   const { branchId } = await params;
+  const ctx = await getOrgContext();
+  const { membership, profile, branches } = ctx;
 
-  // 1-bosqichda: can_see_branch() bilan tekshiriladi va ruxsat yo'q bo'lsa 403 sahifa.
-  const known =
-    (branchId === ALL_BRANCHES && MOCK_USER.canSeeAllBranches) ||
-    MOCK_BRANCHES.some((b) => b.id === branchId);
-  if (!known) notFound();
+  // Filialga kirish: "all" — faqat barcha filiallarga biriktirilganlar; aks holda o'z filiallari.
+  const allowedBranch =
+    branchId === ALL_BRANCHES ? membership.allBranches : branches.some((b) => b.id === branchId);
+  if (!allowedBranch) forbidden();
+
+  const allowed = NAV_ITEMS.filter((i) => canAny(ctx, i.permissions)).map((i) => i.key);
 
   return (
-    <AppShell branchId={branchId} branches={MOCK_BRANCHES} user={MOCK_USER}>
+    <AppShell
+      branchId={branchId}
+      branches={branches}
+      allowed={allowed}
+      org={{ name: membership.orgName, logoUrl: membership.orgLogo, color: membership.orgColor }}
+      user={{
+        fullName: profile.fullName,
+        roleName: membership.roleName,
+        canSeeAllBranches: membership.allBranches,
+        hasOtherOrgs: ctx.memberships.length > 1,
+      }}
+    >
       {children}
     </AppShell>
   );

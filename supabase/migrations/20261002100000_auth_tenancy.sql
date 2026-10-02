@@ -454,19 +454,23 @@ revoke execute on function public.find_profile_by_phone(uuid, text) from public,
 grant execute on function public.find_profile_by_phone(uuid, text) to authenticated;
 
 -- Xodim + filiallarini bitta tranzaksiyada saqlash. SECURITY INVOKER — RLS va triggerlar amal qiladi.
+-- p_staff_id null — yangi xodim (p_user_id kerak); aks holda mavjudini yangilash (p_user_id e'tiborsiz).
 create or replace function public.save_staff(
   p_org uuid,
-  p_staff_id uuid,
-  p_user_id uuid,
   p_role_id uuid,
   p_is_teacher boolean,
   p_all_branches boolean,
-  p_branch_ids uuid[]
+  p_branch_ids uuid[],
+  p_user_id uuid default null,
+  p_staff_id uuid default null
 ) returns uuid language plpgsql security invoker set search_path = public as $$
 declare
   v_id uuid;
 begin
   if p_staff_id is null then
+    if p_user_id is null then
+      raise exception 'invalid_input' using errcode = '22023';
+    end if;
     insert into staff (organization_id, user_id, role_id, is_teacher, all_branches)
     values (p_org, p_user_id, p_role_id, p_is_teacher, p_all_branches)
     returning id into v_id;
@@ -488,8 +492,8 @@ begin
   return v_id;
 end $$;
 
-revoke execute on function public.save_staff(uuid, uuid, uuid, uuid, boolean, boolean, uuid[]) from public, anon;
-grant execute on function public.save_staff(uuid, uuid, uuid, uuid, boolean, boolean, uuid[]) to authenticated;
+revoke execute on function public.save_staff(uuid, uuid, boolean, boolean, uuid[], uuid, uuid) from public, anon;
+grant execute on function public.save_staff(uuid, uuid, boolean, boolean, uuid[], uuid, uuid) to authenticated;
 
 -- =====================================================================
 -- Ustun darajasidagi huquqlar: foydalanuvchi tizim maydonlarini o'zgartira olmasin.
@@ -739,11 +743,12 @@ create policy audit_log_read on audit_log for select
   using (has_permission(organization_id, 'audit.view'));
 
 -- =====================================================================
--- Storage: markaz logolari (ommaviy o'qish, yozish — settings.organization)
+-- Storage: markaz logolari (ommaviy o'qish, yozish — settings.organization).
+-- SVG ruxsat etilmaydi: ichida skript bo'lishi mumkin.
 -- Yo'l: org-assets/<organization_id>/<fayl>
 -- =====================================================================
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
-values ('org-assets', 'org-assets', true, 2097152, array['image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'])
+values ('org-assets', 'org-assets', true, 2097152, array['image/png', 'image/jpeg', 'image/webp'])
 on conflict (id) do nothing;
 
 create policy org_assets_insert on storage.objects for insert to authenticated

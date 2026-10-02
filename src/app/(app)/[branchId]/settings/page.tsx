@@ -1,13 +1,12 @@
-import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
+import { forbidden, redirect } from "next/navigation";
 
-import { SectionPlaceholder } from "@/features/shell/components/section-placeholder";
+import { SETTINGS_SECTIONS } from "@/features/settings/sections";
+import { can, getOrgContext } from "@/lib/auth";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("nav");
-  return { title: t("settings") };
-}
-
-export default function Page() {
-  return <SectionPlaceholder section="settings" />;
+export default async function SettingsIndex({ params }: { params: Promise<{ branchId: string }> }) {
+  const { branchId } = await params;
+  const ctx = await getOrgContext();
+  const first = SETTINGS_SECTIONS.find((s) => can(ctx, s.permission));
+  if (!first) forbidden();
+  redirect(`/${branchId}/settings/${first.key}`);
 }

@@ -6,7 +6,16 @@
   "common": {
     "close": "Yopish",
     "openMenu": "Menyuni ochish",
-    "loading": "Yuklanmoqda…"
+    "loading": "Yuklanmoqda…",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "saved": "Saqlandi",
+    "remove": "Olib tashlash",
+    "delete": "O'chirish",
+    "back": "Orqaga",
+    "copy": "Nusxa olish",
+    "copied": "Nusxa olindi",
+    "done": "Tayyor"
   },
   "nav": {
     "dashboard": "Bosh sahifa",
@@ -26,7 +35,9 @@
   "user": {
     "menu": "Foydalanuvchi menyusi",
     "language": "Til",
-    "signOut": "Chiqish"
+    "signOut": "Chiqish",
+    "changePassword": "Parolni o'zgartirish",
+    "switchOrg": "Markazni almashtirish"
   },
   "locale": {
     "uz": "O'zbekcha",
@@ -40,5 +51,311 @@
     "title": "Sahifa topilmadi",
     "description": "Bunday sahifa yo'q yoki o'chirilgan.",
     "home": "Bosh sahifaga qaytish"
+  },
+  "access": {
+    "noAccessTitle": "Sizda bu bo'limga ruxsat yo'q",
+    "noAccessDescription": "Agar bu bo'lim ishingiz uchun kerak bo'lsa, markaz rahbariga murojaat qiling — u rolingizga ruxsat qo'shadi.",
+    "home": "Bosh sahifaga qaytish",
+    "planLimitTitle": "Bu funksiya {plan} tarifida",
+    "planLimitDescription": "Ushbu imkoniyatdan foydalanish uchun tarifni oshiring.",
+    "upgrade": "Tarifni oshirish",
+    "noBranchTitle": "Sizga filial biriktirilmagan",
+    "noBranchDescription": "Ishni boshlash uchun markaz rahbari sizni kamida bitta filialga biriktirishi kerak."
+  },
+  "sms": {
+    "otp": "EduCRM: tasdiqlash kodi {code}. Uni hech kimga bermang."
+  },
+  "auth": {
+    "phone": "Telefon raqami",
+    "password": "Parol",
+    "showPassword": "Parolni ko'rsatish",
+    "hidePassword": "Parolni yashirish",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "signIn": "Kirish",
+    "noAccount": "Markazingiz hali ro'yxatdan o'tmaganmi?",
+    "registerLink": "Markaz ochish",
+    "haveAccount": "Akkauntingiz bormi?",
+    "signInLink": "Kirish",
+    "orgName": "Markaz nomi",
+    "orgNamePlaceholder": "Masalan: Ilm-ziyo o'quv markazi",
+    "fullName": "Ism va familiya",
+    "phoneHint": "Shu raqamga SMS orqali tasdiqlash kodi yuboriladi.",
+    "register": "Davom etish",
+    "code": "SMS kod",
+    "confirm": "Tasdiqlash",
+    "resend": "Kodni qayta yuborish",
+    "resendIn": "Kodni qayta yuborish ({seconds} s)",
+    "codeResent": "Kod qayta yuborildi",
+    "sendCode": "Kod yuborish",
+    "backToLogin": "Kirish sahifasiga qaytish",
+    "newPassword": "Yangi parol",
+    "confirmPassword": "Parolni takrorlang",
+    "savePassword": "Parolni saqlash",
+    "branchName": "Birinchi filial nomi",
+    "branchNamePlaceholder": "Masalan: Chilonzor",
+    "branchNameHint": "Keyinroq Sozlamalar → Filiallar bo'limida yana filial qo'shishingiz mumkin.",
+    "createOrg": "Markazni ochish",
+    "trialNote": "14 kunlik bepul sinov muddati boshlanadi.",
+    "loginTitle": "Kirish",
+    "loginDescription": "Telefon raqamingiz va parolingizni kiriting.",
+    "registerTitle": "Markaz ochish",
+    "registerDescription": "O'quv markazingizni ro'yxatdan o'tkazing — bir necha daqiqa vaqt oladi.",
+    "verifyTitle": "Telefonni tasdiqlash",
+    "verifyDescription": "{phone} raqamiga yuborilgan 6 xonali kodni kiriting.",
+    "resetTitle": "Parolni tiklash",
+    "resetDescription": "Telefon raqamingizni kiriting — SMS orqali kod yuboramiz.",
+    "changePasswordTitle": "Yangi parol",
+    "changePasswordTemp": "Siz vaqtinchalik parol bilan kirdingiz. Davom etish uchun o'zingizning parolingizni o'rnating.",
+    "changePasswordDescription": "Kamida 8 belgidan iborat yangi parol kiriting.",
+    "onboardingTitle": "Markaz ma'lumotlari",
+    "onboardingDescription": "Oxirgi qadam: markaz va birinchi filial nomini tasdiqlang.",
+    "selectOrgTitle": "Markazni tanlang",
+    "selectOrgDescription": "Siz bir nechta markazda ishlaysiz. Qaysi birida davom etamiz?",
+    "newOrg": "Yangi markaz ochish"
+  },
+  "validation": {
+    "required": "Majburiy maydon",
+    "tooLong": "Juda uzun",
+    "phone": "Telefon raqami noto'g'ri. Masalan: 90 123 45 67",
+    "passwordMin": "Parol kamida 8 belgidan iborat bo'lsin",
+    "passwordMismatch": "Parollar mos kelmadi",
+    "otp": "6 xonali kodni kiriting",
+    "time": "Vaqt noto'g'ri (SS:dd)",
+    "timeRange": "Tugash vaqti boshlanishidan keyin bo'lishi kerak",
+    "color": "Rang #RRGGBB ko'rinishida bo'lsin",
+    "branchRequired": "Kamida bitta filialni tanlang"
+  },
+  "errors": {
+    "forbidden": "Sizda bu amal uchun ruxsat yo'q",
+    "unexpected": "Kutilmagan xatolik. Qaytadan urinib ko'ring.",
+    "validation": "Maydonlarni tekshiring",
+    "duplicate": "Bunday nom bilan yozuv allaqachon bor",
+    "notFound": "Yozuv topilmadi",
+    "lastBranch": "Oxirgi faol filialni nofaol qilib bo'lmaydi",
+    "roleInUse": "Bu rolda xodimlar bor. Avval ularga boshqa rol bering.",
+    "staffExists": "Bu raqamli xodim markazda allaqachon bor",
+    "logo": {
+      "type": "Faqat PNG, JPG yoki WEBP rasm",
+      "size": "Rasm hajmi 2 MB dan oshmasin",
+      "upload": "Rasmni yuklab bo'lmadi"
+    },
+    "auth": {
+      "invalidCredentials": "Telefon raqami yoki parol noto'g'ri",
+      "phoneExists": "Bu raqam allaqachon ro'yxatdan o'tgan. Kirish sahifasidan foydalaning.",
+      "invalidCode": "Kod noto'g'ri yoki muddati o'tgan",
+      "rateLimit": "Juda ko'p urinish. Bir daqiqadan keyin qayta urinib ko'ring.",
+      "samePassword": "Yangi parol eskisidan farq qilishi kerak",
+      "phoneNotRegistered": "Bu raqam ro'yxatdan o'tmagan",
+      "smsFailed": "SMS yuborib bo'lmadi. Keyinroq urinib ko'ring."
+    },
+    "db": {
+      "permission_escalation": "O'zingizda yo'q ruxsatni boshqaga bera olmaysiz",
+      "owner_locked": "Markaz egasining ma'lumotlarini faqat egasi o'zgartira oladi",
+      "owner_role_locked": "Egasi rolini o'zgartirib bo'lmaydi",
+      "last_owner": "Markazda kamida bitta faol egasi qolishi kerak",
+      "self_deactivate": "O'zingizni nofaol qila olmaysiz",
+      "system_role_delete": "Tizim rolini o'chirib bo'lmaydi",
+      "system_role_insert": "Tizim rolini qo'lda yaratib bo'lmaydi",
+      "role_immutable_fields": "Rolning tizim maydonlarini o'zgartirib bo'lmaydi",
+      "staff_immutable_fields": "Xodimning foydalanuvchisini o'zgartirib bo'lmaydi",
+      "branch_org_mismatch": "Filial boshqa markazga tegishli",
+      "too_many_organizations": "Bitta akkaunt bilan 5 tadan ortiq markaz ochib bo'lmaydi",
+      "phone_not_confirmed": "Avval telefon raqamingizni tasdiqlang"
+    }
+  },
+  "roles": {
+    "system": {
+      "owner": {
+        "name": "Egasi",
+        "description": "Markaz egasi: barcha ruxsatlar, tarif va rollar"
+      },
+      "ceo": {
+        "name": "Rahbar",
+        "description": "Barcha filiallar, moliya va hisobotlar"
+      },
+      "manager": {
+        "name": "Menejer",
+        "description": "O'z filiallari: talabalar, guruhlar, moliya"
+      },
+      "admin": {
+        "name": "Admin",
+        "description": "Qabulxona: talaba qo'shish, to'lov qabul qilish, davomat"
+      },
+      "sales": {
+        "name": "Sotuvchi",
+        "description": "Lidlar va sotuv varonkasi"
+      },
+      "teacher": {
+        "name": "Ustoz",
+        "description": "O'z guruhlari va davomati"
+      }
+    }
+  },
+  "settings": {
+    "sections": {
+      "organization": "Markaz",
+      "branches": "Filiallar",
+      "roles": "Rollar",
+      "staff": "Xodimlar"
+    },
+    "organization": {
+      "name": "Markaz nomi",
+      "color": "Asosiy rang",
+      "workStart": "Ish boshlanishi",
+      "workEnd": "Ish tugashi",
+      "logo": "Logotip",
+      "uploadLogo": "Rasm yuklash",
+      "logoHint": "PNG, JPG yoki WEBP, 2 MB gacha. Kvadrat rasm yaxshi ko'rinadi."
+    },
+    "branches": {
+      "description": "Markazingiz filiallari. Nofaol filial tanlagichda ko'rinmaydi, ma'lumotlari saqlanadi.",
+      "add": "Filial qo'shish",
+      "edit": "Filialni tahrirlash",
+      "name": "Nomi",
+      "address": "Manzil",
+      "phone": "Telefon",
+      "status": "Holati",
+      "active": "Faol",
+      "activeHint": "Nofaol filial tanlagichda ko'rinmaydi",
+      "activeBadge": "Faol",
+      "inactiveBadge": "Nofaol",
+      "emptyTitle": "Hali filial yo'q",
+      "emptyDescription": "Ishni boshlash uchun \"Filial qo'shish\" tugmasini bosing."
+    },
+    "roles": {
+      "description": "Rol — ruxsatlar to'plami. Xodimga rol beriladi. Tizim rollarini o'chirib bo'lmaydi.",
+      "add": "Rol qo'shish",
+      "edit": "Rolni tahrirlash",
+      "name": "Nomi",
+      "roleDescription": "Tavsif",
+      "staffCount": "Xodimlar",
+      "permissionCount": "Ruxsatlar",
+      "system": "Tizim",
+      "allPermissions": "Hammasi",
+      "permissionsTitle": "Ruxsatlar",
+      "selectAll": "Hammasini belgilash",
+      "clearAll": "Tozalash",
+      "ownerLocked": "Egasi roli barcha ruxsatlarga ega va o'zgartirilmaydi.",
+      "deleteConfirm": "\"{name}\" rolini o'chirasizmi?",
+      "deleted": "Rol o'chirildi",
+      "emptyTitle": "Rollar yo'q",
+      "emptyDescription": "\"Rol qo'shish\" tugmasi bilan birinchi rolni yarating."
+    },
+    "staff": {
+      "description": "Markaz xodimlari va ularning rollari. Nofaol xodim tizimga kira olmaydi.",
+      "add": "Xodim qo'shish",
+      "fullName": "Ism va familiya",
+      "phone": "Telefon",
+      "role": "Rol",
+      "rolePlaceholder": "Rolni tanlang",
+      "isTeacher": "Ustoz (guruhlarga biriktiriladi)",
+      "teacherBadge": "Ustoz",
+      "allBranches": "Barcha filiallar",
+      "allBranchesHint": "Hozirgi va keyin ochiladigan barcha filiallar",
+      "branches": "Filiallar",
+      "tempPassword": "Vaqtinchalik parol",
+      "tempPasswordHint": "Xodim birinchi kirishda o'z parolini o'rnatadi.",
+      "regenerate": "Yangi parol",
+      "addedNew": "Xodim qo'shildi. Kirish ma'lumotlarini xodimga yetkazing:",
+      "addedExisting": "Bu raqam bilan foydalanuvchi allaqachon bor — u markazingizga qo'shildi va o'z paroli bilan kiradi.",
+      "status": "Holati",
+      "active": "Faol",
+      "activeHint": "Nofaol xodim tizimga kira olmaydi",
+      "activeBadge": "Faol",
+      "inactiveBadge": "Nofaol",
+      "emptyTitle": "Hali xodim yo'q",
+      "emptyDescription": "\"Xodim qo'shish\" tugmasi bilan admin, ustoz va boshqa xodimlarni qo'shing."
+    }
+  },
+  "permissions": {
+    "dashboard": {
+      "_title": "Bosh sahifa",
+      "view": "Ko'rish"
+    },
+    "students": {
+      "_title": "Talabalar",
+      "view": "Ko'rish",
+      "create": "Qo'shish",
+      "update": "Tahrirlash va a'zoliklar",
+      "delete": "Arxivlash",
+      "export": "Excel eksport"
+    },
+    "groups": {
+      "_title": "Guruhlar",
+      "view": "Ko'rish",
+      "create": "Yaratish",
+      "update": "Tahrirlash va darslar",
+      "delete": "O'chirish"
+    },
+    "attendance": {
+      "_title": "Davomat",
+      "view": "Ko'rish",
+      "manage": "Barcha guruhlarda belgilash va tahrirlash"
+    },
+    "payments": {
+      "_title": "To'lovlar",
+      "view": "Ko'rish",
+      "create": "To'lov qabul qilish",
+      "void": "To'lovni bekor qilish",
+      "refund": "Pulni qaytarish"
+    },
+    "discounts": {
+      "_title": "Chegirmalar",
+      "manage": "Chegirma berish"
+    },
+    "expenses": {
+      "_title": "Xarajatlar",
+      "view": "Ko'rish",
+      "create": "Qo'shish",
+      "update": "Tahrirlash",
+      "delete": "O'chirish"
+    },
+    "cash": {
+      "_title": "Kassa",
+      "view": "Ko'rish",
+      "handover": "Pul topshirish"
+    },
+    "salary": {
+      "_title": "Ish haqi",
+      "view": "Ko'rish",
+      "manage": "Hisoblash va berish"
+    },
+    "leads": {
+      "_title": "Sotuv (lidlar)",
+      "view": "Ko'rish",
+      "view_all": "Barcha lidlarni ko'rish",
+      "create": "Qo'shish",
+      "update": "Tahrirlash",
+      "delete": "O'chirish",
+      "settings": "Varonkalarni sozlash"
+    },
+    "reports": {
+      "_title": "Hisobotlar",
+      "view": "Ko'rish",
+      "finance": "Moliya hisobotlari"
+    },
+    "sms": {
+      "_title": "SMS",
+      "view": "Tarixni ko'rish",
+      "send": "Yuborish"
+    },
+    "branches": {
+      "_title": "Filiallar",
+      "all": "Barcha filiallarga kirish huquqini berish"
+    },
+    "settings": {
+      "_title": "Sozlamalar",
+      "organization": "Markaz",
+      "branches": "Filiallar",
+      "roles": "Rollar",
+      "staff": "Xodimlar",
+      "catalogs": "Ma'lumotnomalar (kurslar, xonalar, sabablar...)",
+      "integrations": "Integratsiyalar (Telegram, SMS)",
+      "billing": "Tarif va to'lov"
+    },
+    "audit": {
+      "_title": "Audit",
+      "view": "O'zgarishlar tarixini ko'rish"
+    }
   }
 }

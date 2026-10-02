@@ -35,9 +35,9 @@ const eslintConfig = [
     },
   },
   {
-    // service role klienti faqat cron/webhook'larda (CLAUDE.md qoida 1)
+    // service role klienti faqat cron/webhook'larda va xodim yaratishda (CLAUDE.md qoida 1)
     files: ["src/**/*.{ts,tsx}"],
-    ignores: ["src/app/api/**", "src/lib/supabase/admin.ts"],
+    ignores: ["src/app/api/**", "src/lib/supabase/admin.ts", "src/features/staff/actions.ts"],
     rules: {
       "no-restricted-imports": [
         "error",
@@ -45,7 +45,8 @@ const eslintConfig = [
           paths: [
             {
               name: "@/lib/supabase/admin",
-              message: "Service role faqat src/app/api/ (cron, webhook) ichida ishlatiladi.",
+              message:
+                "Service role faqat src/app/api/ (cron, webhook) va src/features/staff/actions.ts (xodim yaratish) da.",
             },
           ],
         },

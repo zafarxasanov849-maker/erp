@@ -1,6 +1,13 @@
 import { describe, expect, it } from "vitest";
 
-import { KNOWN_OPERATOR_CODES, formatPhone, isValidPhone, normalizePhone } from "./phone";
+import {
+  KNOWN_OPERATOR_CODES,
+  formatLocalPhoneInput,
+  formatPhone,
+  isValidPhone,
+  normalizePhone,
+  toLocalPhoneInput,
+} from "./phone";
 
 describe("normalizePhone", () => {
   it.each([
@@ -80,5 +87,38 @@ describe("formatPhone", () => {
 
   it("noma'lum formatni o'zgartirmaydi", () => {
     expect(formatPhone("12345")).toBe("12345");
+  });
+});
+
+describe("formatLocalPhoneInput", () => {
+  it.each([
+    ["9", "9"],
+    ["90", "90"],
+    ["901", "90 1"],
+    ["90123", "90 123"],
+    ["901234", "90 123 4"],
+    ["9012345", "90 123 45"],
+    ["901234567", "90 123 45 67"],
+    ["9012345678", "90 123 45 67"],
+    ["+998 90 123 45 67", "90 123 45 67"],
+    ["998901234567", "90 123 45 67"],
+    ["(90) 123-45-67", "90 123 45 67"],
+    ["", ""],
+  ])("%s → %s", (input, expected) => {
+    expect(formatLocalPhoneInput(input)).toBe(expected);
+  });
+
+  it("natija normalizePhone bilan mos", () => {
+    expect(normalizePhone(formatLocalPhoneInput("+998901234567"))).toMatchObject({
+      ok: true,
+      phone: "+998901234567",
+    });
+  });
+});
+
+describe("toLocalPhoneInput", () => {
+  it("bazadagi raqamni formaga", () => {
+    expect(toLocalPhoneInput("+998901234567")).toBe("90 123 45 67");
+    expect(toLocalPhoneInput(null)).toBe("");
   });
 });

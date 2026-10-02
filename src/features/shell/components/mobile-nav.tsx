@@ -7,9 +7,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
+import type { NavKey } from "../nav";
 import { NavLinks } from "./nav-links";
 
-export function MobileNav({ branchId }: { branchId: string }) {
+export function MobileNav({
+  branchId,
+  allowed,
+  orgName,
+}: {
+  branchId: string;
+  allowed: readonly NavKey[];
+  orgName: string;
+}) {
   const t = useTranslations();
   const [open, setOpen] = useState(false);
 
@@ -22,10 +31,10 @@ export function MobileNav({ branchId }: { branchId: string }) {
       </SheetTrigger>
       <SheetContent side="left" className="w-72 bg-sidebar p-0" closeLabel={t("common.close")}>
         <SheetHeader className="border-b">
-          <SheetTitle>{t("app.name")}</SheetTitle>
+          <SheetTitle className="truncate pr-6">{orgName}</SheetTitle>
         </SheetHeader>
         <div className="p-3">
-          <NavLinks branchId={branchId} onNavigate={() => setOpen(false)} />
+          <NavLinks branchId={branchId} allowed={allowed} onNavigate={() => setOpen(false)} />
         </div>
       </SheetContent>
     </Sheet>

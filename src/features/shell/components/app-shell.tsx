@@ -1,38 +1,55 @@
-import type { ReactNode } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
-import type { ShellBranch, ShellUser } from "../mock";
+import type { NavKey } from "../nav";
+import type { ShellBranch, ShellUser } from "../types";
 import { BranchSwitcher } from "./branch-switcher";
 import { Brand } from "./brand";
 import { MobileNav } from "./mobile-nav";
 import { NavLinks } from "./nav-links";
 import { UserMenu } from "./user-menu";
 
+const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
+
 export function AppShell({
   branchId,
   branches,
   user,
+  org,
+  allowed,
   children,
 }: {
   branchId: string;
   branches: readonly ShellBranch[];
   user: ShellUser;
+  org: { name: string; logoUrl: string | null; color: string | null };
+  allowed: readonly NavKey[];
   children: ReactNode;
 }) {
+  // Markaz rangi (Sozlamalar → Markaz) asosiy rang sifatida
+  const style =
+    org.color && HEX_COLOR.test(org.color)
+      ? ({
+          "--primary": org.color,
+          "--sidebar-primary": org.color,
+          "--ring": org.color,
+        } as CSSProperties)
+      : undefined;
+
   return (
-    <div className="flex min-h-dvh">
+    <div className="flex min-h-dvh" style={style}>
       <aside
         data-testid="sidebar"
         className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col gap-4 border-r bg-sidebar p-3 text-sidebar-foreground md:flex"
       >
         <div className="flex h-10 items-center">
-          <Brand />
+          <Brand name={org.name} logoUrl={org.logoUrl} />
         </div>
-        <NavLinks branchId={branchId} />
+        <NavLinks branchId={branchId} allowed={allowed} />
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background/95 px-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 md:px-6">
-          <MobileNav branchId={branchId} />
+          <MobileNav branchId={branchId} allowed={allowed} orgName={org.name} />
           <BranchSwitcher
             branchId={branchId}
             branches={branches}

@@ -63,3 +63,21 @@ export function formatPhone(phone: string): string {
   const d = phone.slice(4);
   return `+998 ${d.slice(0, 2)} ${d.slice(2, 5)} ${d.slice(5, 7)} ${d.slice(7, 9)}`;
 }
+
+/**
+ * PhoneInput uchun: foydalanuvchi yozayotgan matnni "90 123 45 67" ko'rinishiga keltiradi.
+ * To'liq raqam (+998 bilan) yopishtirilsa ham ishlaydi. Ko'pi bilan 9 raqam.
+ */
+export function formatLocalPhoneInput(input: string): string {
+  let digits = input.replace(/\D/g, "");
+  if (digits.length > 9 && digits.startsWith("998")) digits = digits.slice(3);
+  digits = digits.slice(0, 9);
+  const parts = [digits.slice(0, 2), digits.slice(2, 5), digits.slice(5, 7), digits.slice(7, 9)];
+  return parts.filter(Boolean).join(" ");
+}
+
+/** "+998901234567" → "90 123 45 67" (formani tahrirlash uchun). */
+export function toLocalPhoneInput(phone: string | null | undefined): string {
+  if (!phone) return "";
+  return formatLocalPhoneInput(phone);
+}

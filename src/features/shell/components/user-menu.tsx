@@ -1,6 +1,6 @@
 "use client";
 
-import { Languages, LogOut } from "lucide-react";
+import { ArrowLeftRight, KeyRound, Languages, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
@@ -19,18 +19,21 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { signOut } from "@/features/auth/actions";
 import { setLocale } from "@/i18n/actions";
 import { locales } from "@/i18n/config";
 
-import type { ShellUser } from "../mock";
+import type { ShellUser } from "../types";
 
 function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0]!.toUpperCase())
-    .join("");
+  return (
+    name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((p) => p[0]!.toUpperCase())
+      .join("") || "?"
+  );
 }
 
 export function UserMenu({ user }: { user: ShellUser }) {
@@ -80,9 +83,22 @@ export function UserMenu({ user }: { user: ShellUser }) {
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+        <DropdownMenuItem onSelect={() => router.push("/change-password")}>
+          <KeyRound />
+          {t("user.changePassword")}
+        </DropdownMenuItem>
+        {user.hasOtherOrgs && (
+          <DropdownMenuItem onSelect={() => router.push("/select-org")}>
+            <ArrowLeftRight />
+            {t("user.switchOrg")}
+          </DropdownMenuItem>
+        )}
         <DropdownMenuSeparator />
-        {/* Chiqish 1-bosqichda (auth) ulanadi */}
-        <DropdownMenuItem disabled>
+        <DropdownMenuItem
+          variant="destructive"
+          disabled={pending}
+          onSelect={() => startTransition(() => signOut())}
+        >
           <LogOut />
           {t("user.signOut")}
         </DropdownMenuItem>

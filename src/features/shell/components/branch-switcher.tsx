@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { ALL_BRANCHES } from "../nav";
-import type { ShellBranch } from "../mock";
+import type { ShellBranch } from "../types";
 
 export function BranchSwitcher({
   branchId,

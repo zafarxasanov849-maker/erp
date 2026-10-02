@@ -124,14 +124,15 @@ select is((select name from organizations where id = current_setting('test.org_a
 
 -- ---------- Xodim qo'shish va admin cheklovlari ----------
 select lives_ok(
-  $$ select save_staff(current_setting('test.org_a')::uuid, null, 'c0000000-0000-4000-8000-00000000000c',
+  $$ select save_staff(current_setting('test.org_a')::uuid,
        (select id from roles where organization_id = current_setting('test.org_a')::uuid and system_key = 'admin'),
-       false, false, array(select id from branches where organization_id = current_setting('test.org_a')::uuid)) $$,
+       false, false, array(select id from branches where organization_id = current_setting('test.org_a')::uuid),
+       p_user_id => 'c0000000-0000-4000-8000-00000000000c') $$,
   'egasi admin xodim qo''shadi');
 
 select throws_ok(
-  $$ select save_staff(current_setting('test.org_a')::uuid, null, 'd0000000-0000-4000-8000-00000000000d',
-       current_setting('test.role_b')::uuid, false, false, '{}') $$,
+  $$ select save_staff(current_setting('test.org_a')::uuid, current_setting('test.role_b')::uuid,
+       false, false, '{}', p_user_id => 'd0000000-0000-4000-8000-00000000000d') $$,
   '23503', null, 'boshqa markaz rolini berib bo''lmaydi');
 
 select throws_ok(

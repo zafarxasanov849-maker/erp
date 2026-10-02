@@ -1,4 +1,6 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+
+import { openNav, registerOrg } from "./helpers";
 
 const NAV_UZ = [
   "Bosh sahifa",
@@ -11,87 +13,43 @@ const NAV_UZ = [
   "Sozlamalar",
 ];
 
-/** Desktop'da sidebar, mobilda drawer ichidagi navigatsiya. */
-async function openNav(page: Page, isMobile: boolean) {
-  if (isMobile) {
-    await page.getByRole("button", { name: /Menyuni ochish|Открыть меню/ }).click();
-    return page.getByRole("dialog");
-  }
-  return page.getByTestId("sidebar");
-}
+test("egasi 8 bo'limni ko'radi, til almashadi, filial saqlanadi", async ({ page }) => {
+  const account = await registerOrg(page);
 
-test("bosh sahifaga yo'naltiradi va 8 bo'limni ko'rsatadi", async ({ page }, testInfo) => {
-  const isMobile = testInfo.project.name === "mobile";
-  await page.goto("/");
-  await expect(page).toHaveURL(/\/[0-9a-f-]{36}\/dashboard$/);
-  await expect(page.getByRole("heading", { level: 1, name: "Bosh sahifa" })).toBeVisible();
-
-  const nav = await openNav(page, isMobile);
-  const links = nav.getByRole("link");
-  await expect(links).toHaveText(NAV_UZ);
-  await expect(nav.getByText(/^More$/)).toHaveCount(0);
-});
-
-test("sidebar orqali bo'limga o'tish", async ({ page }, testInfo) => {
-  const isMobile = testInfo.project.name === "mobile";
-  await page.goto("/");
-  const nav = await openNav(page, isMobile);
+  // Markaz nomi qobiqda
+  const nav = await openNav(page);
+  await expect(nav.getByText(account.orgName)).toBeVisible();
+  await expect(nav.getByRole("link")).toHaveText(NAV_UZ);
   await nav.getByRole("link", { name: "Talabalar" }).click();
-
   await expect(page).toHaveURL(/\/students$/);
   await expect(page.getByRole("heading", { level: 1, name: "Talabalar" })).toBeVisible();
-  if (isMobile) await expect(page.getByRole("dialog")).toBeHidden();
-});
 
-test("tilni ruschaga va qaytib o'zbekchaga almashtirish", async ({ page }, testInfo) => {
-  const isMobile = testInfo.project.name === "mobile";
-  await page.goto("/");
+  // Filial tanlagich: "Barcha filiallar" — bo'lim saqlanadi
+  await page.getByRole("button", { name: "Filialni tanlash" }).click();
+  await page.getByRole("menuitem", { name: "Barcha filiallar" }).click();
+  await expect(page).toHaveURL(/\/all\/students$/);
 
+  // Til
   await page.getByRole("button", { name: "Foydalanuvchi menyusi" }).click();
   await page.getByRole("menuitem", { name: "Til" }).click();
   await page.getByRole("menuitemradio", { name: "Русский" }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Главная" })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 1, name: "Студенты" })).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "ru");
-
-  const nav = await openNav(page, isMobile);
-  await expect(nav.getByRole("link", { name: "Студенты" })).toBeVisible();
-  if (isMobile) await page.keyboard.press("Escape");
-
   await page.getByRole("button", { name: "Меню пользователя" }).click();
   await page.getByRole("menuitem", { name: "Язык" }).click();
   await page.getByRole("menuitemradio", { name: "O'zbekcha" }).click();
-  await expect(page.getByRole("heading", { level: 1, name: "Bosh sahifa" })).toBeVisible();
-});
+  await expect(page.getByRole("heading", { level: 1, name: "Talabalar" })).toBeVisible();
 
-test("filial almashtirilganda bo'lim saqlanadi", async ({ page }) => {
-  await page.goto("/");
-  const nav = page.getByTestId("sidebar");
-  if (await nav.isVisible()) {
-    await nav.getByRole("link", { name: "Guruhlar" }).click();
-  } else {
-    await page.goto(page.url().replace(/dashboard$/, "groups"));
-  }
-  await expect(page).toHaveURL(/\/groups$/);
-
-  await page.getByRole("button", { name: "Filialni tanlash" }).click();
-  await page.getByRole("menuitem", { name: "Barcha filiallar" }).click();
-  await expect(page).toHaveURL(/\/all\/groups$/);
-  await expect(page.getByRole("button", { name: "Filialni tanlash" })).toContainText(
-    "Barcha filiallar",
-  );
-});
-
-test("noma'lum filial → 404", async ({ page }) => {
-  const res = await page.goto("/not-a-branch/dashboard");
-  expect(res?.status()).toBe(404);
-  await expect(page.getByRole("heading", { name: "Sahifa topilmadi" })).toBeVisible();
-});
-
-test("mobil kenglikda gorizontal aylantirish yo'q", async ({ page }) => {
-  await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  // Mobil kenglikda gorizontal aylantirish yo'q
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
   expect(overflow).toBeLessThanOrEqual(0);
+});
+
+test("noma'lum filial → 403", async ({ page }) => {
+  await registerOrg(page);
+  const res = await page.goto("/00000000-0000-4000-8000-000000000000/dashboard");
+  expect(res?.status()).toBe(403);
+  await expect(page.getByRole("heading", { name: "Sizda bu bo'limga ruxsat yo'q" })).toBeVisible();
 });

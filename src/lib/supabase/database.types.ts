@@ -1948,8 +1948,8 @@ export type Database = {
           p_is_teacher: boolean;
           p_org: string;
           p_role_id: string;
-          p_staff_id: string;
-          p_user_id: string;
+          p_staff_id?: string;
+          p_user_id?: string;
         };
         Returns: string;
       };
