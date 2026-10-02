@@ -21,9 +21,7 @@ async function createGroup(
   await page.getByLabel("Boshlanishi").fill(g.start);
 }
 
-test("kurs → xona → guruh → darslar → bayram → to'qnashuv → haftalik jadval", async ({
-  page,
-}) => {
+test("kurs → xona → guruh → darslar → bayram → to'qnashuv → haftalik jadval", async ({ page }) => {
   await registerOrg(page);
   const base = `/${branchIdFrom(page)}`;
 
