@@ -1,4 +1,5 @@
 import {
+  CalendarCheck,
   ChartColumn,
   GraduationCap,
   LayoutDashboard,
@@ -13,7 +14,15 @@ import {
 import type { Permission } from "@/lib/permissions";
 
 export type NavKey =
-  "dashboard" | "sales" | "students" | "groups" | "teachers" | "finance" | "reports" | "settings";
+  | "dashboard"
+  | "today"
+  | "sales"
+  | "students"
+  | "groups"
+  | "teachers"
+  | "finance"
+  | "reports"
+  | "settings";
 
 export interface NavItem {
   key: NavKey;
@@ -41,6 +50,12 @@ export const NAV_ITEMS: readonly NavItem[] = [
     segment: "dashboard",
     icon: LayoutDashboard,
     permissions: ["dashboard.view"],
+  },
+  {
+    key: "today",
+    segment: "today",
+    icon: CalendarCheck,
+    permissions: ["attendance.view", "attendance.manage"],
   },
   { key: "sales", segment: "sales", icon: Target, permissions: ["leads.view"] },
   { key: "students", segment: "students", icon: Users, permissions: ["students.view"] },

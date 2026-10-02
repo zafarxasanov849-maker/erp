@@ -89,6 +89,11 @@ const DB_GUARD_ERRORS = new Set([
   "freeze_overlap",
   "freeze_finished",
   "student_has_open_enrollments",
+  "lesson_cancelled",
+  "lesson_in_future",
+  "edit_window_closed",
+  "enrollment_not_in_lesson",
+  "enrollment_frozen",
 ]);
 
 /** Supabase/PostgREST xatosini ActionError ga aylantiradi. */

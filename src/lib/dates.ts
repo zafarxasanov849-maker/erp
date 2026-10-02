@@ -132,6 +132,14 @@ export function monthBounds(month: string): [IsoDate, IsoDate] {
   return [first, utcToIso(d)];
 }
 
+/** Oyni siljitish: shiftMonth("2026-12", 1) → "2027-01". */
+export function shiftMonth(month: string, delta: number): string {
+  const [first] = monthBounds(month);
+  const d = isoToUtc(first);
+  d.setUTCMonth(d.getUTCMonth() + delta);
+  return utcToIso(d).slice(0, 7);
+}
+
 /** DateInput uchun: yozilayotgan raqamlarni "KK.OO.YYYY" maskasiga keltiradi. */
 export function formatUiDateInput(input: string): string {
   const d = input.replace(/\D/g, "").slice(0, 8);

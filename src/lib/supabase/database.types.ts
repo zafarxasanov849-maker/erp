@@ -1,6 +1,26 @@
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never;
+    };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      graphql: {
+        Args: { extensions?: Json; operationName?: string; query?: string; variables?: Json };
+        Returns: Json;
+      };
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
+  };
   public: {
     Tables: {
       attendance: {
@@ -1933,6 +1953,22 @@ export type Database = {
       };
     };
     Views: {
+      enrollment_absence_streaks: {
+        Row: {
+          enrollment_id: string | null;
+          last_absent: string | null;
+          streak: number | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "attendance_enrollment_id_fkey";
+            columns: ["enrollment_id"];
+            isOneToOne: false;
+            referencedRelation: "enrollments";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       student_balances: {
         Row: {
           balance: number | null;
@@ -1986,6 +2022,20 @@ export type Database = {
       };
     };
     Functions: {
+      absentees: {
+        Args: { p_branch?: string; p_org: string };
+        Returns: {
+          enrollment_id: string;
+          full_name: string;
+          group_id: string;
+          group_name: string;
+          last_absent: string;
+          parent_phone: string;
+          phone: string;
+          streak: number;
+          student_id: string;
+        }[];
+      };
       activate_enrollment: { Args: { p_date: string; p_enrollment: string }; Returns: undefined };
       apply_holiday: { Args: { p_holiday: string }; Returns: string[] };
       apply_lesson_plan: {
@@ -1995,6 +2045,10 @@ export type Database = {
       assert_enrollable_group: { Args: { p_group: string; p_org: string }; Returns: undefined };
       assert_group_editor: { Args: { p_group: string }; Returns: string };
       assert_student_editor: { Args: { p_perm?: string; p_student: string }; Returns: string };
+      attendance_edit_until: {
+        Args: { p_group: string; p_lesson_date: string; p_org: string };
+        Returns: string;
+      };
       can_edit_student: { Args: { org: string; p_student: string }; Returns: boolean };
       can_see_branch: { Args: { br: string; org: string }; Returns: boolean };
       can_see_group: { Args: { org: string; p_group: string }; Returns: boolean };
@@ -2021,6 +2075,24 @@ export type Database = {
         };
       };
       current_staff_id: { Args: { org: string }; Returns: string };
+      day_lessons: {
+        Args: { p_branch?: string; p_date: string; p_org: string };
+        Returns: {
+          branch_id: string;
+          cancel_reason: string;
+          end_time: string;
+          group_id: string;
+          group_name: string;
+          lesson_id: string;
+          marked: number;
+          members: number;
+          room_name: string;
+          start_time: string;
+          status: Database["public"]["Enums"]["lesson_status"];
+          teacher_name: string;
+          topic: string;
+        }[];
+      };
       end_freeze: { Args: { p_freeze: string }; Returns: undefined };
       enroll_student: {
         Args: { p_date: string; p_group: string; p_status: string; p_student: string };
@@ -2038,6 +2110,7 @@ export type Database = {
         Args: { p_enrollment: string; p_from: string; p_reason: string; p_to: string };
         Returns: string;
       };
+      group_journal: { Args: { p_from: string; p_group: string; p_to: string }; Returns: Json };
       has_permission: { Args: { org: string; perm: string }; Returns: boolean };
       is_colleague: { Args: { p_user: string }; Returns: boolean };
       is_member: { Args: { org: string }; Returns: boolean };
@@ -2046,6 +2119,10 @@ export type Database = {
         Returns: undefined;
       };
       my_permissions: { Args: { org: string }; Returns: string[] };
+      org_setting_int: {
+        Args: { p_default: number; p_key: string; p_org: string };
+        Returns: number;
+      };
       refresh_enrollment_statuses: { Args: { p_org?: string }; Returns: number };
       register_organization: {
         Args: { p_branch_name: string; p_org_name: string; p_owner_name: string; p_roles: Json };
@@ -2063,6 +2140,11 @@ export type Database = {
           p_user_id?: string;
         };
         Returns: string;
+      };
+      set_attendance: { Args: { p_lesson: string; p_marks: Json }; Returns: number };
+      set_lesson_notes: {
+        Args: { p_homework: string; p_lesson: string; p_topic: string };
+        Returns: undefined;
       };
       set_student_archived: {
         Args: { p_archived: boolean; p_student: string };
@@ -2209,6 +2291,9 @@ export type CompositeTypes<
     : never;
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {
       attendance_status: ["present", "late", "absent", "excused"],

@@ -15,6 +15,7 @@ import {
   monthBounds,
   monthKey,
   parseUiDate,
+  shiftMonth,
   todayInTashkent,
 } from "./dates";
 
@@ -162,5 +163,13 @@ describe("formatTimeInput", () => {
     ["14305", "14:30"],
   ])("%s → %s", (input, expected) => {
     expect(formatTimeInput(input)).toBe(expected);
+  });
+});
+
+describe("shiftMonth", () => {
+  it("yil chegarasidan o'tadi", () => {
+    expect(shiftMonth("2026-12", 1)).toBe("2027-01");
+    expect(shiftMonth("2026-01", -1)).toBe("2025-12");
+    expect(shiftMonth("2026-10", 0)).toBe("2026-10");
   });
 });

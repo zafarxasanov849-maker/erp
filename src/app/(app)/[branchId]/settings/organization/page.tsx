@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Separator } from "@/components/ui/separator";
 import { LogoUpload } from "@/features/organization/components/logo-upload";
 import { OrganizationForm } from "@/features/organization/components/organization-form";
+import { getAttendanceSettings } from "@/features/attendance/queries";
 import { getOrganization } from "@/features/organization/queries";
 import { requirePagePermission } from "@/lib/auth";
 
@@ -14,7 +15,10 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function OrganizationSettingsPage() {
   const ctx = await requirePagePermission("settings.organization");
-  const org = await getOrganization(ctx.membership.orgId);
+  const [org, attendance] = await Promise.all([
+    getOrganization(ctx.membership.orgId),
+    getAttendanceSettings(ctx.membership.orgId),
+  ]);
 
   return (
     <div className="grid gap-6">
@@ -26,6 +30,8 @@ export default async function OrganizationSettingsPage() {
           primaryColor: org.primary_color ?? "#2563eb",
           workStart: (org.work_start ?? "08:00").slice(0, 5),
           workEnd: (org.work_end ?? "22:00").slice(0, 5),
+          teacherEditDays: attendance.teacherEditDays,
+          absenceThreshold: attendance.absenceThreshold,
         }}
       />
     </div>

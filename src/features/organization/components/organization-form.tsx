@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -108,6 +109,51 @@ export function OrganizationForm({ defaults }: { defaults: OrganizationValues })
             )}
           />
         </div>
+        <h2 className="pt-2 text-sm font-semibold">{t("attendanceTitle")}</h2>
+        <FormField
+          control={form.control}
+          name="teacherEditDays"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("teacherEditDays")}</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={0}
+                  max={30}
+                  className="w-28"
+                  value={Number.isNaN(field.value) ? "" : field.value}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormDescription>{t("teacherEditDaysHint")}</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="absenceThreshold"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>{t("absenceThreshold")}</FormLabel>
+              <FormControl>
+                <Input
+                  type="number"
+                  inputMode="numeric"
+                  min={1}
+                  max={20}
+                  className="w-28"
+                  value={Number.isNaN(field.value) ? "" : field.value}
+                  onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                />
+              </FormControl>
+              <FormDescription>{t("absenceThresholdHint")}</FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormError error={error} />
         <div>
           <Button type="submit" disabled={pending || !form.formState.isDirty}>

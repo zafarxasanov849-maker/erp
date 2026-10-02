@@ -29,3 +29,15 @@ export async function onEnrollmentLeft(enrollmentId: string, date: string): Prom
   void enrollmentId;
   void date; // TODO(5-bosqich): leaveAdjustment
 }
+
+/**
+ * Davomat saqlangach (pulga ta'sir qilmaydi — PRD §5). 9-bosqich: kelmagan talaba ota-onasiga xabar
+ * (Telegram yoki SMS, sozlamaga qarab) shu yerdan yuboriladi.
+ */
+export async function onAttendanceMarked(
+  lessonId: string,
+  absentEnrollmentIds: string[],
+): Promise<void> {
+  void lessonId;
+  void absentEnrollmentIds; // TODO(9-bosqich): ota-onaga xabar
+}

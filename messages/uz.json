@@ -26,7 +26,8 @@
     "teachers": "Ustozlar",
     "finance": "Moliya",
     "reports": "Hisobotlar",
-    "settings": "Sozlamalar"
+    "settings": "Sozlamalar",
+    "today": "Bugungi darslar"
   },
   "branch": {
     "label": "Filial",
@@ -132,7 +133,9 @@
     "weekdays": "Kamida bitta kunni tanlang",
     "dateRange": "Tugash sanasi boshlanishidan oldin bo'lmasin",
     "duplicateGroup": "Bitta guruh ikki marta tanlangan",
-    "reasonRequired": "Sababni tanlang"
+    "reasonRequired": "Sababni tanlang",
+    "editDays": "0 dan 30 gacha",
+    "absenceThreshold": "1 dan 20 gacha"
   },
   "errors": {
     "forbidden": "Sizda bu amal uchun ruxsat yo'q",
@@ -191,7 +194,12 @@
       "reason_required": "Sababni tanlang",
       "freeze_overlap": "Bu oraliq boshqa muzlatish bilan kesishadi",
       "freeze_finished": "Muzlatish allaqachon tugagan",
-      "student_has_open_enrollments": "Talaba hali guruhlarda. Avval barcha guruhlardan chiqaring."
+      "student_has_open_enrollments": "Talaba hali guruhlarda. Avval barcha guruhlardan chiqaring.",
+      "lesson_cancelled": "Dars bekor qilingan — davomat belgilanmaydi",
+      "lesson_in_future": "Dars hali bo'lmagan — davomatni dars kuni belgilang",
+      "edit_window_closed": "Tahrirlash muddati tugagan. Administratorga murojaat qiling.",
+      "enrollment_not_in_lesson": "Talaba o'sha kuni guruhda bo'lmagan",
+      "enrollment_frozen": "Talaba o'sha kuni muzlatilgan"
     },
     "inUse": "Bu yozuv boshqa joyda ishlatilmoqda, o'chirib bo'lmaydi",
     "roomInUse": "Bu xonada guruhlar bor. Avval guruhlarni boshqa xonaga o'tkazing."
@@ -242,7 +250,12 @@
       "workEnd": "Ish tugashi",
       "logo": "Logotip",
       "uploadLogo": "Rasm yuklash",
-      "logoHint": "PNG, JPG yoki WEBP, 2 MB gacha. Kvadrat rasm yaxshi ko'rinadi."
+      "logoHint": "PNG, JPG yoki WEBP, 2 MB gacha. Kvadrat rasm yaxshi ko'rinadi.",
+      "attendanceTitle": "Davomat",
+      "teacherEditDays": "Ustoz tahrirlash muddati (kun)",
+      "teacherEditDaysHint": "Ustoz dars kunidan keyin necha kun ichida davomatni belgilay yoki o'zgartira oladi. Administrator cheklovsiz.",
+      "absenceThreshold": "Kelmayotganlar chegarasi (dars)",
+      "absenceThresholdHint": "Ketma-ket shuncha dars kelmagan talaba \"Kelmayotganlar\" ro'yxatiga tushadi."
     },
     "branches": {
       "description": "Markazingiz filiallari. Nofaol filial tanlagichda ko'rinmaydi, ma'lumotlari saqlanadi.",
@@ -710,8 +723,7 @@
         "notes": "Izohlar",
         "history": "O'zgarishlar tarixi"
       },
-      "paymentsSoon": "To'lovlar va balans 5-bosqichda qo'shiladi.",
-      "attendanceSoon": "Davomat 4-bosqichda qo'shiladi."
+      "paymentsSoon": "To'lovlar va balans 5-bosqichda qo'shiladi."
     },
     "enrollments": {
       "add": "Guruhga qo'shish",
@@ -817,6 +829,84 @@
         "discount_type": "Chegirma turi",
         "discount_value": "Chegirma"
       }
+    }
+  },
+  "attendance": {
+    "statuses": {
+      "present": "Keldi",
+      "late": "Kechikdi",
+      "absent": "Kelmadi",
+      "excused": "Sababli"
+    },
+    "short": {
+      "present": "K",
+      "late": "Kch",
+      "absent": "Y",
+      "excused": "S"
+    },
+    "journal": {
+      "prevMonth": "Oldingi oy",
+      "nextMonth": "Keyingi oy",
+      "student": "Talaba",
+      "allPresent": "Hammasi keldi",
+      "notes": "Mavzu va uy vazifasi",
+      "markLesson": "Davomat qilish",
+      "frozen": "Muzlatilgan",
+      "notMember": "Guruhda emas",
+      "cancelled": "Bekor qilingan: {reason}",
+      "future": "Dars hali bo'lmagan",
+      "closed": "Tahrirlash muddati tugagan",
+      "lateMarked": "Kechikib belgilangan",
+      "editedAfter": "Keyin tahrirlangan",
+      "saving": "Saqlanmoqda…",
+      "allSaved": "Saqlandi",
+      "readOnly": "Siz bu guruh davomatini faqat ko'ra olasiz.",
+      "editWindow": "Ustoz dars kunidan keyin {days} kun ichida belgilay oladi.",
+      "emptyTitle": "Bu oyda dars yo'q",
+      "emptyDescription": "Darslar guruh jadvalidan avtomatik yaratiladi. Boshqa oyni tanlang.",
+      "noStudentsTitle": "Bu oyda guruhda talaba bo'lmagan",
+      "noStudentsDescription": "Talabani guruhga qo'shing — u qo'shilgan sanadan boshlab jurnalda ko'rinadi."
+    },
+    "notes": {
+      "title": "Mavzu va uy vazifasi",
+      "topic": "Mavzu",
+      "homework": "Uy vazifasi",
+      "topicPlaceholder": "Masalan: Present Simple",
+      "homeworkPlaceholder": "Masalan: 12-mashq, 45-bet"
+    },
+    "today": {
+      "title": "Bugungi darslar",
+      "noLessonsTitle": "Bugun dars yo'q",
+      "noLessonsDescription": "Bugun sizga ko'rinadigan guruhlarda dars rejalashtirilmagan.",
+      "marked": "Belgilangan {marked}/{members}",
+      "notMarked": "Belgilanmagan",
+      "cancelled": "Bekor qilingan",
+      "markButton": "Davomat qilish",
+      "viewButton": "Ko'rish",
+      "noTeacher": "Ustozsiz",
+      "absenteesTitle": "Kelmayotganlar",
+      "absenteesHint": "Ketma-ket {count} va undan ko'p dars kelmagan faol talabalar",
+      "absenteesEmptyTitle": "Kelmayotgan talaba yo'q",
+      "absenteesEmptyDescription": "Talaba ketma-ket bir necha dars kelmasa, shu yerda ko'rinadi — unga qo'ng'iroq qilib sababini bilib oling.",
+      "streak": "{count} dars ketma-ket",
+      "lastAbsent": "oxirgisi {date}"
+    },
+    "lesson": {
+      "backToToday": "Bugungi darslar",
+      "journal": "Guruh jurnali",
+      "progress": "{marked}/{members} belgilandi",
+      "cancelled": "Dars bekor qilingan: {reason}",
+      "future": "Dars hali bo'lmagan — davomatni dars kuni belgilang.",
+      "closed": "Tahrirlash muddati tugagan — faqat ko'rish mumkin.",
+      "readOnly": "Siz bu darsni faqat ko'ra olasiz.",
+      "noStudentsTitle": "Darsda talaba yo'q",
+      "noStudentsDescription": "Shu kuni guruhda faol talaba bo'lmagan."
+    },
+    "profile": {
+      "emptyTitle": "Davomat yo'q",
+      "emptyDescription": "Oxirgi 3 oyda talabaning davomati belgilanmagan.",
+      "period": "Oxirgi 3 oy",
+      "rate": "Qatnashish: {percent}%"
     }
   }
 }

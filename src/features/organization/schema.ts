@@ -8,6 +8,16 @@ export const organizationSchema = z
     primaryColor: z.string().regex(/^#[0-9a-fA-F]{6}$/, { error: "validation.color" }),
     workStart: timeField,
     workEnd: timeField,
+    teacherEditDays: z
+      .number({ error: "validation.editDays" })
+      .int({ error: "validation.editDays" })
+      .min(0, { error: "validation.editDays" })
+      .max(30, { error: "validation.editDays" }),
+    absenceThreshold: z
+      .number({ error: "validation.absenceThreshold" })
+      .int({ error: "validation.absenceThreshold" })
+      .min(1, { error: "validation.absenceThreshold" })
+      .max(20, { error: "validation.absenceThreshold" }),
   })
   .refine((v) => v.workEnd > v.workStart, {
     error: "validation.timeRange",

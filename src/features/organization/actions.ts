@@ -15,6 +15,13 @@ export async function updateOrganization(input: OrganizationValues): Promise<Act
     const ctx = await requirePermission("settings.organization");
     const values = parseInput(organizationSchema, input);
     const supabase = await createClient();
+    const current = unwrap(
+      await supabase
+        .from("organizations")
+        .select("settings")
+        .eq("id", ctx.membership.orgId)
+        .single(),
+    );
     const rows = unwrap(
       await supabase
         .from("organizations")
@@ -23,6 +30,12 @@ export async function updateOrganization(input: OrganizationValues): Promise<Act
           primary_color: values.primaryColor,
           work_start: values.workStart,
           work_end: values.workEnd,
+          // Boshqa sozlamalar (trial_lessons, rounding, ...) saqlanib qoladi
+          settings: {
+            ...((current.settings ?? {}) as Record<string, unknown>),
+            teacher_edit_days: values.teacherEditDays,
+            absence_threshold: values.absenceThreshold,
+          },
         })
         .eq("id", ctx.membership.orgId)
         .select("id"),

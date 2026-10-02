@@ -7,6 +7,8 @@ import { getTranslations } from "next-intl/server";
 import { EmptyState } from "@/components/empty-state";
 import { TagBadge } from "@/components/tag-badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StudentAttendance } from "@/features/attendance/components/student-attendance";
+import { getStudentAttendance } from "@/features/attendance/queries";
 import { EnrollmentsPanel } from "@/features/students/components/enrollments-panel";
 import { HistoryList } from "@/features/students/components/history-list";
 import { NotesPanel } from "@/features/students/components/notes-panel";
@@ -24,8 +26,8 @@ import {
   listStudentEnrollments,
   listStudentNotes,
 } from "@/features/students/profile";
-import { can, requirePagePermission } from "@/lib/auth";
-import { formatDate, formatDateTime, todayInTashkent } from "@/lib/dates";
+import { can, canAny, requirePagePermission } from "@/lib/auth";
+import { addDays, formatDate, formatDateTime, todayInTashkent } from "@/lib/dates";
 import { formatPhone, toLocalPhoneInput } from "@/lib/phone";
 
 const UUID = /^[0-9a-f-]{36}$/i;
@@ -47,10 +49,14 @@ export default async function StudentPage({
   const student = await getStudent(orgId, studentId);
   if (!student) notFound();
 
-  const [enrollments, notes, formData] = await Promise.all([
+  const canSeeAttendance = canAny(ctx, ["attendance.view", "attendance.manage"]);
+  const [enrollments, notes, formData, attendance] = await Promise.all([
     listStudentEnrollments(student.id),
     listStudentNotes(student.id),
     getStudentFormData(),
+    canSeeAttendance
+      ? getStudentAttendance(student.id, addDays(todayInTashkent(), -92))
+      : Promise.resolve([]),
   ]);
   const history = await getStudentHistory(orgId, student.id, enrollments);
 
@@ -200,11 +206,11 @@ export default async function StudentPage({
           />
         </TabsContent>
         <TabsContent value="attendance" className="pt-2">
-          <EmptyState
-            icon={CalendarCheck}
-            title={t("profile.tabs.attendance")}
-            description={t("profile.attendanceSoon")}
-          />
+          {canSeeAttendance ? (
+            <StudentAttendance rows={attendance} />
+          ) : (
+            <EmptyState icon={CalendarCheck} title={t("profile.tabs.attendance")} />
+          )}
         </TabsContent>
         <TabsContent value="notes" className="pt-2">
           <NotesPanel

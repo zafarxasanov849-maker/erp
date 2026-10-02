@@ -4,6 +4,7 @@ import { openNav, registerOrg } from "./helpers";
 
 const NAV_UZ = [
   "Bosh sahifa",
+  "Bugungi darslar",
   "Sotuv",
   "Talabalar",
   "Guruhlar",
@@ -13,7 +14,7 @@ const NAV_UZ = [
   "Sozlamalar",
 ];
 
-test("egasi 8 bo'limni ko'radi, til almashadi, filial saqlanadi", async ({ page }) => {
+test("egasi 9 bo'limni ko'radi, til almashadi, filial saqlanadi", async ({ page }) => {
   const account = await registerOrg(page);
 
   // Markaz nomi qobiqda
