@@ -93,6 +93,21 @@ e2e/                    Playwright testlari
 - Jadval o'zgarsa faqat kelajakdagi, davomati yo'q darslar qayta yaratiladi; bayram kunidagi darslar "bekor qilingan" bo'ladi.
 - Har kecha 00:00 (Toshkent) Vercel Cron `GET /api/cron/nightly` ni chaqiradi (`vercel.json`) va jadvalni 60 kunga to'ldiradi. Vercel'da `CRON_SECRET` o'rnatilgan bo'lishi kerak.
 
+## Baza migratsiyalari (avtomatik)
+
+`supabase/migrations/` dagi o'zgarish production branch'ga push qilinganda GitHub Action
+(`.github/workflows/db-migrate.yml`) ishlaydi:
+
+1. toza lokal Supabase'da barcha migratsiyalar va pgTAP testlari (`supabase test db`);
+2. testlar o'tsa — `supabase db push` bilan production loyihaga faqat yangi migratsiyalar qo'llanadi.
+
+Pull request'larda faqat 1-qadam ishlaydi. Kerakli secrets (GitHub → Settings → Secrets and variables → Actions):
+`SUPABASE_ACCESS_TOKEN`, `SUPABASE_DB_PASSWORD`.
+
+Qo'llangan migratsiya fayli keyin o'zgartirilmaydi — tuzatish uchun yangi migratsiya qo'shing.
+Vercel deploy va migratsiya parallel ishlaydi, shuning uchun migratsiyalar eski kod bilan ham ishlay oladigan
+(orqaga mos) bo'lishi kerak.
+
 ## Muhit o'zgaruvchilari
 
 `.env.example` ga qarang. `SUPABASE_SERVICE_ROLE_KEY` faqat serverda ishlatiladi va hech qachon brauzerga chiqmaydi: cron/webhook'lar (`src/app/api/`) va yangi xodim yaratish (`src/features/staff/actions.ts`, faqat `auth.admin.createUser`). ESLint boshqa joylarda `@/lib/supabase/admin` importini taqiqlaydi.
