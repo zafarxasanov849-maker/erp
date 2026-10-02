@@ -67,6 +67,14 @@ const DB_GUARD_ERRORS = new Set([
   "branch_org_mismatch",
   "too_many_organizations",
   "phone_not_confirmed",
+  "group_branch_mismatch",
+  "group_course_mismatch",
+  "group_teacher_mismatch",
+  "group_room_mismatch",
+  "room_branch_mismatch",
+  "holiday_branch_mismatch",
+  "lesson_group_mismatch",
+  "lesson_holiday_mismatch",
 ]);
 
 /** Supabase/PostgREST xatosini ActionError ga aylantiradi. */
@@ -74,6 +82,7 @@ export function dbError(error: PostgrestError): ActionError {
   if (DB_GUARD_ERRORS.has(error.message)) return new ActionError(`errors.db.${error.message}`);
   if (error.code === "42501") return new ForbiddenError();
   if (error.code === "23505") return new ActionError("errors.duplicate");
+  if (error.code === "23503") return new ActionError("errors.inUse");
   console.error("[db]", error);
   return new ActionError("errors.unexpected");
 }

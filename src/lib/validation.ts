@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { parseUiDate } from "./dates";
 import { MIN_PASSWORD_LENGTH } from "./password";
 import { normalizePhone } from "./phone";
 
@@ -49,3 +50,29 @@ export function toE164(phone: string): string {
   if (!r.ok) throw new Error("Phone must be validated before toE164()");
   return r.phone;
 }
+
+/** DateInput qiymati "KK.OO.YYYY"; serverda parseUiDate() bilan "YYYY-MM-DD" ga aylantiring. */
+export const uiDateField = z
+  .string()
+  .trim()
+  .min(1, { error: "validation.required" })
+  .refine((v) => parseUiDate(v) !== null, { error: "validation.date" });
+
+export const optionalUiDateField = z
+  .string()
+  .trim()
+  .refine((v) => v === "" || parseUiDate(v) !== null, { error: "validation.date" });
+
+/** Validatsiyadan o'tgan "KK.OO.YYYY" → "YYYY-MM-DD". */
+export function toIsoDate(value: string): string {
+  const iso = parseUiDate(value);
+  if (!iso) throw new Error("Date must be validated before toIsoDate()");
+  return iso;
+}
+
+/** Butun so'm (MoneyInput qiymati). */
+export const moneyField = z
+  .number({ error: "validation.required" })
+  .int()
+  .min(0, { error: "validation.money" })
+  .max(1_000_000_000_000, { error: "validation.money" });

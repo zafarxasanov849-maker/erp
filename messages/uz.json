@@ -15,7 +15,8 @@
     "back": "Orqaga",
     "copy": "Nusxa olish",
     "copied": "Nusxa olindi",
-    "done": "Tayyor"
+    "done": "Tayyor",
+    "currency": "so'm"
   },
   "nav": {
     "dashboard": "Bosh sahifa",
@@ -123,7 +124,13 @@
     "time": "Vaqt noto'g'ri (SS:dd)",
     "timeRange": "Tugash vaqti boshlanishidan keyin bo'lishi kerak",
     "color": "Rang #RRGGBB ko'rinishida bo'lsin",
-    "branchRequired": "Kamida bitta filialni tanlang"
+    "branchRequired": "Kamida bitta filialni tanlang",
+    "date": "Sana noto'g'ri. Masalan: 02.10.2026",
+    "money": "Summa noto'g'ri",
+    "lessonMinutes": "15 dan 600 daqiqagacha",
+    "capacity": "1 dan 1000 gacha",
+    "weekdays": "Kamida bitta kunni tanlang",
+    "dateRange": "Tugash sanasi boshlanishidan oldin bo'lmasin"
   },
   "errors": {
     "forbidden": "Sizda bu amal uchun ruxsat yo'q",
@@ -160,8 +167,18 @@
       "staff_immutable_fields": "Xodimning foydalanuvchisini o'zgartirib bo'lmaydi",
       "branch_org_mismatch": "Filial boshqa markazga tegishli",
       "too_many_organizations": "Bitta akkaunt bilan 5 tadan ortiq markaz ochib bo'lmaydi",
-      "phone_not_confirmed": "Avval telefon raqamingizni tasdiqlang"
-    }
+      "phone_not_confirmed": "Avval telefon raqamingizni tasdiqlang",
+      "group_branch_mismatch": "Filial boshqa markazga tegishli",
+      "group_course_mismatch": "Kurs boshqa markazga tegishli",
+      "group_teacher_mismatch": "Tanlangan xodim ustoz emas yoki boshqa markazda",
+      "group_room_mismatch": "Xona guruh filialida emas",
+      "room_branch_mismatch": "Filial boshqa markazga tegishli",
+      "holiday_branch_mismatch": "Filial boshqa markazga tegishli",
+      "lesson_group_mismatch": "Dars boshqa markaz guruhiga tegishli",
+      "lesson_holiday_mismatch": "Bayram boshqa markazga tegishli"
+    },
+    "inUse": "Bu yozuv boshqa joyda ishlatilmoqda, o'chirib bo'lmaydi",
+    "roomInUse": "Bu xonada guruhlar bor. Avval guruhlarni boshqa xonaga o'tkazing."
   },
   "roles": {
     "system": {
@@ -196,7 +213,10 @@
       "organization": "Markaz",
       "branches": "Filiallar",
       "roles": "Rollar",
-      "staff": "Xodimlar"
+      "staff": "Xodimlar",
+      "courses": "Kurslar",
+      "rooms": "Xonalar",
+      "holidays": "Bayramlar"
     },
     "organization": {
       "name": "Markaz nomi",
@@ -265,6 +285,51 @@
       "inactiveBadge": "Nofaol",
       "emptyTitle": "Hali xodim yo'q",
       "emptyDescription": "\"Xodim qo'shish\" tugmasi bilan admin, ustoz va boshqa xodimlarni qo'shing."
+    },
+    "courses": {
+      "description": "Kurs — guruh uchun shablon: oylik narx va dars davomiyligi guruhga meros bo'lib o'tadi.",
+      "add": "Kurs qo'shish",
+      "edit": "Kursni tahrirlash",
+      "name": "Nomi",
+      "namePlaceholder": "Masalan: Ingliz tili (Beginner)",
+      "monthlyPrice": "Oylik narx",
+      "lessonMinutes": "Dars davomiyligi (daqiqa)",
+      "minutes": "{count} daqiqa",
+      "status": "Holati",
+      "active": "Faol",
+      "activeHint": "Nofaol kurs yangi guruh ochishda ko'rinmaydi",
+      "activeBadge": "Faol",
+      "inactiveBadge": "Nofaol",
+      "emptyTitle": "Hali kurs yo'q",
+      "emptyDescription": "Guruh ochishdan oldin kamida bitta kurs qo'shing: nomi va oylik narxi."
+    },
+    "rooms": {
+      "description": "Filiallardagi o'quv xonalari. Bir xonada bir vaqtda faqat bitta guruh dars o'tadi.",
+      "add": "Xona qo'shish",
+      "edit": "Xonani tahrirlash",
+      "name": "Nomi",
+      "namePlaceholder": "Masalan: 6-xona",
+      "branch": "Filial",
+      "capacity": "Sig'imi",
+      "deleted": "Xona o'chirildi",
+      "emptyTitle": "Hali xona yo'q",
+      "emptyDescription": "Xonalar ixtiyoriy, lekin qo'shsangiz tizim xona bandligini tekshiradi."
+    },
+    "holidays": {
+      "description": "Bayram kunidagi darslar avtomatik bekor qilinadi (jurnalda kulrang). Bayram o'chirilsa, darslar tiklanadi.",
+      "add": "Bayram qo'shish",
+      "addHint": "Shu kundagi davomati belgilanmagan darslar bekor qilinadi.",
+      "date": "Sana",
+      "reason": "Sabab",
+      "reasonPlaceholder": "Masalan: Mustaqillik kuni",
+      "scope": "Qayerda",
+      "allBranches": "Butun markaz",
+      "cancelledLessons": "Bekor qilingan darslar",
+      "added": "Bayram qo'shildi. Bekor qilingan darslar: {count}",
+      "deleted": "Bayram o'chirildi. Tiklangan darslar: {count}",
+      "deleteConfirm": "{date} bayramini o'chirasizmi? Shu kundagi darslar qayta tiklanadi.",
+      "emptyTitle": "Bayramlar yo'q",
+      "emptyDescription": "Dam olish kunlarini oldindan qo'shing — o'sha kundagi darslar o'zi bekor bo'ladi."
     }
   },
   "permissions": {
@@ -356,6 +421,122 @@
     "audit": {
       "_title": "Audit",
       "view": "O'zgarishlar tarixini ko'rish"
+    }
+  },
+  "weekdays": {
+    "short": {
+      "1": "Du",
+      "2": "Se",
+      "3": "Ch",
+      "4": "Pa",
+      "5": "Ju",
+      "6": "Sh",
+      "7": "Ya"
+    },
+    "long": {
+      "1": "Dushanba",
+      "2": "Seshanba",
+      "3": "Chorshanba",
+      "4": "Payshanba",
+      "5": "Juma",
+      "6": "Shanba",
+      "7": "Yakshanba"
+    }
+  },
+  "groups": {
+    "title": "Guruhlar",
+    "add": "Guruh ochish",
+    "edit": "Guruhni tahrirlash",
+    "weeklySchedule": "Haftalik jadval",
+    "backToList": "Guruhlar ro'yxati",
+    "finishedBadge": "Tugagan",
+    "emptyTitle": "Hali guruh yo'q",
+    "emptyDescription": "\"Guruh ochish\" tugmasi bilan birinchi guruhni yarating — darslar jadval bo'yicha avtomatik yaratiladi.",
+    "emptyFilteredTitle": "Filtrga mos guruh topilmadi",
+    "emptyFilteredDescription": "Filtrlarni o'zgartiring yoki tozalang.",
+    "emptyNoCoursesTitle": "Avval kurs qo'shing",
+    "emptyNoCourses": "Guruh kursga bog'lanadi (narx va dars davomiyligi kursdan olinadi). Sozlamalar → Kurslar bo'limida kurs qo'shing.",
+    "goToCourses": "Kurslarga o'tish",
+    "form": {
+      "name": "Guruh nomi",
+      "namePlaceholder": "Masalan: 10-guruh",
+      "branch": "Filial",
+      "choose": "Tanlang",
+      "course": "Kurs",
+      "monthlyPrice": "Oylik narx",
+      "priceHint": "Kursdan olinadi, o'zgartirsa bo'ladi",
+      "teacher": "Ustoz",
+      "noTeacher": "Biriktirilmagan",
+      "noTeachersHint": "Ustozlar yo'q: Sozlamalar → Xodimlar'da xodimga \"Ustoz\" belgisini qo'ying.",
+      "room": "Xona",
+      "noRoom": "Xonasiz",
+      "weekdays": "Dars kunlari",
+      "startTime": "Boshlanishi",
+      "endTime": "Tugashi",
+      "startDate": "Boshlanish sanasi",
+      "endDate": "Tugash sanasi (ixtiyoriy)",
+      "active": "Faol guruh",
+      "activeHint": "O'chirsangiz guruh \"tugagan\" bo'ladi: kelajakdagi darslar olib tashlanadi, xona va ustoz bo'shaydi",
+      "conflictsTitle": "Jadvalda to'qnashuv bor — saqlanmadi:",
+      "conflictRoom": "{resource} {days} {time} da {group} bilan band",
+      "conflictTeacher": "Ustoz {resource} {days} {time} da {group} guruhida dars beradi"
+    },
+    "filters": {
+      "course": "Kurs",
+      "teacher": "Ustoz",
+      "day": "Kun",
+      "status": "Holati",
+      "allCourses": "Barcha kurslar",
+      "allTeachers": "Barcha ustozlar",
+      "allDays": "Barcha kunlar",
+      "active": "Faol guruhlar",
+      "finished": "Tugaganlar"
+    },
+    "list": {
+      "name": "Guruh",
+      "course": "Kurs",
+      "teacher": "Ustoz",
+      "schedule": "Kunlar · vaqt",
+      "room": "Xona",
+      "students": "Talabalar",
+      "nextLesson": "Keyingi dars"
+    },
+    "detail": {
+      "course": "Kurs",
+      "teacher": "Ustoz",
+      "room": "Xona",
+      "branch": "Filial",
+      "schedule": "Jadval",
+      "price": "Oylik narx",
+      "period": "Muddati",
+      "since": "{date} dan"
+    },
+    "tabs": {
+      "lessons": "Darslar",
+      "students": "Talabalar",
+      "attendance": "Davomat"
+    },
+    "lessons": {
+      "date": "Sana",
+      "time": "Vaqt",
+      "status": "Holati",
+      "topic": "Mavzu",
+      "statuses": {
+        "scheduled": "Rejada",
+        "held": "O'tdi",
+        "cancelled": "Bekor qilingan"
+      },
+      "emptyTitle": "Darslar yo'q",
+      "emptyDescription": "Darslar guruh boshlanish sanasidan 60 kun oldinga avtomatik yaratiladi.",
+      "emptyFinished": "Guruh tugagan — yangi darslar yaratilmaydi."
+    },
+    "schedule": {
+      "noBranch": "Sizga filial biriktirilmagan",
+      "noRoom": "Xonasiz",
+      "branch": "Filial",
+      "day": "Hafta kuni",
+      "emptyTitle": "{day} kuni dars yo'q",
+      "emptyDescription": "Bu filialda shu kuni faol guruh darsi yo'q. Boshqa kunni tanlang."
     }
   }
 }

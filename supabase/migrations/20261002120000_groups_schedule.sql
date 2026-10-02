@@ -118,3 +118,134 @@ create trigger audit_lessons after update on lessons
   when (old.status is distinct from new.status or old.topic is distinct from new.topic
         or old.homework is distinct from new.homework)
   execute function public.audit_row();
+
+-- =====================================================================
+-- Darslarni o'zgartirish: reja TS'da (src/lib/schedule.ts, testlangan), qo'llash — bu yerda,
+-- bitta tranzaksiyada va ruxsat tekshiruvi bilan.
+-- =====================================================================
+
+-- Foydalanuvchi so'rovi bo'lsa ruxsatni tekshiradi; service role (cron) va postgres — tekshiruvsiz.
+create or replace function public.assert_group_editor(p_group uuid)
+returns uuid language plpgsql stable security definer set search_path = public as $$
+declare
+  v_org uuid;
+  v_branch uuid;
+begin
+  select organization_id, branch_id into v_org, v_branch from groups where id = p_group;
+  if v_org is null then
+    raise exception 'not_found' using errcode = 'P0002';
+  end if;
+  if auth.uid() is not null and not (
+       (has_permission(v_org, 'groups.create') or has_permission(v_org, 'groups.update'))
+       and can_see_branch(v_org, v_branch)) then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+  return v_org;
+end $$;
+
+-- p_insert: [{date, startTime, endTime, status, cancelReason, holidayId}]
+-- p_update: [{id, endTime, status, cancelReason?, holidayId}] — cancelReason kaliti bo'lmasa o'zgarmaydi
+create or replace function public.apply_lesson_plan(
+  p_group uuid,
+  p_insert jsonb,
+  p_remove uuid[],
+  p_update jsonb
+) returns void language plpgsql security definer set search_path = public as $$
+declare
+  v_org uuid := assert_group_editor(p_group);
+begin
+  -- Davomati bor yoki o'tgan darslar hech qachon olib tashlanmaydi
+  delete from lessons l
+   where l.id = any (coalesce(p_remove, '{}')) and l.group_id = p_group
+     and l.status <> 'held'
+     and not exists (select 1 from attendance a where a.lesson_id = l.id);
+
+  insert into lessons (organization_id, group_id, date, start_time, end_time, status, cancel_reason, cancel_holiday_id)
+  select v_org, p_group, (x ->> 'date')::date, (x ->> 'startTime')::time, (x ->> 'endTime')::time,
+         (x ->> 'status')::lesson_status, x ->> 'cancelReason', (x ->> 'holidayId')::uuid
+    from jsonb_array_elements(coalesce(p_insert, '[]')) x
+  on conflict (group_id, date, start_time) do nothing;
+
+  update lessons l
+     set end_time = (x ->> 'endTime')::time,
+         status = (x ->> 'status')::lesson_status,
+         cancel_reason = case when x ? 'cancelReason' then x ->> 'cancelReason' else l.cancel_reason end,
+         cancel_holiday_id = (x ->> 'holidayId')::uuid
+    from jsonb_array_elements(coalesce(p_update, '[]')) x
+   where l.id = (x ->> 'id')::uuid and l.group_id = p_group and l.status <> 'held';
+end $$;
+
+-- Bayram: o'sha kundagi rejali (davomatsiz) darslarni bekor qiladi. Bekor qilingan darslar id'lari qaytadi
+-- (5-bosqich: pulni qaytarish shu ro'yxat bo'yicha).
+create or replace function public.apply_holiday(p_holiday uuid)
+returns setof uuid language plpgsql security definer set search_path = public as $$
+declare
+  v_h holidays%rowtype;
+begin
+  select * into v_h from holidays where id = p_holiday;
+  if v_h.id is null then
+    raise exception 'not_found' using errcode = 'P0002';
+  end if;
+  if auth.uid() is not null and not has_permission(v_h.organization_id, 'settings.catalogs') then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  return query
+  update lessons l
+     set status = 'cancelled', cancel_reason = v_h.reason, cancel_holiday_id = v_h.id
+    from groups g
+   where g.id = l.group_id
+     and l.organization_id = v_h.organization_id
+     and l.date = v_h.date
+     and l.status = 'scheduled'
+     and (v_h.branch_id is null or g.branch_id = v_h.branch_id)
+     and not exists (select 1 from attendance a where a.lesson_id = l.id)
+  returning l.id;
+end $$;
+
+-- Bayramni o'chirish: uning sababli bekor bo'lgan darslar tiklanadi (shu kuni boshqa bayram bo'lsa — o'shanga
+-- ko'ra yana bekor qilinadi). Tiklangan darslar id'lari qaytadi.
+create or replace function public.remove_holiday(p_holiday uuid)
+returns setof uuid language plpgsql security definer set search_path = public as $$
+declare
+  v_h holidays%rowtype;
+  v_other uuid;
+begin
+  select * into v_h from holidays where id = p_holiday;
+  if v_h.id is null then
+    raise exception 'not_found' using errcode = 'P0002';
+  end if;
+  if auth.uid() is not null and not has_permission(v_h.organization_id, 'settings.catalogs') then
+    raise exception 'forbidden' using errcode = '42501';
+  end if;
+
+  create temp table if not exists _restored (id uuid) on commit drop;
+  truncate _restored;
+  with r as (
+    update lessons
+       set status = 'scheduled', cancel_reason = null, cancel_holiday_id = null
+     where cancel_holiday_id = v_h.id
+    returning id
+  )
+  insert into _restored select id from r;
+
+  delete from holidays where id = v_h.id;
+
+  for v_other in
+    select id from holidays where organization_id = v_h.organization_id and date = v_h.date
+  loop
+    perform apply_holiday(v_other);
+  end loop;
+
+  return query
+  select r.id from _restored r join lessons l on l.id = r.id where l.status = 'scheduled';
+end $$;
+
+revoke execute on function public.assert_group_editor(uuid) from public, anon;
+revoke execute on function public.apply_lesson_plan(uuid, jsonb, uuid[], jsonb) from public, anon;
+revoke execute on function public.apply_holiday(uuid) from public, anon;
+revoke execute on function public.remove_holiday(uuid) from public, anon;
+grant execute on function public.assert_group_editor(uuid) to authenticated, service_role;
+grant execute on function public.apply_lesson_plan(uuid, jsonb, uuid[], jsonb) to authenticated, service_role;
+grant execute on function public.apply_holiday(uuid) to authenticated, service_role;
+grant execute on function public.remove_holiday(uuid) to authenticated, service_role;

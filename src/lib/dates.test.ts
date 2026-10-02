@@ -6,6 +6,8 @@ import {
   formatDate,
   formatDateTime,
   formatTime,
+  formatTimeInput,
+  formatUiDateInput,
   isIsoDate,
   isoWeekday,
   maxDate,
@@ -133,5 +135,32 @@ describe("ISO sana arifmetikasi", () => {
   it("min/max", () => {
     expect(maxDate("2026-10-01", "2026-09-30")).toBe("2026-10-01");
     expect(minDate("2026-10-01", "2026-09-30")).toBe("2026-09-30");
+  });
+});
+
+describe("formatUiDateInput", () => {
+  it.each([
+    ["0", "0"],
+    ["021", "02.1"],
+    ["0210", "02.10"],
+    ["02102026", "02.10.2026"],
+    ["02.10.2026", "02.10.2026"],
+    ["021020261", "02.10.2026"],
+    ["", ""],
+  ])("%s → %s", (input, expected) => {
+    expect(formatUiDateInput(input)).toBe(expected);
+  });
+});
+
+describe("formatTimeInput", () => {
+  it.each([
+    ["1", "1"],
+    ["14", "14"],
+    ["143", "14:3"],
+    ["1430", "14:30"],
+    ["14:30", "14:30"],
+    ["14305", "14:30"],
+  ])("%s → %s", (input, expected) => {
+    expect(formatTimeInput(input)).toBe(expected);
   });
 });

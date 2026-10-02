@@ -3,7 +3,7 @@ begin;
 create extension if not exists pgtap with schema extensions;
 set search_path = public, extensions;
 
-select plan(16);
+select plan(24);
 
 create function pg_temp.login(p_uid uuid) returns void language sql as $$
   select set_config('request.jwt.claims',
@@ -119,6 +119,48 @@ select throws_ok(
             select %L, id, '2026-10-19', '14:00', '15:30' from groups where name = '10-guruh' $$,
          current_setting('test.org_b')),
   'P0001', 'lesson_group_mismatch', 'dars guruh markazidan boshqa markazda bo''lmaydi');
+
+
+-- ---------- apply_lesson_plan / apply_holiday / remove_holiday ----------
+select pg_temp.login('a0000000-0000-4000-8000-00000000000a');
+select lives_ok(
+  $$ select apply_lesson_plan((select id from groups where name = '10-guruh'),
+       '[{"date": "2026-11-02", "startTime": "14:00", "endTime": "15:30", "status": "scheduled"},
+         {"date": "2026-11-04", "startTime": "14:00", "endTime": "15:30", "status": "scheduled"},
+         {"date": "2026-11-06", "startTime": "14:00", "endTime": "15:30", "status": "scheduled"}]'::jsonb,
+       '{}', '[]'::jsonb) $$,
+  'apply_lesson_plan darslarni qo''shadi');
+select pg_temp.logout();
+update lessons set status = 'held' where date = '2026-11-02';
+
+select pg_temp.login('a0000000-0000-4000-8000-00000000000a');
+select apply_lesson_plan((select id from groups where name = '10-guruh'), '[]'::jsonb,
+  array(select id from lessons where date in ('2026-11-02', '2026-11-06')), '[]'::jsonb);
+select is((select array_agg(date::text order by date) from lessons where date >= '2026-11-01'),
+          array['2026-11-02', '2026-11-04'], 'o''tgan (held) dars olib tashlanmaydi, rejali olib tashlanadi');
+
+insert into holidays (organization_id, date, reason) values (current_setting('test.org_a')::uuid, '2026-11-04', 'Bayram 2');
+select is((select count(*)::int from apply_holiday((select id from holidays where date = '2026-11-04'))), 1,
+          'apply_holiday bitta darsni bekor qiladi');
+select is((select status::text || '/' || cancel_reason from lessons where date = '2026-11-04'), 'cancelled/Bayram 2',
+          'dars bayram sababi bilan bekor');
+select is((select count(*)::int from apply_holiday((select id from holidays where date = '2026-11-04'))), 0,
+          'qayta qo''llash hech narsani o''zgartirmaydi');
+select is((select count(*)::int from remove_holiday((select id from holidays where date = '2026-11-04'))), 1,
+          'remove_holiday darsni tiklaydi');
+select is((select status::text from lessons where date = '2026-11-04'), 'scheduled', 'dars yana rejada');
+select pg_temp.logout();
+
+-- Ruxsatsiz xodim (admin roli: faqat groups.view)
+insert into staff (organization_id, user_id, role_id, all_branches)
+select current_setting('test.org_a')::uuid, 'c0000000-0000-4000-8000-00000000000c', id, true
+  from roles where organization_id = current_setting('test.org_a')::uuid and system_key = 'admin';
+insert into holidays (organization_id, date, reason) values (current_setting('test.org_a')::uuid, '2026-11-09', 'Bayram 3');
+select pg_temp.login('c0000000-0000-4000-8000-00000000000c');
+select throws_ok(
+  $$ select apply_holiday((select id from holidays where date = '2026-11-09')) $$,
+  '42501', 'forbidden', 'settings.catalogs ruxsatisiz bayramni qo''llab bo''lmaydi');
+select pg_temp.logout();
 
 -- B markazi A ning darslari va bayramlarini ko'rmaydi
 select pg_temp.login('b0000000-0000-4000-8000-00000000000b');

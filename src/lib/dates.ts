@@ -131,3 +131,16 @@ export function monthBounds(month: string): [IsoDate, IsoDate] {
   d.setUTCDate(0);
   return [first, utcToIso(d)];
 }
+
+/** DateInput uchun: yozilayotgan raqamlarni "KK.OO.YYYY" maskasiga keltiradi. */
+export function formatUiDateInput(input: string): string {
+  const d = input.replace(/\D/g, "").slice(0, 8);
+  const parts = [d.slice(0, 2), d.slice(2, 4), d.slice(4, 8)].filter(Boolean);
+  return parts.join(".");
+}
+
+/** TimeInput uchun: raqamlarni "SS:dd" (24 soat) maskasiga keltiradi. */
+export function formatTimeInput(input: string): string {
+  const d = input.replace(/\D/g, "").slice(0, 4);
+  return d.length > 2 ? `${d.slice(0, 2)}:${d.slice(2)}` : d;
+}

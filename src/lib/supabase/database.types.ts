@@ -1910,6 +1910,12 @@ export type Database = {
       };
     };
     Functions: {
+      apply_holiday: { Args: { p_holiday: string }; Returns: string[] };
+      apply_lesson_plan: {
+        Args: { p_group: string; p_insert: Json; p_remove: string[]; p_update: Json };
+        Returns: undefined;
+      };
+      assert_group_editor: { Args: { p_group: string }; Returns: string };
       can_edit_student: { Args: { org: string; p_student: string }; Returns: boolean };
       can_see_branch: { Args: { br: string; org: string }; Returns: boolean };
       can_see_group: { Args: { org: string; p_group: string }; Returns: boolean };
@@ -1951,6 +1957,7 @@ export type Database = {
         Args: { p_branch_name: string; p_org_name: string; p_owner_name: string; p_roles: Json };
         Returns: string;
       };
+      remove_holiday: { Args: { p_holiday: string }; Returns: string[] };
       save_staff: {
         Args: {
           p_all_branches: boolean;
