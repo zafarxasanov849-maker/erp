@@ -3,6 +3,7 @@ import "server-only";
 import {
   getAttendanceReport,
   getBranchNames,
+  getExpenseReport,
   getFinanceReport,
   getLeftStudents,
   getRevenue,
@@ -12,6 +13,7 @@ import {
 import { unwrap } from "@/lib/action";
 import { shiftMonth } from "@/lib/dates";
 import type { Period } from "@/lib/metrics/period";
+import { type ExpenseKind, profitOf } from "@/lib/metrics/profit";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -27,10 +29,11 @@ function monthsOf(period: Period): string[] {
 }
 
 export async function buildFinanceReport(orgId: string, branchId: string | null, period: Period) {
-  const [rows, total, branches] = await Promise.all([
+  const [rows, total, branches, expenses] = await Promise.all([
     getFinanceReport(orgId, branchId, period.from, period.to),
     getRevenue(orgId, branchId, period.from, period.to),
     getBranchNames(orgId),
+    getExpenseReport(orgId, branchId, period.from, period.to),
   ]);
   // Ustunlar: tanlangan filial yoki faol filiallar + tushumi bor nofaollar
   const columns = branches.filter((b) =>
@@ -38,6 +41,7 @@ export async function buildFinanceReport(orgId: string, branchId: string | null,
   );
   const months = monthsOf(period).map((month) => {
     const inMonth = rows.filter((r) => r.month === month);
+    const revenue = inMonth.reduce((s, r) => s + r.revenue, 0);
     return {
       month,
       byBranch: Object.fromEntries(
@@ -46,14 +50,23 @@ export async function buildFinanceReport(orgId: string, branchId: string | null,
           inMonth.filter((r) => r.branchId === b.id).reduce((s, r) => s + r.revenue, 0),
         ]),
       ) as Record<string, number>,
-      revenue: inMonth.reduce((s, r) => s + r.revenue, 0),
       payments: inMonth.reduce((s, r) => s + r.payments, 0),
+      ...profitOf(
+        revenue,
+        expenses.filter((e) => e.month === month),
+      ),
     };
   });
+  const byKind = new Map<ExpenseKind, number>();
+  for (const e of expenses) byKind.set(e.kind, (byKind.get(e.kind) ?? 0) + e.amount);
   return {
     columns: columns.map(({ id, name }) => ({ id, name })),
     months,
     total,
+    profit: profitOf(total.revenue, expenses),
+    expensesByKind: [...byKind.entries()]
+      .map(([kind, amount]) => ({ kind, amount }))
+      .sort((a, b) => b.amount - a.amount),
     average: total.payments > 0 ? Math.round(total.revenue / total.payments) : 0,
   };
 }

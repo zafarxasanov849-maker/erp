@@ -1,4 +1,5 @@
 import {
+  Banknote,
   CalendarCheck,
   ChartColumn,
   GraduationCap,
@@ -22,6 +23,7 @@ export type NavKey =
   | "teachers"
   | "finance"
   | "reports"
+  | "mySalary"
   | "settings";
 
 export interface NavItem {
@@ -31,6 +33,8 @@ export interface NavItem {
   icon: LucideIcon;
   /** Bittasi bo'lsa yetarli. Menyuda yashirish — qulaylik; sahifa o'zi ham tekshiradi. */
   permissions: readonly Permission[];
+  /** Ruxsat o'rniga: faqat ustozlarga (Mening oyligim) */
+  teacherOnly?: boolean;
 }
 
 export const SETTINGS_PERMISSIONS: readonly Permission[] = [
@@ -68,6 +72,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
     permissions: ["payments.view", "expenses.view", "cash.view", "salary.view"],
   },
   { key: "reports", segment: "reports", icon: ChartColumn, permissions: ["reports.view"] },
+  { key: "mySalary", segment: "my-salary", icon: Banknote, permissions: [], teacherOnly: true },
   { key: "settings", segment: "settings", icon: Settings, permissions: SETTINGS_PERMISSIONS },
 ];
 

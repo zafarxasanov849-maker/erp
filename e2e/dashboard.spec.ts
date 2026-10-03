@@ -23,7 +23,8 @@ test("bosh sahifa (Egasi): kartochkalar to'g'ri, filial bo'yicha o'zgaradi", asy
   await expect(page.getByTestId("card-active-value")).toHaveText("3");
   await expect(page.getByTestId("card-active")).toContainText("Sinovda 1, muzlatilgan 0");
   await expect(page.getByTestId("card-left-value")).toHaveText("1");
-  await expect(page.getByTestId("card-profit-value")).toHaveText("—");
+  // Xarajat yo'q — sof foyda = tushum
+  await expect(page.getByTestId("card-profit-value")).toHaveText(formatMoney(750_000));
   await expect(
     page.getByRole("heading", { name: "Filiallar bo'yicha tushum (shu oy)" }),
   ).toBeVisible();
@@ -59,7 +60,8 @@ test("hisobotlar: raqamlar bosh sahifa bilan bir xil, Excel, Tushumlar", async (
   await expect(page).toHaveURL(/\/all\/reports\/finance$/);
   await expect(page.getByTestId("report-revenue-value")).toHaveText(revenue!);
   await expect(page.getByTestId("finance-total")).toHaveText(revenue!);
-  await expect(page.getByTestId("report-payers-value")).toHaveText("3");
+  await expect(page.getByTestId("report-revenue")).toContainText("3 talaba to'lagan");
+  await expect(page.getByTestId("report-profit-value")).toHaveText(revenue!);
   if (SHOTS) {
     await page.screenshot({
       path: `${SHOTS}/report-finance-${info.project.name}.png`,
@@ -106,7 +108,7 @@ test("hisobotlar: raqamlar bosh sahifa bilan bir xil, Excel, Tushumlar", async (
   await page.getByRole("combobox", { name: "Davr" }).click();
   await page.getByRole("option", { name: "O'tgan oy" }).click();
   await expect(page).toHaveURL(/period=last_month/);
-  await expect(page.getByText("Bu davrda to'lov yo'q")).toBeVisible();
+  await expect(page.getByText("Bu davrda to'lov ham, xarajat ham yo'q")).toBeVisible();
 
   // Qarzdorlar: jami = bosh sahifadagi qarzdorlik
   await page.goto("/all/finance");

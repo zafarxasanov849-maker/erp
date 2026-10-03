@@ -155,3 +155,40 @@ Hamma raqamlar **bitta joyda** hisoblanadi (bazadagi `metric_*` funksiyalar). Bo
 - **Sotuv** — 8-bosqichda.
 
 **Moliya → Tushumlar:** davrdagi to'lovlar (chek bo'yicha), to'lov turi va qabul qilgan xodim bo'yicha filtr, turlar bo'yicha jami. Bekor qilingan to'lov ro'yxatda ko'rinadi (ustidan chizilgan), lekin jamiga qo'shilmaydi.
+
+## Xarajatlar, kassa va ish haqi (✅ 7-bosqich)
+
+**Xarajatlar** (Moliya → Xarajatlar):
+- Har xarajat: summa, turkum, to'lov turi, sana, filial, oluvchi, izoh va "kimning pulidan" (o'z qo'limdan yoki filial kassasidan).
+- Sana kelajakda va 1 yildan eski bo'lmaydi. Butun markazga tegishli xarajat asosiy filialga yoziladi (B).
+- Tahrirlash va o'chirish istalgan vaqtda, har o'zgarish tarixga yoziladi. **O'chirilgan xarajat yo'qolmaydi** — "Savat"ga tushadi, hisobotlarga kirmaydi va istalgan vaqtda qaytariladi (C).
+- Turkumlarning **turi** bor (Sozlamalar → Moliya): operatsion, ish haqi, ijara, marketing, soliq, egasiga (foydadan).
+- Kim nima qila oladi: qo'shish — `expenses.create` (Admin ham); tahrirlash — `expenses.update`; savatga/qaytarish — `expenses.delete` (Egasi, Rahbar, Menejer).
+
+**Sof foyda** (A): `sof foyda = tushum − hamma xarajatlar ("Egasiga (foydadan)" dan tashqari)`; `ortgan pul = sof foyda − egasiga olingan`. Moliya hisobotida va bosh sahifada (o'tgan oyga nisbatan foizi bilan).
+
+**Kassa — "Qo'limdagi pul"** (Moliya → Kassa):
+- Faqat **"qo'lda qoladi"** to'lov turlari hisoblanadi (D). Boshlang'ich: Naqd va Karta — ha; Terminal va Bank o'tkazmasi — yo'q (to'g'ridan-to'g'ri hisob raqamga). Sozlamalar → Moliya'da o'zgartirsa bo'ladi.
+- Xodim qo'lida (E) = qabul qilgan to'lovlari − ulardan bekor qilinganlari − o'zi to'lagan xarajat va oyliklar − topshirgani + olgani. **Bekor qilingan to'lov qabul qilgan xodimdan kamayadi** (bekor qilgandan emas).
+- Filial kassasi (G) = unga topshirilgan − undan to'langan xarajat va oyliklar.
+- Jadval: davr boshida, qabul qildi, xarajatga, topshirdi, oldi, hozir bor — har xodim va to'lov turi bo'yicha. `cash.view` — hamma; faqat `cash.handover` — o'zini.
+- **Pul topshirish** (F): bir bosqichda, pul darhol oluvchiga (rahbar yoki filial kassasi) o'tadi. Qo'ldagidan ko'p summa kiritilsa, ogohlantiradi. Xato bo'lsa, kassani boshqaruvchi sabab yozib bekor qiladi — pul topshirganga qaytadi.
+
+**Ish haqi** (Moliya → Ish haqi; kelishuv, bonus, jarima, berish — faqat `salary.manage`: Egasi, Rahbar; Menejer faqat ko'radi — M):
+
+| Kelishuv | Qanday hisoblanadi |
+|---|---|
+| Qat'iy oylik | Har oy shu summa; oy o'rtasida boshlansa yoki tugasa — kunlar ulushi (J) |
+| Guruh uchun qat'iy | Oyda kamida bitta davomati belgilangan dars bo'lsa — to'liq summa, bo'lmasa 0 (J) |
+| Tushumdan foiz | Shu oyda (to'lov sanasi bo'yicha) ustoz guruhlariga **bog'langan** to'lovlar × foiz; bekor qilinganlar va guruhga bog'lanmagan avans kirmaydi. Ustoz — hisob paytidagi guruh ustozi (H) |
+| Dars uchun | Oyda **davomati belgilangan** darslar × bitta dars narxi (I) |
+
+- Kelishuv bitta guruhga yoki ustozning hamma guruhlariga qo'yiladi; boshlanish va (ixtiyoriy) tugash sanasi bilan. Bir nechta kelishuv **qo'shiladi** (K).
+- Yaxlitlash — butun so'mgacha.
+- **Qoldiq** = hisoblangan (yoki oyga xos o'zgartirish) + bonus − jarima − berilgan (K). Oyga xos o'zgartirish hisoblangan summa o'rniga olinadi (yangisi eskisini almashtiradi).
+- Har oy alohida, qoldiq keyingi oyga o'tmaydi; xodim sahifasida oxirgi 12 oy va **umumiy qoldiq** ko'rinadi. Hisob doim jonli — to'lov kech kiritilsa yoki bekor qilinsa, o'tgan oy ham qayta hisoblanadi.
+- **Oylik berilganda** "Ish haqi" turkumida xarajat avtomatik yaratiladi va pul berganning qo'lidan yoki filial kassasidan kamayadi (L). Bunday xarajatni alohida tahrirlab/o'chirib bo'lmaydi — Ish haqi'da yozuvni sabab bilan bekor qilinadi, xarajat ham savatga tushadi.
+- **Ustoz** "Mening oyligim" sahifasida faqat o'z oyligini ko'radi: qanday hisoblangani (guruh → tushum × foiz va h.k.), yozuvlar, qoldiqlar.
+- Tekshiruv (ROADMAP mezoni): ustozga 30% kelishuv + shu oy guruhiga 1 000 000 so'm to'lov = 300 000 so'm oylik — avtomatik testda tekshiriladi.
+
+**Keyinroq:** oyni "yopish" (qulflash), xarajatni filiallarga bo'lish, ustozga oylik haqida Telegram xabari (9-bosqich).

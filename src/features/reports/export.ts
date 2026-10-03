@@ -106,11 +106,25 @@ export async function exportReport(
         payments: data.total.payments,
       });
       last.font = { bold: true };
+      const pl = sheet(wb, tf("plTable"), [
+        { header: tf("month"), key: "month", width: 18 },
+        { header: tf("revenue"), key: "revenue", width: 16, style: { numFmt: MONEY } },
+        { header: tf("expenses"), key: "costs", width: 16, style: { numFmt: MONEY } },
+        { header: tf("profit"), key: "netProfit", width: 16, style: { numFmt: MONEY } },
+        { header: tf("ownerDraw"), key: "ownerDraw", width: 18, style: { numFmt: MONEY } },
+        { header: tf("leftover"), key: "leftover", width: 16, style: { numFmt: MONEY } },
+      ]);
+      for (const m of data.months) pl.addRow({ ...m, month: monthName(m.month) });
+      pl.addRow({ ...data.profit, month: tf("total") }).font = { bold: true };
       info.addRows([
         {},
         { k: tf("revenue"), v: data.total.revenue },
         { k: tf("payers"), v: data.total.payers },
         { k: tf("average"), v: data.average },
+        { k: tf("expenses"), v: data.profit.costs },
+        { k: tf("profit"), v: data.profit.netProfit },
+        { k: tf("ownerDraw"), v: data.profit.ownerDraw },
+        { k: tf("leftover"), v: data.profit.leftover },
       ]);
     }
 

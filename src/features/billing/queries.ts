@@ -63,7 +63,7 @@ export async function getStudentLedger(studentId: string): Promise<LedgerRow[]> 
 }
 
 /** To'lov turi nomlari: "Karta · Uzcard" */
-async function methodNames(ids: readonly (string | null)[]): Promise<Map<string, string>> {
+export async function methodNames(ids: readonly (string | null)[]): Promise<Map<string, string>> {
   const wanted = [...new Set(ids.filter((x): x is string => Boolean(x)))];
   if (wanted.length === 0) return new Map();
   const supabase = await createClient();

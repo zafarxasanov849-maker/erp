@@ -27,7 +27,8 @@
     "finance": "Moliya",
     "reports": "Hisobotlar",
     "settings": "Sozlamalar",
-    "today": "Bugungi darslar"
+    "today": "Bugungi darslar",
+    "mySalary": "Mening oyligim"
   },
   "branch": {
     "label": "Filial",
@@ -138,7 +139,9 @@
     "absenceThreshold": "1 dan 20 gacha",
     "discount": "Foiz 0.01 dan 100 gacha (2 xonali kasr), summa — butun so'm",
     "trialLessons": "0 dan 20 gacha",
-    "reasonText": "Sababni yozing"
+    "reasonText": "Sababni yozing",
+    "percent": "Foiz 0 dan katta, 100 dan oshmasin (ikki xonagacha)",
+    "reasonLabel": "Sabab"
   },
   "errors": {
     "forbidden": "Sizda bu amal uchun ruxsat yo'q",
@@ -211,7 +214,18 @@
       "discount_enrollment_mismatch": "A'zolik boshqa markazga tegishli",
       "discount_overlap": "Bu oraliqda boshqa chegirma bor",
       "payment_date_invalid": "To'lov sanasi kelajakda yoki bir yildan eski bo'lmasin",
-      "already_voided": "To'lov allaqachon bekor qilingan"
+      "already_voided": "To'lov allaqachon bekor qilingan",
+      "expense_category_mismatch": "Turkum boshqa markazga tegishli yoki nofaol",
+      "expense_date_invalid": "Sana kelajakda yoki 1 yildan eski bo'lmasin",
+      "expense_salary_linked": "Bu xarajat ish haqiga bog'liq. Ish haqi bo'limida yozuvni bekor qiling.",
+      "expense_deleted": "Xarajat savatda. Avval qaytaring.",
+      "handover_target_invalid": "Oluvchini tekshiring: o'zingizga yoki nofaol xodimga topshirib bo'lmaydi",
+      "method_not_in_hand": "Bu to'lov turi qo'lda qolmaydi — topshirib bo'lmaydi",
+      "no_salary_category": "\"Ish haqi\" turidagi faol xarajat turkumi yo'q. Sozlamalar → Moliya'da qo'shing.",
+      "salary_rule_invalid": "Kelishuv maydonlarini tekshiring",
+      "salary_period_invalid": "Kelajakdagi oy uchun yozib bo'lmaydi",
+      "salary_staff_mismatch": "Xodim boshqa markazga tegishli",
+      "salary_group_mismatch": "Guruh boshqa markazga tegishli"
     },
     "inUse": "Bu yozuv boshqa joyda ishlatilmoqda, o'chirib bo'lmaydi",
     "roomInUse": "Bu xonada guruhlar bor. Avval guruhlarni boshqa xonaga o'tkazing."
@@ -253,7 +267,8 @@
       "courses": "Kurslar",
       "rooms": "Xonalar",
       "holidays": "Bayramlar",
-      "tags": "Teglar"
+      "tags": "Teglar",
+      "finance": "Moliya"
     },
     "organization": {
       "name": "Markaz nomi",
@@ -394,6 +409,22 @@
       "deleted": "Teg o'chirildi",
       "emptyTitle": "Hali teg yo'q",
       "emptyDescription": "\"Teg qo'shish\" tugmasi bilan birinchi tegni yarating va talabalarga biriktiring."
+    },
+    "finance": {
+      "categories": "Xarajat turkumlari",
+      "categoriesHint": "Turkum turi moliya hisobotini to'g'ri qiladi: \"Egasiga (foydadan)\" sof foydaga kirmaydi.",
+      "addCategory": "Turkum qo'shish",
+      "editCategory": "Turkumni tahrirlash",
+      "name": "Nomi",
+      "kind": "Turi",
+      "inactive": "Nofaol",
+      "edit": "Tahrirlash",
+      "active": "Faol",
+      "kindHint": "Sof foyda = tushum − hamma xarajatlar (\"Egasiga (foydadan)\" dan tashqari).",
+      "methods": "To'lov turlari",
+      "methodsHint": "\"Qo'lda qoladi\" — bu turdagi pul qabul qilgan xodim qo'lida (kassada) hisoblanadi. Terminal va bank o'tkazmasi odatda to'g'ridan-to'g'ri hisob raqamga tushadi.",
+      "method": "To'lov turi",
+      "inHand": "Qo'lda qoladi"
     }
   },
   "permissions": {
@@ -1113,7 +1144,6 @@
       "active": "Faol talabalar",
       "activeHint": "Sinovda {trial}, muzlatilgan {frozen}",
       "profit": "Sof foyda",
-      "profitSoon": "Xarajatlar va ish haqi 7-bosqichda qo'shiladi",
       "left": "Ketganlar (shu oy)",
       "leftHint": "Hamma guruhlaridan chiqqanlar (o'tkazishlarsiz)",
       "lessonsToday": "Bugungi darslar",
@@ -1129,7 +1159,8 @@
       "myGroups": "Guruhlarim",
       "myStudents": "Talabalarim",
       "unmarkedLessons": "Belgilanmagan darslar",
-      "unmarkedHint": "Davomatni belgilang"
+      "unmarkedHint": "Davomatni belgilang",
+      "profitHint": "Xarajatlar: {amount}"
     },
     "charts": {
       "revenue": "Tushum, oxirgi 6 oy",
@@ -1207,13 +1238,22 @@
       "profit": "Sof foyda",
       "stage7": "7-bosqichda qo'shiladi",
       "chart": "Tushum oy bo'yicha",
-      "table": "Oy va filial bo'yicha",
+      "table": "Tushum oy va filial bo'yicha",
       "mobileHint": "Filiallar bo'yicha ko'rish uchun kompyuterda oching yoki yuqoridan filialni tanlang.",
       "month": "Oy",
       "total": "Jami",
       "payments": "To'lovlar",
-      "emptyTitle": "Bu davrda to'lov yo'q",
-      "emptyDescription": "Davrni o'zgartiring yoki talaba profilida \"To'lov qabul qilish\" orqali to'lov kiriting."
+      "emptyTitle": "Bu davrda to'lov ham, xarajat ham yo'q",
+      "emptyDescription": "Davrni o'zgartiring yoki talaba profilida \"To'lov qabul qilish\" orqali to'lov kiriting.",
+      "revenueStats": "{payers} talaba to'lagan · o'rtacha {average}",
+      "expensesHint": "\"Egasiga (foydadan)\"dan tashqari",
+      "profitHint": "Tushum − xarajatlar",
+      "ownerDraw": "Egasiga (foydadan)",
+      "ownerDrawHint": "Sof foydadan olingan pul",
+      "leftover": "Ortgan pul",
+      "leftoverHint": "Sof foyda − egasiga olingan",
+      "plTable": "Foyda va zarar oy bo'yicha",
+      "byKind": "Xarajatlar turi bo'yicha"
     },
     "attendance": {
       "markedPct": "Belgilangan",
@@ -1267,6 +1307,236 @@
     "sales": {
       "soonTitle": "Sotuv hisoboti 8-bosqichda qo'shiladi",
       "soonDescription": "Lidlar, manbalar va konversiya varonka ishga tushgach shu yerda ko'rinadi."
+    }
+  },
+  "finance": {
+    "title": "Moliya",
+    "tabs": {
+      "debtors": "Qarzdorlar",
+      "payments": "Tushumlar",
+      "expenses": "Xarajatlar",
+      "cash": "Kassa",
+      "salary": "Ish haqi"
+    }
+  },
+  "expenses": {
+    "title": "Xarajatlar",
+    "add": "Xarajat qo'shish",
+    "trash": "Savat",
+    "backToList": "Ro'yxatga qaytish",
+    "trashHint": "O'chirilgan xarajatlar shu yerda saqlanadi va hisobotlarga kirmaydi. Istalgan vaqtda qaytarish mumkin.",
+    "category": "Turkum",
+    "allCategories": "Barcha turkumlar",
+    "method": "To'lov turi",
+    "allMethods": "Barcha turlar",
+    "total": "Jami xarajat",
+    "trashTotal": "Savatda",
+    "count": "{count, plural, other {# ta yozuv}}",
+    "date": "Sana",
+    "amount": "Summa",
+    "source": "Kimning pulidan",
+    "recipient": "Oluvchi / izoh",
+    "branch": "Filial",
+    "kassa": "Filial kassasi",
+    "salaryLinked": "Ish haqi",
+    "salaryLinkedHint": "Oylik berilganda avtomatik yaratilgan. O'zgartirish uchun Ish haqi bo'limida yozuvni bekor qiling.",
+    "emptyTitle": "Bu davrda xarajat yo'q",
+    "emptyDescription": "Davr yoki filtrlarni o'zgartiring yoki \"Xarajat qo'shish\" tugmasi bilan yangisini kiriting.",
+    "trashEmptyTitle": "Savat bo'sh",
+    "trashEmptyDescription": "Bu davrda o'chirilgan xarajat yo'q.",
+    "kinds": {
+      "operating": "Operatsion",
+      "salary": "Ish haqi",
+      "rent": "Ijara",
+      "marketing": "Marketing",
+      "tax": "Soliq",
+      "owner_draw": "Egasiga (foydadan)"
+    },
+    "form": {
+      "title": "Xarajat qo'shish",
+      "editTitle": "Xarajatni tahrirlash",
+      "saved": "Xarajat saqlandi",
+      "amount": "Summa",
+      "category": "Turkum",
+      "categoryPlaceholder": "Turkumni tanlang",
+      "paidAt": "Sana",
+      "method": "To'lov turi",
+      "source": "Kimning pulidan",
+      "fromHand": "Mening qo'limdan",
+      "fromKassa": "Filial kassasidan",
+      "branch": "Filial",
+      "recipient": "Oluvchi",
+      "note": "Izoh"
+    },
+    "actions": {
+      "menu": "Amallar",
+      "edit": "Tahrirlash",
+      "delete": "Savatga",
+      "restore": "Qaytarish",
+      "deleted": "Xarajat savatga o'tkazildi",
+      "restored": "Xarajat qaytarildi",
+      "deleteTitle": "Xarajatni savatga o'tkazish",
+      "deleteHint": "Xarajat hisobotlardan chiqadi, lekin savatda saqlanadi.",
+      "reason": "Sabab (ixtiyoriy)",
+      "deleteConfirm": "Savatga o'tkazish"
+    }
+  },
+  "cash": {
+    "title": "Kassa",
+    "mine": "Mening qo'limda",
+    "mineEmpty": "Hozir qo'lingizda pul yo'q.",
+    "positions": "Qo'limdagi pul — xodimlar va filial kassasi",
+    "positionsHint": "Faqat \"qo'lda qoladi\" to'lov turlari (Sozlamalar → Moliya). Bekor qilingan to'lov qabul qilgan xodimdan kamayadi.",
+    "holder": "Kimda",
+    "method": "To'lov turi",
+    "opening": "Davr boshida",
+    "received": "Qabul qildi",
+    "spent": "Xarajatga",
+    "handedOut": "Topshirdi",
+    "handedIn": "Oldi",
+    "closing": "Hozir bor",
+    "you": "Siz",
+    "kassaOf": "Filial kassasi — {branch}",
+    "emptyTitle": "Bu davrda qo'ldagi pul harakati yo'q",
+    "emptyDescription": "Naqd yoki karta orqali to'lov qabul qilinganda shu yerda ko'rinadi.",
+    "handover": {
+      "button": "Pul topshirish",
+      "title": "Pul topshirish",
+      "hint": "Pul darhol oluvchiga o'tadi. Xato bo'lsa, kassani boshqaruvchi bekor qila oladi.",
+      "to": "Kimga",
+      "kassa": "Filial kassasi",
+      "method": "To'lov turi",
+      "amount": "Summa",
+      "available": "Qo'lingizda: {amount}",
+      "overWarning": "Summa qo'lingizdagidan ko'p. Tekshirib ko'ring.",
+      "branch": "Filial",
+      "note": "Izoh",
+      "submit": "Topshirish",
+      "done": "Pul topshirildi"
+    },
+    "history": {
+      "title": "Topshirishlar tarixi",
+      "emptyTitle": "Bu davrda pul topshirilmagan",
+      "emptyDescription": "\"Pul topshirish\" tugmasi bilan pulni rahbarga yoki filial kassasiga bering.",
+      "date": "Sana",
+      "route": "Kimdan → kimga",
+      "amount": "Summa",
+      "note": "Izoh",
+      "void": "Bekor qilish",
+      "voidTitle": "Topshirishni bekor qilish",
+      "voidHint": "Pul yana topshirgan xodim qo'liga qaytadi.",
+      "voidConfirm": "Topshirishni bekor qilish",
+      "voided": "Topshirish bekor qilindi",
+      "voidedBadge": "Bekor qilingan"
+    }
+  },
+  "salary": {
+    "title": "Ish haqi",
+    "prevMonth": "Oldingi oy",
+    "nextMonth": "Keyingi oy",
+    "openStaff": "Xodim sahifasini ochish…",
+    "staff": "Xodim",
+    "total": "Jami",
+    "overridden": "o'zgartirilgan",
+    "emptyTitle": "Bu oyda hisoblanadigan oylik yo'q",
+    "emptyDescription": "Yuqoridan xodimni tanlab, unga kelishuv qo'ying (qat'iy oylik, foiz yoki dars uchun).",
+    "types": {
+      "fixed_monthly": "Qat'iy oylik",
+      "fixed_per_group": "Guruh uchun qat'iy",
+      "percent_of_revenue": "Tushumdan foiz",
+      "per_lesson": "Dars uchun"
+    },
+    "howCalculated": "Qanday hisoblandi",
+    "rule": "Kelishuv",
+    "basis": "Asos",
+    "amount": "Summa",
+    "entries": "Bu oy yozuvlari",
+    "noRulesTitle": "Bu oyda amal qiladigan kelishuv yo'q",
+    "noRulesDescription": "Kelishuv qo'yilgach oylik avtomatik hisoblanadi.",
+    "history": "Oylar bo'yicha qoldiq",
+    "historyHint": "Har oy alohida hisoblanadi; qoldiq keyingi oyga o'tmaydi. Oxirgi 12 oy.",
+    "month": "Oy",
+    "totalDue": "Umumiy qoldiq",
+    "myHint": "Faqat siz ko'rasiz. Tushum va darslar o'zgarsa, hisob ham yangilanadi.",
+    "explain": {
+      "fixedMonthly": "{amount}, {from} – {to}",
+      "perGroupHeld": "{count, plural, other {# ta dars o'tilgan}}",
+      "perGroupNone": "Oyda davomati belgilangan dars yo'q",
+      "percent": "{revenue} × {percent}",
+      "perLesson": "{count, plural, other {# dars}} × {amount}"
+    },
+    "summary": {
+      "calculated": "Hisoblangan",
+      "override": "O'zgartirilgan summa",
+      "calculatedWas": "Hisoblangani: {amount}",
+      "bonus": "Bonus",
+      "penalty": "Jarima",
+      "bonusPenalty": "Bonus − jarima",
+      "paid": "Berilgan",
+      "due": "Qoldiq",
+      "overpaid": "Ortiqcha berilgan"
+    },
+    "entry": {
+      "kinds": {
+        "payout": "Pul berish",
+        "bonus": "Bonus",
+        "penalty": "Jarima",
+        "override": "Oyga xos o'zgartirish"
+      },
+      "titles": {
+        "payout": "Oylik berish",
+        "bonus": "Bonus yozish",
+        "penalty": "Jarima yozish",
+        "override": "Oyga xos o'zgartirish"
+      },
+      "amount": "Summa",
+      "dueHint": "Qoldiq: {amount}",
+      "method": "To'lov turi",
+      "paidOn": "Sana",
+      "source": "Kimning pulidan",
+      "fromHand": "Mening qo'limdan",
+      "fromKassa": "Filial kassasidan",
+      "branch": "Filial",
+      "note": "Izoh",
+      "saved": "Saqlandi",
+      "overrideHint": "Bu summa shu oyning hisoblangan oyligi o'rniga olinadi. Bonus va jarima alohida qo'shiladi.",
+      "payoutHint": "\"Ish haqi\" turkumida xarajat avtomatik yoziladi.",
+      "empty": "Bu oyda yozuv yo'q.",
+      "voidedBadge": "Bekor qilingan",
+      "void": "Bekor qilish",
+      "voidTitle": "Yozuvni bekor qilish",
+      "voidPayoutHint": "Bog'liq xarajat ham savatga tushadi.",
+      "voidConfirm": "Yozuvni bekor qilish",
+      "voided": "Yozuv bekor qilindi"
+    },
+    "rules": {
+      "title": "Kelishuvlar",
+      "hint": "Bir nechta kelishuv qo'shiladi (masalan, qat'iy + foiz).",
+      "add": "Kelishuv qo'shish",
+      "addTitle": "Kelishuv qo'shish",
+      "editTitle": "Kelishuvni tahrirlash",
+      "empty": "Kelishuv yo'q.",
+      "allGroups": "Hamma guruhlari",
+      "chooseGroup": "Guruhni tanlang",
+      "period": "{from} – {to}",
+      "since": "{from} dan",
+      "ended": "tugagan",
+      "edit": "Tahrirlash",
+      "delete": "O'chirish",
+      "deleteConfirm": "Kelishuvni o'chirasizmi? O'tgan oylar hisobi ham o'zgaradi. Xodim bilan kelishuv tugagan bo'lsa, \"Tugash sanasi\"ni qo'ying.",
+      "type": "Turi",
+      "percent": "Foiz",
+      "amount": "Summa (oyiga)",
+      "lessonPrice": "Bitta dars narxi",
+      "group": "Guruh",
+      "validFrom": "Boshlanish sanasi",
+      "validTo": "Tugash sanasi (ixtiyoriy)",
+      "typeHints": {
+        "fixed_monthly": "Har oy qat'iy summa; oy o'rtasida boshlansa yoki tugasa — kunlar ulushi.",
+        "fixed_per_group": "Guruh uchun oyiga qat'iy summa; oyda kamida bitta davomati belgilangan dars bo'lsa.",
+        "percent_of_revenue": "Guruh(lar)ga shu oy tushgan to'lovlardan foiz (bekor qilinganlarsiz).",
+        "per_lesson": "Davomati belgilangan har dars uchun."
+      }
     }
   }
 }

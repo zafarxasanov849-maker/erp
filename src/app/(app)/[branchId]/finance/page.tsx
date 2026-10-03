@@ -1,6 +1,7 @@
 import { HandCoins, MessageSquare } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { forbidden, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
 import { EmptyState } from "@/components/empty-state";
@@ -15,8 +16,9 @@ import {
 } from "@/components/ui/table";
 import { MoneyAmount } from "@/features/billing/components/student-ledger";
 import { getDebtors } from "@/features/billing/queries";
+import { FINANCE_TABS } from "@/features/shell/finance-tabs";
 import { ALL_BRANCHES } from "@/features/shell/nav";
-import { requirePagePermission } from "@/lib/auth";
+import { can, canAny, getOrgContext } from "@/lib/auth";
 import { formatDate, todayInTashkent } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { formatPhone } from "@/lib/phone";
@@ -29,7 +31,13 @@ export async function generateMetadata(): Promise<Metadata> {
 /** Moliya → Qarzdorlar (PRD §3.6). Ta'rif — metric_debtors (bosh sahifa bilan bir xil). */
 export default async function FinancePage({ params }: { params: Promise<{ branchId: string }> }) {
   const { branchId } = await params;
-  const ctx = await requirePagePermission("payments.view");
+  const ctx = await getOrgContext();
+  if (!can(ctx, "payments.view")) {
+    // Qarzdorlar ko'rinmasa — ruxsat bor birinchi yorliqqa
+    const first = FINANCE_TABS.find((tab) => canAny(ctx, tab.permissions));
+    if (first?.segment) redirect(`/${branchId}/finance/${first.segment}`);
+    forbidden();
+  }
   const t = await getTranslations("billing");
   const debtors = await getDebtors(
     ctx.membership.orgId,

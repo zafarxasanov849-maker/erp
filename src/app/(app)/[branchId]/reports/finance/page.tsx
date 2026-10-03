@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { MoneyAmount } from "@/features/billing/components/student-ledger";
 import { BarChartView } from "@/features/dashboard/components/bar-chart-view";
 import { StatCard } from "@/features/dashboard/components/stat-card";
 import { REPORT_PERMISSIONS } from "@/features/reports/access";
@@ -28,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("tabs.finance") };
 }
 
-/** Moliya hisoboti: tushum oy × filial. Xarajat va sof foyda — 7-bosqich. */
+/** Moliya hisoboti: tushum, xarajatlar, sof foyda, ortgan pul (A); tushum oy × filial. */
 export default async function FinanceReportPage({
   params,
   searchParams,
@@ -40,6 +41,7 @@ export default async function FinanceReportPage({
   const ctx = await requirePagePermission(REPORT_PERMISSIONS.finance);
   const t = await getTranslations("reports.finance");
   const tm = await getTranslations("months");
+  const tk = await getTranslations("expenses.kinds");
   const period = await loadReportPeriod(searchParams, todayInTashkent());
   const branch = branchId === ALL_BRANCHES ? null : branchId;
   const data = await buildFinanceReport(ctx.membership.orgId, branch, period);
@@ -56,26 +58,42 @@ export default async function FinanceReportPage({
           label={t("revenue")}
           icon={Banknote}
           value={formatMoney(data.total.revenue)}
-          hint={t("revenueHint")}
+          hint={t("revenueStats", {
+            payers: data.total.payers,
+            average: formatMoney(data.average),
+          })}
         />
         <StatCard
-          testId="report-payers"
-          label={t("payers")}
-          icon={Users}
-          value={data.total.payers}
-          hint={t("paymentsCount", { count: data.total.payments })}
+          testId="report-expenses"
+          label={t("expenses")}
+          icon={TrendingDown}
+          value={formatMoney(data.profit.costs)}
+          hint={t("expensesHint")}
         />
         <StatCard
-          testId="report-average"
-          label={t("average")}
+          testId="report-profit"
+          label={t("profit")}
+          icon={TrendingUp}
+          value={formatMoney(data.profit.netProfit)}
+          hint={t("profitHint")}
+        />
+        <StatCard
+          testId="report-owner-draw"
+          label={t("ownerDraw")}
           icon={Receipt}
-          value={formatMoney(data.average)}
+          value={formatMoney(data.profit.ownerDraw)}
+          hint={t("ownerDrawHint")}
         />
-        <StatCard label={t("expenses")} icon={TrendingDown} value="—" muted hint={t("stage7")} />
-        <StatCard label={t("profit")} icon={TrendingUp} value="—" muted hint={t("stage7")} />
+        <StatCard
+          testId="report-leftover"
+          label={t("leftover")}
+          icon={Users}
+          value={formatMoney(data.profit.leftover)}
+          hint={t("leftoverHint")}
+        />
       </div>
 
-      {data.total.revenue === 0 ? (
+      {data.total.revenue === 0 && data.profit.costs + data.profit.ownerDraw === 0 ? (
         <EmptyState
           icon={ChartColumn}
           title={t("emptyTitle")}
@@ -90,11 +108,84 @@ export default async function FinanceReportPage({
               </h2>
               <BarChartView
                 label={t("chart")}
-                data={data.months.map((m) => ({ month: monthName(m.month), revenue: m.revenue }))}
+                data={data.months.map((m) => ({
+                  month: monthName(m.month),
+                  revenue: m.revenue,
+                  costs: m.costs,
+                }))}
                 categoryKey="month"
                 format="money"
-                series={[{ key: "revenue", label: t("revenue"), color: "var(--series-1)" }]}
+                series={[
+                  { key: "revenue", label: t("revenue"), color: "var(--series-1)" },
+                  { key: "costs", label: t("expenses"), color: "var(--series-2)" },
+                ]}
               />
+            </section>
+          )}
+
+          <section className="space-y-2" aria-labelledby="finance-pl">
+            <h2 id="finance-pl" className="font-semibold">
+              {t("plTable")}
+            </h2>
+            <div className="min-w-0 overflow-x-auto rounded-lg border" data-testid="finance-pl">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>{t("month")}</TableHead>
+                    <TableHead className="text-right">{t("revenue")}</TableHead>
+                    <TableHead className="text-right">{t("expenses")}</TableHead>
+                    <TableHead className="text-right">{t("profit")}</TableHead>
+                    <TableHead className="text-right">{t("ownerDraw")}</TableHead>
+                    <TableHead className="text-right">{t("leftover")}</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {data.months.map((m) => (
+                    <TableRow key={m.month}>
+                      <TableCell className="whitespace-nowrap">{monthName(m.month)}</TableCell>
+                      {[m.revenue, m.costs, m.netProfit, m.ownerDraw, m.leftover].map((v, i) => (
+                        <TableCell key={i} className="text-right whitespace-nowrap tabular-nums">
+                          <MoneyAmount value={v} />
+                        </TableCell>
+                      ))}
+                    </TableRow>
+                  ))}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TableCell>{t("total")}</TableCell>
+                    {[
+                      data.profit.revenue,
+                      data.profit.costs,
+                      data.profit.netProfit,
+                      data.profit.ownerDraw,
+                      data.profit.leftover,
+                    ].map((v, i) => (
+                      <TableCell key={i} className="text-right whitespace-nowrap tabular-nums">
+                        <MoneyAmount value={v} />
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </div>
+          </section>
+
+          {data.expensesByKind.length > 0 && (
+            <section className="space-y-2" aria-labelledby="finance-kinds">
+              <h2 id="finance-kinds" className="font-semibold">
+                {t("byKind")}
+              </h2>
+              <ul className="divide-y rounded-lg border" data-testid="finance-kinds">
+                {data.expensesByKind.map((k) => (
+                  <li key={k.kind} className="flex items-center justify-between gap-2 px-3 py-2">
+                    <span>{tk(k.kind)}</span>
+                    <span className="font-medium whitespace-nowrap tabular-nums">
+                      {formatMoney(k.amount)}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </section>
           )}
 

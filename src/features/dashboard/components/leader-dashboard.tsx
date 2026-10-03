@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 import {
   getBranchNames,
   getDebtSummary,
+  getExpenseReport,
   getFinanceReport,
   getLeftStudents,
   getRevenue,
@@ -19,6 +20,7 @@ import {
   sameDayLastMonth,
   samePeriodLastMonth,
 } from "@/lib/metrics/period";
+import { profitOf } from "@/lib/metrics/profit";
 import { formatMoney } from "@/lib/money";
 
 import { statChange } from "../format";
@@ -61,12 +63,14 @@ async function LeaderCards({ ctx, branchId, base, today }: Props) {
   const org = ctx.membership.orgId;
   const canMoney = canAny(ctx, ["payments.view", "reports.finance"]);
   const canStudents = canAny(ctx, ["students.view", "reports.view"]);
+  // Sof foyda: tushum va xarajatlarni ko'ra oladiganlar
+  const canProfit = canMoney && canAny(ctx, ["expenses.view", "reports.finance"]);
   const mtd = monthToDate(today);
   const prev = samePeriodLastMonth(mtd);
   const prevDay = sameDayLastMonth(today);
   const none = Promise.resolve(null);
 
-  const [revenue, revenuePrev, debt, debtPrev, counts, countsPrev, left, leftPrev] =
+  const [revenue, revenuePrev, debt, debtPrev, counts, countsPrev, left, leftPrev, exp, expPrev] =
     await Promise.all([
       canMoney ? getRevenue(org, branchId, mtd.from, mtd.to) : none,
       canMoney ? getRevenue(org, branchId, prev.from, prev.to) : none,
@@ -76,7 +80,11 @@ async function LeaderCards({ ctx, branchId, base, today }: Props) {
       canStudents ? getStudentCounts(org, branchId, prevDay) : none,
       canStudents ? getLeftStudents(org, branchId, mtd.from, mtd.to) : none,
       canStudents ? getLeftStudents(org, branchId, prev.from, prev.to) : none,
+      canProfit ? getExpenseReport(org, branchId, mtd.from, mtd.to) : none,
+      canProfit ? getExpenseReport(org, branchId, prev.from, prev.to) : none,
     ]);
+  const profit = revenue && exp ? profitOf(revenue.revenue, exp) : null;
+  const profitPrev = revenuePrev && expPrev ? profitOf(revenuePrev.revenue, expPrev) : null;
 
   return (
     <div
@@ -116,14 +124,15 @@ async function LeaderCards({ ctx, branchId, base, today }: Props) {
           hint={t("cards.activeHint", { trial: counts.trial, frozen: counts.frozen })}
         />
       )}
-      {canMoney && (
+      {profit && profitPrev && (
         <StatCard
           testId="card-profit"
           label={t("cards.profit")}
           icon={TrendingUp}
-          value="—"
-          muted
-          hint={t("cards.profitSoon")}
+          value={formatMoney(profit.netProfit)}
+          href={`${base}/reports/finance`}
+          change={await statChange(profit.netProfit, profitPrev.netProfit, "up", "flow")}
+          hint={t("cards.profitHint", { amount: formatMoney(profit.costs) })}
         />
       )}
       {left && leftPrev && (

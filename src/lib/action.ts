@@ -103,6 +103,17 @@ const DB_GUARD_ERRORS = new Set([
   "discount_overlap",
   "payment_date_invalid",
   "already_voided",
+  "expense_category_mismatch",
+  "expense_date_invalid",
+  "expense_salary_linked",
+  "expense_deleted",
+  "handover_target_invalid",
+  "method_not_in_hand",
+  "no_salary_category",
+  "salary_rule_invalid",
+  "salary_period_invalid",
+  "salary_staff_mismatch",
+  "salary_group_mismatch",
 ]);
 
 /** Supabase/PostgREST xatosini ActionError ga aylantiradi. */

@@ -163,33 +163,45 @@ export type Database = {
           branch_id: string;
           created_at: string;
           from_staff_id: string;
+          handed_on: string;
           id: string;
           method_id: string;
           note: string | null;
           organization_id: string;
           to_staff_id: string | null;
+          void_reason: string | null;
+          voided_at: string | null;
+          voided_by: string | null;
         };
         Insert: {
           amount: number;
           branch_id: string;
           created_at?: string;
           from_staff_id: string;
+          handed_on?: string;
           id?: string;
           method_id: string;
           note?: string | null;
           organization_id: string;
           to_staff_id?: string | null;
+          void_reason?: string | null;
+          voided_at?: string | null;
+          voided_by?: string | null;
         };
         Update: {
           amount?: number;
           branch_id?: string;
           created_at?: string;
           from_staff_id?: string;
+          handed_on?: string;
           id?: string;
           method_id?: string;
           note?: string | null;
           organization_id?: string;
           to_staff_id?: string | null;
+          void_reason?: string | null;
+          voided_at?: string | null;
+          voided_by?: string | null;
         };
         Relationships: [
           {
@@ -223,6 +235,13 @@ export type Database = {
           {
             foreignKeyName: "cash_handovers_to_staff_id_fkey";
             columns: ["to_staff_id"];
+            isOneToOne: false;
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "cash_handovers_voided_by_fkey";
+            columns: ["voided_by"];
             isOneToOne: false;
             referencedRelation: "staff";
             referencedColumns: ["id"];
@@ -436,13 +455,18 @@ export type Database = {
           category_id: string;
           created_at: string;
           created_by: string | null;
+          delete_reason: string | null;
           deleted_at: string | null;
+          deleted_by: string | null;
+          from_staff_id: string | null;
           id: string;
           method_id: string | null;
           note: string | null;
           organization_id: string;
           paid_at: string;
           recipient: string | null;
+          salary_entry_id: string | null;
+          updated_at: string | null;
         };
         Insert: {
           amount: number;
@@ -450,13 +474,18 @@ export type Database = {
           category_id: string;
           created_at?: string;
           created_by?: string | null;
+          delete_reason?: string | null;
           deleted_at?: string | null;
+          deleted_by?: string | null;
+          from_staff_id?: string | null;
           id?: string;
           method_id?: string | null;
           note?: string | null;
           organization_id: string;
           paid_at?: string;
           recipient?: string | null;
+          salary_entry_id?: string | null;
+          updated_at?: string | null;
         };
         Update: {
           amount?: number;
@@ -464,13 +493,18 @@ export type Database = {
           category_id?: string;
           created_at?: string;
           created_by?: string | null;
+          delete_reason?: string | null;
           deleted_at?: string | null;
+          deleted_by?: string | null;
+          from_staff_id?: string | null;
           id?: string;
           method_id?: string | null;
           note?: string | null;
           organization_id?: string;
           paid_at?: string;
           recipient?: string | null;
+          salary_entry_id?: string | null;
+          updated_at?: string | null;
         };
         Relationships: [
           {
@@ -495,6 +529,20 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
+            foreignKeyName: "expenses_deleted_by_fkey";
+            columns: ["deleted_by"];
+            isOneToOne: false;
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_from_staff_id_fkey";
+            columns: ["from_staff_id"];
+            isOneToOne: false;
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "expenses_method_id_fkey";
             columns: ["method_id"];
             isOneToOne: false;
@@ -506,6 +554,13 @@ export type Database = {
             columns: ["organization_id"];
             isOneToOne: false;
             referencedRelation: "organizations";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "expenses_salary_entry_id_fkey";
+            columns: ["salary_entry_id"];
+            isOneToOne: false;
+            referencedRelation: "salary_entries";
             referencedColumns: ["id"];
           },
         ];
@@ -1100,6 +1155,7 @@ export type Database = {
       payment_methods: {
         Row: {
           id: string;
+          in_hand: boolean | null;
           is_active: boolean;
           kind: Database["public"]["Enums"]["method_kind"];
           name: string;
@@ -1108,6 +1164,7 @@ export type Database = {
         };
         Insert: {
           id?: string;
+          in_hand?: boolean | null;
           is_active?: boolean;
           kind: Database["public"]["Enums"]["method_kind"];
           name: string;
@@ -1116,6 +1173,7 @@ export type Database = {
         };
         Update: {
           id?: string;
+          in_hand?: boolean | null;
           is_active?: boolean;
           kind?: Database["public"]["Enums"]["method_kind"];
           name?: string;
@@ -1355,6 +1413,7 @@ export type Database = {
       salary_entries: {
         Row: {
           amount: number;
+          branch_id: string | null;
           created_at: string;
           created_by: string | null;
           id: string;
@@ -1362,11 +1421,16 @@ export type Database = {
           method_id: string | null;
           note: string | null;
           organization_id: string;
+          paid_on: string | null;
           period: string;
           staff_id: string;
+          void_reason: string | null;
+          voided_at: string | null;
+          voided_by: string | null;
         };
         Insert: {
           amount: number;
+          branch_id?: string | null;
           created_at?: string;
           created_by?: string | null;
           id?: string;
@@ -1374,11 +1438,16 @@ export type Database = {
           method_id?: string | null;
           note?: string | null;
           organization_id: string;
+          paid_on?: string | null;
           period: string;
           staff_id: string;
+          void_reason?: string | null;
+          voided_at?: string | null;
+          voided_by?: string | null;
         };
         Update: {
           amount?: number;
+          branch_id?: string | null;
           created_at?: string;
           created_by?: string | null;
           id?: string;
@@ -1386,10 +1455,21 @@ export type Database = {
           method_id?: string | null;
           note?: string | null;
           organization_id?: string;
+          paid_on?: string | null;
           period?: string;
           staff_id?: string;
+          void_reason?: string | null;
+          voided_at?: string | null;
+          voided_by?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "salary_entries_branch_id_fkey";
+            columns: ["branch_id"];
+            isOneToOne: false;
+            referencedRelation: "branches";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "salary_entries_created_by_fkey";
             columns: ["created_by"];
@@ -1414,6 +1494,13 @@ export type Database = {
           {
             foreignKeyName: "salary_entries_staff_id_fkey";
             columns: ["staff_id"];
+            isOneToOne: false;
+            referencedRelation: "staff";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "salary_entries_voided_by_fkey";
+            columns: ["voided_by"];
             isOneToOne: false;
             referencedRelation: "staff";
             referencedColumns: ["id"];
@@ -2058,6 +2145,20 @@ export type Database = {
         }[];
       };
       activate_enrollment: { Args: { p_date: string; p_enrollment: string }; Returns: undefined };
+      add_salary_entry: {
+        Args: {
+          p_amount: number;
+          p_branch: string;
+          p_from_kassa: boolean;
+          p_kind: Database["public"]["Enums"]["salary_entry_kind"];
+          p_method: string;
+          p_note: string;
+          p_paid_on: string;
+          p_period: string;
+          p_staff: string;
+        };
+        Returns: string;
+      };
       apply_holiday: { Args: { p_holiday: string }; Returns: string[] };
       apply_lesson_plan: {
         Args: { p_group: string; p_insert: Json; p_remove: string[]; p_update: Json };
@@ -2076,6 +2177,20 @@ export type Database = {
       can_see_group: { Args: { org: string; p_group: string }; Returns: boolean };
       can_see_lead: { Args: { org: string; p_lead: string }; Returns: boolean };
       can_see_student: { Args: { org: string; p_student: string }; Returns: boolean };
+      cash_positions: {
+        Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
+        Returns: {
+          closing: number;
+          handed_in: number;
+          handed_out: number;
+          kassa_branch_id: string;
+          method_id: string;
+          opening: number;
+          received: number;
+          spent: number;
+          staff_id: string;
+        }[];
+      };
       create_student: { Args: { p: Json }; Returns: Json };
       current_staff: {
         Args: { org: string };
@@ -2134,6 +2249,16 @@ export type Database = {
         Returns: string;
       };
       group_journal: { Args: { p_from: string; p_group: string; p_to: string }; Returns: Json };
+      handover_cash: {
+        Args: {
+          p_amount: number;
+          p_branch: string;
+          p_method: string;
+          p_note: string;
+          p_to_staff: string;
+        };
+        Returns: string;
+      };
       has_permission: { Args: { org: string; perm: string }; Returns: boolean };
       is_colleague: { Args: { p_user: string }; Returns: boolean };
       is_member: { Args: { org: string }; Returns: boolean };
@@ -2141,6 +2266,7 @@ export type Database = {
         Args: { p_date: string; p_enrollment: string; p_reason: string };
         Returns: undefined;
       };
+      method_in_hand: { Args: { p_method: string }; Returns: boolean };
       metric_branches: { Args: { p_branch: string; p_org: string }; Returns: string[] };
       metric_debtors: {
         Args: { p_branch: string; p_date: string; p_org: string };
@@ -2179,6 +2305,17 @@ export type Database = {
         Args: { p_default: number; p_key: string; p_org: string };
         Returns: number;
       };
+      payroll_group_stats: {
+        Args: { p_month: string; p_org: string; p_staff: string };
+        Returns: {
+          day: string;
+          group_id: string;
+          group_name: string;
+          marked_lessons: number;
+          revenue: number;
+          teacher_id: string;
+        }[];
+      };
       receive_payment: {
         Args: {
           p_key: string;
@@ -2200,6 +2337,17 @@ export type Database = {
         Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
         Returns: Json;
       };
+      report_expenses: {
+        Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
+        Returns: {
+          amount: number;
+          branch_id: string;
+          category_id: string;
+          count: number;
+          kind: Database["public"]["Enums"]["expense_kind"];
+          month: string;
+        }[];
+      };
       report_finance: {
         Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
         Returns: {
@@ -2214,6 +2362,20 @@ export type Database = {
         Args: { p_branch: string; p_from: string; p_org: string; p_to: string };
         Returns: Json;
       };
+      save_expense: {
+        Args: {
+          p_amount: number;
+          p_branch: string;
+          p_category: string;
+          p_from_kassa: boolean;
+          p_id: string;
+          p_method: string;
+          p_note: string;
+          p_paid_at: string;
+          p_recipient: string;
+        };
+        Returns: string;
+      };
       save_staff: {
         Args: {
           p_all_branches: boolean;
@@ -2227,6 +2389,10 @@ export type Database = {
         Returns: string;
       };
       set_attendance: { Args: { p_lesson: string; p_marks: Json }; Returns: number };
+      set_expense_deleted: {
+        Args: { p_deleted: boolean; p_id: string; p_reason: string };
+        Returns: undefined;
+      };
       set_lesson_notes: {
         Args: { p_homework: string; p_lesson: string; p_topic: string };
         Returns: undefined;
@@ -2271,7 +2437,9 @@ export type Database = {
         Returns: string;
       };
       try_uuid: { Args: { p: string }; Returns: string };
+      void_handover: { Args: { p_id: string; p_reason: string }; Returns: undefined };
       void_payment: { Args: { p_payment_ref: string; p_reason: string }; Returns: number };
+      void_salary_entry: { Args: { p_id: string; p_reason: string }; Returns: undefined };
     };
     Enums: {
       attendance_status: "present" | "late" | "absent" | "excused";

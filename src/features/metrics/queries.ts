@@ -2,6 +2,7 @@ import "server-only";
 
 import { unwrap } from "@/lib/action";
 import type { IsoDate } from "@/lib/dates";
+import type { ExpenseKind } from "@/lib/metrics/profit";
 import type { AttendanceCounts } from "@/lib/metrics/rates";
 import { rpcBranch } from "@/lib/metrics/rpc";
 import { createClient } from "@/lib/supabase/server";
@@ -207,4 +208,39 @@ export async function getBranchNames(orgId: string) {
       .order("created_at"),
   );
   return rows.map((b) => ({ id: b.id, name: b.name, isActive: b.is_active }));
+}
+
+export interface ExpenseReportRow {
+  month: string;
+  branchId: string;
+  categoryId: string;
+  kind: ExpenseKind;
+  amount: number;
+  count: number;
+}
+
+/** Xarajatlar oy × filial × turkum (savatdagilarsiz) — sof foyda shu yerdan (lib/metrics/profit.ts). */
+export async function getExpenseReport(
+  orgId: string,
+  branchId: string | null,
+  from: IsoDate,
+  to: IsoDate,
+): Promise<ExpenseReportRow[]> {
+  const supabase = await createClient();
+  const rows = unwrap(
+    await supabase.rpc("report_expenses", {
+      p_org: orgId,
+      p_branch: rpcBranch(branchId),
+      p_from: from,
+      p_to: to,
+    }),
+  );
+  return rows.map((r) => ({
+    month: r.month,
+    branchId: r.branch_id,
+    categoryId: r.category_id,
+    kind: r.kind,
+    amount: r.amount,
+    count: r.count,
+  }));
 }

@@ -20,7 +20,9 @@ export default async function BranchLayout({
     branchId === ALL_BRANCHES ? membership.allBranches : branches.some((b) => b.id === branchId);
   if (!allowedBranch) forbidden();
 
-  const allowed = NAV_ITEMS.filter((i) => canAny(ctx, i.permissions)).map((i) => i.key);
+  const allowed = NAV_ITEMS.filter((i) =>
+    i.teacherOnly ? membership.isTeacher : canAny(ctx, i.permissions),
+  ).map((i) => i.key);
 
   return (
     <AppShell
