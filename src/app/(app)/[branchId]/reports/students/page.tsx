@@ -98,8 +98,8 @@ export default async function StudentsReportPage({
             categoryKey="month"
             format="count"
             series={[
-              { key: "new", label: t("new"), color: "var(--primary)" },
-              { key: "left", label: t("left"), color: "var(--destructive)" },
+              { key: "new", label: t("new"), color: "var(--series-1)" },
+              { key: "left", label: t("left"), color: "var(--series-2)" },
             ]}
           />
         </section>

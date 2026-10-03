@@ -195,7 +195,7 @@ async function LeaderCharts({ ctx, branchId, today }: Props) {
               {
                 key: "revenue",
                 label: t("dashboard.charts.revenueSeries"),
-                color: "var(--primary)",
+                color: "var(--series-1)",
               },
             ]}
           />
@@ -226,7 +226,7 @@ async function LeaderCharts({ ctx, branchId, today }: Props) {
                 {
                   key: "revenue",
                   label: t("dashboard.charts.revenueSeries"),
-                  color: "var(--primary)",
+                  color: "var(--series-1)",
                 },
               ]}
             />

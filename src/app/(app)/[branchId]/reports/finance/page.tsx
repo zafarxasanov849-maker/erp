@@ -93,7 +93,7 @@ export default async function FinanceReportPage({
                 data={data.months.map((m) => ({ month: monthName(m.month), revenue: m.revenue }))}
                 categoryKey="month"
                 format="money"
-                series={[{ key: "revenue", label: t("revenue"), color: "var(--primary)" }]}
+                series={[{ key: "revenue", label: t("revenue"), color: "var(--series-1)" }]}
               />
             </section>
           )}

@@ -17,7 +17,7 @@ import { type MoneyLocale, formatMoney, formatMoneyCompact } from "@/lib/money";
 export interface ChartSeries {
   key: string;
   label: string;
-  /** CSS rang: "var(--primary)" va h.k. */
+  /** CSS rang: "var(--series-1)", "var(--series-2)" (globals.css — tekshirilgan palitra, qat'iy tartibda) */
   color: string;
 }
 
@@ -61,6 +61,7 @@ export function BarChartView({
             layout={horizontal ? "vertical" : "horizontal"}
             margin={{ top: 8, right: horizontal ? 24 : 8, bottom: 0, left: 0 }}
             barCategoryGap={horizontal ? "25%" : "30%"}
+            barGap={2}
           >
             <CartesianGrid
               strokeDasharray="3 3"
